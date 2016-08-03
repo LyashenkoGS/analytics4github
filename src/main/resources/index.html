@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {
+            'packages': ['bar']
+        });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Day/Month', 'Stars'],
+                ['01/03', 10],
+                ['02/03', 1],
+                ['03/03', 0],
+                ['04/03', 15],
+                ['05/03', 16],
+                ['06/03', 0],
+                ['07/03', 8],
+                ['08/03', 3],
+                ['09/03', 1],
+                ['10/03', 2],
+                ['11/03', 0],
+                ['12/03', 1],
+                ['13/03', 3],
+                ['14/03', 12],
+                ['15/03', 0],
+                ['16/03', 0],
+                ['17/03', 0],
+                ['18/03', 1],
+                ['19/03', 2],
+                ['20/03', 3],
+                ['21/03', 8],
+                ['22/03', 1],
+                ['23/03', 0],
+                ['24/03', 2],
+                ['25/03', 2],
+                ['26/03', 3],
+                ['27/03', 10],
+                ['28/03', 10],
+                ['29/03', 10],
+                ['30/03', 05]
+            ]);
+
+            var options = {
+                title: 'Stars by the month frequency',
+                legend: { position: 'none' },
+                chart: { subtitle: 'March 03.2016' },
+
+                bar: { groupWidth: "90%" }
+            };
+
+            var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+            chart.draw(data, google.charts.Bar.convertOptions(options));
+        }
+
+    </script>
+</head>
+
+<body>
+<div id="columnchart_material" style="width: 600px; height: 500px;"></div>
+</body>
+</html>
