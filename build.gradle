@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.3.5.RELEASE'
+        springBootVersion = '1.4.0.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -23,7 +23,7 @@ idea {
     }
 }
 jar {
-    baseName = 'demo'
+    baseName = 'analytics4github'
     version = '0.0.1-SNAPSHOT'
 }
 sourceCompatibility = 1.8
@@ -39,7 +39,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile("org.springframework.boot:spring-boot-starter-web")
  //   compile("org.springframework.boot:spring-boot-starter-actuator")
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+    compile("org.springframework.boot:spring-boot-starter-test")
 }
 
 task wrapper(type: Wrapper) {

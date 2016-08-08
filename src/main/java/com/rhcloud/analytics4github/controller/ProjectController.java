@@ -1,4 +1,4 @@
-package demo;
+package com.rhcloud.analytics4github.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

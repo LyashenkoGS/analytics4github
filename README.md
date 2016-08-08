@@ -7,7 +7,8 @@ Internally. The existed GitHub API is used.
 
 * Java 1.8
 * Gradle >= 2.3 
+
 ## Development
-###IntellijIdea
+### IntellijIdea
 To reload controllers after editing - press ctl + f9 and wait till application restart.
 It'll execute "Make" and trigger hot-redeploy via spring-boot-devtools.
