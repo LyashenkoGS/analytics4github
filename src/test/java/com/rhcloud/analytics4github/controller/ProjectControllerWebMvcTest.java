@@ -10,8 +10,12 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.io.File;
+import java.io.InputStream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,14 +36,13 @@ public class ProjectControllerWebMvcTest {
 
     @Test
     public void testThatControllerDoentChangingJsonFromService() throws Exception {
-        //TODO externalize datasets for test
-        String givenJson = "{\n" +
-                "\t\"mock\": \"mockValue\"\n" +
-                "}";
-        JsonNode jsonNode = new ObjectMapper().readTree(givenJson);
-        BDDMockito.given(this.stargazersService.getStargazersPerProject("ss"))
-                .willReturn(jsonNode);
+        InputStream mockWeekStargazersInpStream=(new ClassPathResource("mockWeekStargazers.json")
+                .getInputStream());
+        JsonNode stargazersJSON = new ObjectMapper().readTree(mockWeekStargazersInpStream);
+        BDDMockito.given(this.stargazersService.getStargazersPerProject("MockProjectName"))
+                .willReturn(stargazersJSON);
         this.mvc.perform(get("/stargazers"))
-                .andExpect(status().isOk()).andExpect(content().json(givenJson));
+                .andExpect(status().isOk())
+                .andExpect(content().json(stargazersJSON.toString()));
     }
 }

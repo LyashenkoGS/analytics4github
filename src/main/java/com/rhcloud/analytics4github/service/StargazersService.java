@@ -1,10 +1,14 @@
 package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 
 /**
  * @author lyashenkogs
@@ -19,7 +23,11 @@ public class StargazersService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public JsonNode getStargazersPerProject(String projectName) {
-        return restTemplate.getForObject("http://gturnquist-quoters.cfapps.io/api/random", JsonNode.class);
+    public JsonNode getStargazersPerProject(String projectName) throws IOException {
+        //  return restTemplate.getForObject("http://gturnquist-quoters.cfapps.io/api/random", JsonNode.class);
+        //Todo remove mock
+        return new ObjectMapper()
+                .readTree(new ClassPathResource("mockWeekStargazers.json")
+                        .getInputStream());
     }
 }
