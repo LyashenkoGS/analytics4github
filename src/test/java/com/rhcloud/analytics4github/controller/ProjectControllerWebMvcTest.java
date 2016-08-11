@@ -14,7 +14,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.File;
 import java.io.InputStream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,7 +38,7 @@ public class ProjectControllerWebMvcTest {
         InputStream mockWeekStargazersInpStream=(new ClassPathResource("mockWeekStargazers.json")
                 .getInputStream());
         JsonNode stargazersJSON = new ObjectMapper().readTree(mockWeekStargazersInpStream);
-        BDDMockito.given(this.stargazersService.getStargazersPerProject("MockProjectName"))
+        BDDMockito.given(this.stargazersService.getThisWeekStargazersFrequencyPerProject("MockProjectName"))
                 .willReturn(stargazersJSON);
         this.mvc.perform(get("/stargazers"))
                 .andExpect(status().isOk())

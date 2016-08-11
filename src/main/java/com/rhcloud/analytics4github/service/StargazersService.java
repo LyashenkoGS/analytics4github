@@ -23,7 +23,8 @@ public class StargazersService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public JsonNode getStargazersPerProject(String projectName) throws IOException {
+
+    public JsonNode getThisWeekStargazersFrequencyPerProject(String projectName) throws IOException {
         //  return restTemplate.getForObject("http://gturnquist-quoters.cfapps.io/api/random", JsonNode.class);
         //Todo remove mock
         return new ObjectMapper()

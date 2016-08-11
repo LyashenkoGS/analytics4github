@@ -22,7 +22,7 @@ public class ProjectController {
     public JsonNode getStargazersByProject(HttpServletResponse response) throws IOException {
        //Todo extract to a filter to allow acces for clients from other domains
         response.setHeader("Access-Control-Allow-Origin", "*");
-        return stargazersService.getStargazersPerProject("MockProjectName");
+        return stargazersService.getThisWeekStargazersFrequencyPerProject("MockProjectName");
 
     }
 }

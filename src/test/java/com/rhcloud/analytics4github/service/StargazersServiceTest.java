@@ -17,7 +17,6 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -48,6 +47,6 @@ public class StargazersServiceTest {
         this.server.expect(MockRestRequestMatchers.requestTo("http://gturnquist-quoters.cfapps.io/api/random"))
                 .andRespond(MockRestResponseCreators.withSuccess(stargazerJSON.toString(), MediaType.APPLICATION_JSON));
 
-        assertEquals(service.getStargazersPerProject("mockProjectName").toString(), stargazerJSON.toString());
+        assertEquals(service.getThisWeekStargazersFrequencyPerProject("mockProjectName").toString(), stargazerJSON.toString());
     }
 }
