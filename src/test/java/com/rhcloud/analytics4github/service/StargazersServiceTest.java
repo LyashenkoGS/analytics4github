@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(SpringRunner.class)
 @RestClientTest(StargazersService.class)
-@TestPropertySource(locations="classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class StargazersServiceTest {
     private Logger logger = LoggerFactory.getLogger(StargazersServiceTest.class);
 
@@ -40,7 +40,7 @@ public class StargazersServiceTest {
     @Test
     public void testServiceDoesntChangeJSONFromServer() throws IOException {
         //Todo remove mocks
-        InputStream stargazersFileInpStream=(new ClassPathResource("mockWeekStargazers.json")
+        InputStream stargazersFileInpStream = (new ClassPathResource("mockWeekStargazers.json")
                 .getInputStream());
         JsonNode stargazerJSON = new ObjectMapper().readTree(stargazersFileInpStream);
 
@@ -49,4 +49,6 @@ public class StargazersServiceTest {
 
         assertEquals(service.getThisWeekStargazersFrequencyPerProject("mockProjectName").toString(), stargazerJSON.toString());
     }
+
+
 }
