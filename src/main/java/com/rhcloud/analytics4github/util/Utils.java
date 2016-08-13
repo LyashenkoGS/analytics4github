@@ -13,6 +13,7 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
 
 /**
  * Common utilities for complex operation on objects representing date and time.
+ *
  * @author lyashenkogs.
  */
 public class Utils {
@@ -37,7 +38,7 @@ public class Utils {
      * @param timestamp String representing date and time in ISO 8601 YYYY-MM-DDTHH:MM:SSZ
      * @return LocalDate parsed from the given @param. Example (2007-12-03)
      */
-    public  static LocalDate parseTimestamp(String timestamp) {
+    public static LocalDate parseTimestamp(String timestamp) {
         return LocalDate.parse(timestamp, DateTimeFormatter.ISO_DATE_TIME);
     }
 

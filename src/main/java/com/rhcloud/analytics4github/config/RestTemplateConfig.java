@@ -10,6 +10,7 @@ import java.util.LinkedList;
 
 /**
  * Configure RestTemplate for Github API
+ *
  * @see <a href="https://developer.github.com/v3/">https://developer.github.com/v3/</a>
  */
 @Configuration
