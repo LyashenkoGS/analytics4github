@@ -40,4 +40,6 @@ public class Utils {
     public  static LocalDate parseTimestamp(String timestamp) {
         return LocalDate.parse(timestamp, DateTimeFormatter.ISO_DATE_TIME);
     }
+
+
 }
