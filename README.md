@@ -1,15 +1,21 @@
 # analytics4github
+
+[![Build Status](https://travis-ci.org/LyashenkoGS/analytics4github.svg?branch=master)](https://travis-ci.org/LyashenkoGS/analytics4github)  
+[![codecov](https://codecov.io/gh/LyashenkoGS/analytics4github/branch/master/graph/badge.svg)](https://codecov.io/gh/LyashenkoGS/analytics4github)  
+[![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/LyashenkoGS/analytics4github/blob/master/LICENCE)  
+
+
+
 Java web application to enhance github.com search mechanism.
 Provided options facilitate search of new perspective projects with good commits/stars/contributors grown.
-Internally. The existed GitHub API is used.  
+Internally, The existed GitHub API is using.  
 [http://analytics4github-lyashenkogs.rhcloud.com/](http://analytics4github-lyashenkogs.rhcloud.com/)
 ## Prerequisites
 
 * Java 1.8
 * Gradle >= 2.3 
 * Generate OAuth token for Github [https://github.com/settings/tokens](https://github.com/settings/tokens)
-and copy it to /var/token.txt. If you are a Windows user - generate a token, hardcode it and
-switch to Linux in future).
+and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN.
 
 ## Development
 
