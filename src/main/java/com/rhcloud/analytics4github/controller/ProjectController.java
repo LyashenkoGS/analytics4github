@@ -3,9 +3,12 @@ package com.rhcloud.analytics4github.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rhcloud.analytics4github.service.StargazersService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -15,14 +18,16 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class ProjectController {
+    private static Logger LOG = LoggerFactory.getLogger(ProjectController.class);
 
     @Autowired
     StargazersService stargazersService;
 
     @RequestMapping(value = "/stargazers", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public JsonNode getStargazersByProject(HttpServletResponse response) throws IOException, URISyntaxException, ClassNotFoundException {
+    public JsonNode getStargazersByProject(HttpServletResponse response, @RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException {
         //Todo extract to a filter to allow access to the endpoint for clients from other domains
         response.setHeader("Access-Control-Allow-Origin", "*");
-        return stargazersService.getThisWeekStargazersFrequencyPerProject("FallibleInc/security-guide-for-developers");
+        LOG.info("projectName parameter :" + projectName);
+        return stargazersService.getThisWeekStargazersFrequencyPerProject(projectName);
     }
 }

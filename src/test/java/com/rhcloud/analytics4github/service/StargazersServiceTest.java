@@ -2,7 +2,6 @@ package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,21 +88,5 @@ public class StargazersServiceTest {
         JsonNode frequencyListJSON = new ObjectMapper().readTree(frequencyList.toString());
         assertEquals(frequencyListJSON, etalonFrequencyListJSON);
     }
-
-    @Test
-    public void testBuildJsonForHighChart() throws IOException, ClassNotFoundException {
-        LOG.debug("testBuildJsonForHighChart");
-        final JsonNode etalonOutputJson = new ObjectMapper().readTree(new ClassPathResource("weekStargazersFrequencyForHIghChart.json")
-                .getInputStream());
-        ArrayNode outputJson = service.buildJsonForHIghChart(service.parseWeekStargazersMapFrequencyToWeekFrequencyList(getMockWeekStargazersFrequencyMap()));
-        LOG.debug("output json:" + outputJson);
-        LOG.debug("etalon json:" + etalonOutputJson);
-
-        //todo find a way to compare object properly, ignoring whitespaces in an array
-        // [{"name":"Stars","data":[390, 470, 349, 189, 143, 33, 0]}]
-        //[{"name":"Stars","data":[390,470,349,189,143,33,0]}]
-        //assertEquals(outputJson.get(0).get("data").size(),(etalonOutputJson.get(0).get("data").size()));
-    }
-
 
 }

@@ -11,73 +11,81 @@
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
 </head>
 <body>
+<input id="projectName" type="text" value="mewo2/terrain">
+<button id="button">Parse</button>
 
 <div id="container"
-     style="max-width: 600px;min-width: 310px; height: 300px;margin-left: auto;margin-right: auto;text-align: center"></div>
+     style="max-width: 600px;min-width: 310px; height: 300px;margin-left: auto;margin-right: auto;text-align: center">
+    Input repository identificators to build a graphic
+</div>
 
 </body>
 <script type="application/javascript">
+
     $(function () {
-        /**
-         * Get stargazers per week json and display as a column chart
-         */
-        $.ajax({
-                   //need to specify http explicitly to develop front-end independently
-                   url: "/stargazers",
-                   beforeSend: function () {
-                       console.log("before")
-                       $('#container')
-                               .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' />");
-                   }
-               })
-                .done(function (msg) {
-                    var response = msg;
-                    console.log(msg)
-                    $('#container').highcharts({
-                                                   chart: {
-                                                       type: 'column'
-                                                   },
-                                                   title: {
-                                                       style: {
-                                                           "display": "none"
-                                                       }
-                                                   },
-                                                   xAxis: {
-                                                       categories: [
-                                                           'Mon',
-                                                           'Tue',
-                                                           'Wed',
-                                                           'Thu',
-                                                           'Fri',
-                                                           'Sat',
-                                                           'Sun'
-                                                       ]
-                                                   },
-                                                   yAxis: {
-                                                       min: 0
-                                                   },
-                                                   tooltip: {
-                                                       headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                                                       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
-                                                                    +
-                                                                    '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                                                       footerFormat: '</table>',
-                                                       shared: true,
-                                                       useHTML: true
-                                                   },
-                                                   plotOptions: {
-                                                       column: {
-                                                           pointPadding: 0.1,
-                                                           borderWidth: 0,
-                                                           groupPadding: 0
-                                                       }
-                                                   },
-                                                   series: response
-                                               });
-                })
-                .fail(function (jqXHR, textStatus) {
-                    alert("Request failed: " + textStatus);
-                });
+
+        $('#button').click(function () {
+            var inputValue = $('#projectName').val()
+            console.log(inputValue);
+            /**
+             * Get stargazers per week json and display as a column chart
+             */
+            $.ajax({
+                       //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
+                       url: "/stargazers" + "?projectName=" + inputValue,
+                       beforeSend: function () {
+                           $('#container')
+                                   .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' />");
+                       }
+                   })
+                    .done(function (msg) {
+                        var response = msg;
+                        $('#container').highcharts({
+                                                       chart: {
+                                                           type: 'column'
+                                                       },
+                                                       title: {
+                                                           style: {
+                                                               "display": "none"
+                                                           }
+                                                       },
+                                                       xAxis: {
+                                                           categories: [
+                                                               'Mon',
+                                                               'Tue',
+                                                               'Wed',
+                                                               'Thu',
+                                                               'Fri',
+                                                               'Sat',
+                                                               'Sun'
+                                                           ]
+                                                       },
+                                                       yAxis: {
+                                                           min: 0
+                                                       },
+                                                       tooltip: {
+                                                           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                                           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
+                                                                        +
+                                                                        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                                                           footerFormat: '</table>',
+                                                           shared: true,
+                                                           useHTML: true
+                                                       },
+                                                       plotOptions: {
+                                                           column: {
+                                                               pointPadding: 0.1,
+                                                               borderWidth: 0,
+                                                               groupPadding: 0
+                                                           }
+                                                       },
+                                                       series: response
+                                                   });
+                    })
+                    .fail(function (jqXHR, textStatus) {
+                        alert("Request failed: " + textStatus);
+                    });
+        })
 
     });
 </script>
