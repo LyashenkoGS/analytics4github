@@ -9,14 +9,54 @@
             crossorigin="anonymous"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+
 </head>
 <body>
-<input id="projectName" type="text" value="mewo2/terrain">
-<button id="button">Parse</button>
+<div class="navbar navbar-default navbar-static-top">
+    <div class="container">
+        <div class="panel-body">
+            <object type="image/svg+xml" data="mark-github.svg" height="26px"
+                    style="float: left"></object>
+            <div class="input-group col-md-4 col-sm-4 col-lg-4">
+                <input id="projectName" type="text" value="mewo2/terrain" class="form-control">
+                <div class="input-group-btn">
+                    <button id="analyze-btn" type="button" class="btn btn-default">analyze</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="panel-body">
+            <object type="image/svg+xml" data="repo.svg" height="15px"></object>
+            <a id="repository" target="_blank"
+               href="https://github.com/mewo2/terrain">mewo2/terrain</a>
+        </div>
+    </div>
+    <div class="container">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#">
+                    <object type="image/svg+xml" data="star.svg" height="15px"></object>
+                    stars</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
 
 <div id="container"
      style="max-width: 600px;min-width: 310px; height: 300px;margin-left: auto;margin-right: auto;text-align: center">
-    Input repository identificators to build a graphic
+    <div>Aug 15, 2016 – Aug 22, 2016</div>
+    <div id="graphic">
+        <div class="alert alert-info" role="alert">Type author/repository and press analyze to
+            build a
+            graphic
+        </div>
+    </div>
+
+</div>
+
 </div>
 
 </body>
@@ -24,69 +64,85 @@
 
     $(function () {
 
-        $('#button').click(function () {
-            var inputValue = $('#projectName').val()
-            console.log(inputValue);
-            /**
-             * Get stargazers per week json and display as a column chart
-             */
-            $.ajax({
-                       //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-                       url: "/stargazers" + "?projectName=" + inputValue,
-                       beforeSend: function () {
-                           $('#container')
-                                   .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' />");
-                       }
-                   })
-                    .done(function (msg) {
-                        var response = msg;
-                        $('#container').highcharts({
-                                                       chart: {
-                                                           type: 'column'
-                                                       },
-                                                       title: {
-                                                           style: {
-                                                               "display": "none"
-                                                           }
-                                                       },
-                                                       xAxis: {
-                                                           categories: [
-                                                               'Mon',
-                                                               'Tue',
-                                                               'Wed',
-                                                               'Thu',
-                                                               'Fri',
-                                                               'Sat',
-                                                               'Sun'
-                                                           ]
-                                                       },
-                                                       yAxis: {
-                                                           min: 0
-                                                       },
-                                                       tooltip: {
-                                                           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                                                           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
-                                                                        +
-                                                                        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                                                           footerFormat: '</table>',
-                                                           shared: true,
-                                                           useHTML: true
-                                                       },
-                                                       plotOptions: {
-                                                           column: {
-                                                               pointPadding: 0.1,
-                                                               borderWidth: 0,
-                                                               groupPadding: 0
-                                                           }
-                                                       },
-                                                       series: response
-                                                   });
-                    })
-                    .fail(function (jqXHR, textStatus) {
-                        alert("Request failed: " + textStatus);
-                    });
+        $(function () {
+            $('#projectName').on('input', function (e) {
+                console.log($(this).val())
+                $('#repository').text($(this).val())
+                $('#repository').attr("href", "https://github.com/" + $(this).val())
+            });
+        })
+
+        /**
+         * Get stargazers per week json and display as a column chart
+         */
+        $(function () {
+            $('#analyze-btn').click(function () {
+                var inputValue = $('#projectName').val()
+                console.log(inputValue);
+                $.ajax({
+                           //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
+                           url: "/stargazers" + "?projectName=" + inputValue,
+                           beforeSend: function () {
+                               $('#graphic')
+                                       .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
+                           }
+                       })
+                        .done(function (msg) {
+                            var response = msg;
+                            $('#graphic').highcharts({
+                                                         chart: {
+                                                             type: 'column'
+                                                         },
+                                                         title: {
+                                                             style: {
+                                                                 "display": "none"
+                                                             }
+                                                         },
+                                                         xAxis: {
+                                                             categories: [
+                                                                 'Mon',
+                                                                 'Tue',
+                                                                 'Wed',
+                                                                 'Thu',
+                                                                 'Fri',
+                                                                 'Sat',
+                                                                 'Sun'
+                                                             ]
+                                                         },
+                                                         yAxis: {
+                                                             min: 0
+                                                         },
+                                                         tooltip: {
+                                                             headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                                             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
+                                                                          +
+                                                                          '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                                                             footerFormat: '</table>',
+                                                             shared: true,
+                                                             useHTML: true
+                                                         },
+                                                         plotOptions: {
+                                                             column: {
+                                                                 pointPadding: 0.1,
+                                                                 borderWidth: 0,
+                                                                 groupPadding: 0
+                                                             }
+                                                         },
+                                                         series: response
+                                                     });
+                        })
+                        .fail(function (jqXHR, textStatus) {
+                            $('#graphic')
+                                    .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
+                                          + textStatus
+                                          + "<div>Sorry for temporary inconvenience<div></div>");
+                        });
+            })
         })
 
     });
 </script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
 </html>
