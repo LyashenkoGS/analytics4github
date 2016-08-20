@@ -17,7 +17,7 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
  * @author lyashenkogs.
  */
 public class Utils {
-    private static Logger logger = LoggerFactory.getLogger(Utils.class);
+    private static Logger LOG = LoggerFactory.getLogger(Utils.class);
 
     /**
      * Assert that give Date is in range from current monday to sunday
@@ -25,12 +25,12 @@ public class Utils {
      * Must return true for all days from this week include monday and sunday.
      */
     public static boolean isWithinThisWeekRange(LocalDate timestamp) {
-        logger.debug("Check is the " + timestamp + " is within this week range");
+        LOG.debug("Check is the " + timestamp + " is within this week range");
         LocalDate today = LocalDate.now();
         LocalDate monday = today.with(previousOrSame(MONDAY));
         LocalDate sunday = today.with(nextOrSame(SUNDAY));
         boolean isWithinThisWeekRange = (timestamp.isAfter(monday.minusDays(1))) && timestamp.isBefore(sunday.plusDays(1));
-        logger.debug(String.valueOf(isWithinThisWeekRange));
+        LOG.debug(String.valueOf(isWithinThisWeekRange));
         return isWithinThisWeekRange;
     }
 

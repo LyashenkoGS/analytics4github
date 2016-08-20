@@ -37,7 +37,7 @@ import java.util.stream.StreamSupport;
  */
 @Service
 public class StargazersService {
-    Logger LOG = LoggerFactory.getLogger(StargazersService.class);
+   private static Logger LOG = LoggerFactory.getLogger(StargazersService.class);
     @Autowired
     private RestTemplate template;
 

@@ -24,7 +24,7 @@ public class ServiceIntegrationalTest {
     private static Logger LOG = LoggerFactory.getLogger(com.rhcloud.analytics4github.config.InterceptorsIntegrationalTest.class);
 
     @Autowired
-    StargazersService stargazersService;
+    private StargazersService stargazersService;
 
     /**
      * Assert that no errors occurred during parsing weekStargazers for repositories

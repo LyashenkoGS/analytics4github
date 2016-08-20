@@ -24,10 +24,10 @@ public class InterceptorsIntegrationalTest {
     private static Logger LOG = LoggerFactory.getLogger(InterceptorsIntegrationalTest.class);
 
     @Autowired
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     @Autowired
-    StargazersService stargazersService;
+    private StargazersService stargazersService;
 
 
     @Test

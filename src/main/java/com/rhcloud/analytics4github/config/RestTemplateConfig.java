@@ -17,9 +17,9 @@ import java.util.LinkedList;
 public class RestTemplateConfig {
 
     @Autowired
-    AddOAuthTokenInterceptor oAuthTokenInterceptor;
+    private AddOAuthTokenInterceptor oAuthTokenInterceptor;
     @Autowired
-    ChangeAcceptTypeForStargazersInterceptor changeAcceptTypeForStargazersInterceptor;
+    private ChangeAcceptTypeForStargazersInterceptor changeAcceptTypeForStargazersInterceptor;
 
     @Bean
     RestTemplate restTemplate() {

@@ -21,7 +21,7 @@ public class ProjectController {
     private static Logger LOG = LoggerFactory.getLogger(ProjectController.class);
 
     @Autowired
-    StargazersService stargazersService;
+    private StargazersService stargazersService;
 
     @RequestMapping(value = "/stargazers", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
     public JsonNode getStargazersByProject(HttpServletResponse response, @RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException {
