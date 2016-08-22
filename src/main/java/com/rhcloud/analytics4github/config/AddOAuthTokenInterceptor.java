@@ -30,20 +30,22 @@ public class AddOAuthTokenInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body,
                                         ClientHttpRequestExecution execution) throws IOException {
-        //Todo replace with NIO features
+
+        //Todo replace with NIO features; Getting token procedure should be execute once during the context load
         String tokenValue = "";
         try (FileInputStream fstream = new FileInputStream(tokenFile);
              BufferedReader br = new BufferedReader(new InputStreamReader(fstream))) {
             tokenValue = br.readLine();
         } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        LOG.info("token value: " + tokenValue);
+        LOG.debug("token value: " + tokenValue);
         if (tokenValue.isEmpty()) {
             LOG.warn("token value from " + tokenFile + " is empty");
             LOG.warn("cant get token from a file, trying to get from the environment variable GITHUB_TOKEN");
             tokenValue = System.getenv("GITHUB_TOKEN");
-            LOG.info("token value: " + tokenValue);
+            LOG.debug("token value: " + tokenValue);
         }
 
 

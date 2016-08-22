@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.client.ExpectedCount.min;
@@ -58,14 +59,6 @@ public class StargazersServiceTest {
         fileIn.close();
         LOG.debug("got MockWeekStargazersFrequencyMap from a file " + file.getName() + " :" + weekStargazersFrequency.toString());
         return weekStargazersFrequency;
-    }
-
-    @Test
-    public void testServiceAccessGithubAtLeasOnce() throws IOException, URISyntaxException, ClassNotFoundException {
-        server.expect(min(1), requestTo("https://api.github.com/repos/FallibleInc/security-guide-for-developers/stargazers"))
-                .andRespond(MockRestResponseCreators.withSuccess());
-        service.getThisWeekStargazersFrequencyPerProject("FallibleInc/security-guide-for-developers");
-        server.verify();
     }
 
 

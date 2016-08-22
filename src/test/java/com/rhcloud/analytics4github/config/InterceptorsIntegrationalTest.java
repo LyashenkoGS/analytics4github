@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -45,7 +46,7 @@ public class InterceptorsIntegrationalTest {
 
 
     @Test
-    public void serviceIntegrationalTest() throws ClassNotFoundException, IOException, URISyntaxException {
+    public void serviceIntegrationalTest() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException {
         ArrayNode thisWeekStargazersFrequencyPerProject = stargazersService.getThisWeekStargazersFrequencyPerProject("mewo2/terrain");
         LOG.debug(thisWeekStargazersFrequencyPerProject.toString());
     }

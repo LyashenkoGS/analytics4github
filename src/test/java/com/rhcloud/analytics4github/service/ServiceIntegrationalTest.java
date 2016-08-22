@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
 
 
 @RunWith(SpringRunner.class)
@@ -31,14 +32,14 @@ public class ServiceIntegrationalTest {
      * in /resources/RepositoriesForTest.txt
      */
     @Test
-    public void serviceIntegrationalTest() throws ClassNotFoundException, IOException, URISyntaxException {
+    public void serviceIntegrationalTest() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException {
         InputStream repositoriesList = new ClassPathResource("RepositoriesForTest.txt")
                 .getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(repositoriesList));
-        String tokenValue;
-        while ((tokenValue = br.readLine()) != null) {
-            LOG.debug(tokenValue);
-            ArrayNode thisWeekStargazersFrequencyPerProject = stargazersService.getThisWeekStargazersFrequencyPerProject("mewo2/terrain");
+        String repositoryName;
+        while ((repositoryName = br.readLine()) != null) {
+            LOG.debug(repositoryName);
+            ArrayNode thisWeekStargazersFrequencyPerProject = stargazersService.getThisWeekStargazersFrequencyPerProject(repositoryName);
             LOG.debug(thisWeekStargazersFrequencyPerProject.toString());
         }
     }

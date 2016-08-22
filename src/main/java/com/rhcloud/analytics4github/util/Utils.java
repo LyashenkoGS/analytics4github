@@ -20,7 +20,7 @@ public class Utils {
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
 
     /**
-     * Assert that give Date is in range from current monday to sunday
+     * Assert that given Date is in the range from current monday to sunday
      * include border values.
      * Must return true for all days from this week include monday and sunday.
      */
