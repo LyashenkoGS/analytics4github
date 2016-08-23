@@ -33,7 +33,7 @@ public class StargazersIterator implements Iterator<JsonNode> {
     private final int numberOfPages;
     private final String projectName;
     private final RestTemplate restTemplate;
-    private final ExecutorService executor = Executors.newFixedThreadPool(10);
+    private final ExecutorService executor = Executors.newFixedThreadPool(5);
     private volatile AtomicInteger counter = new AtomicInteger();
 
     public StargazersIterator(String projectName, RestTemplate restTemplate) throws URISyntaxException {

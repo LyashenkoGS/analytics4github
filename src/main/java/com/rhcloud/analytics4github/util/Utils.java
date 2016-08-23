@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.SUNDAY;
@@ -32,6 +33,16 @@ public class Utils {
         boolean isWithinThisWeekRange = (timestamp.isAfter(monday.minusDays(1))) && timestamp.isBefore(sunday.plusDays(1));
         LOG.debug(String.valueOf(isWithinThisWeekRange));
         return isWithinThisWeekRange;
+    }
+
+    public static boolean isWithinThisMonthRange(LocalDate timestamp) {
+        LOG.debug("Check is the " + timestamp + " is within this month range");
+        LocalDate monthStart = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate monthEnd = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+        boolean isWithinThisMonthRange = ((timestamp.isAfter(monthStart) || timestamp.isEqual(monthStart))
+                && (timestamp.isBefore(monthEnd) || timestamp.isEqual(monthEnd)));
+        LOG.debug(String.valueOf(isWithinThisMonthRange));
+        return isWithinThisMonthRange;
     }
 
     /**

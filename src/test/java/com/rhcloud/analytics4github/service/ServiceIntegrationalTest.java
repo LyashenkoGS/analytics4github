@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
@@ -32,7 +34,7 @@ public class ServiceIntegrationalTest {
      * in /resources/RepositoriesForTest.txt
      */
     @Test
-    public void serviceIntegrationalTest() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException {
+    public void thisWeekStargazersFrequencyPerProjectTest() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException {
         InputStream repositoriesList = new ClassPathResource("RepositoriesForTest.txt")
                 .getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(repositoriesList));
@@ -44,4 +46,16 @@ public class ServiceIntegrationalTest {
         }
     }
 
+
+    @Test
+    public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException {
+        List<LocalDate> monthStargazersList = stargazersService.getMonthStargazersList("mewo2/terrain");
+        LOG.debug(monthStargazersList.toString());
+    }
+
+    @Test
+    public void getWeekStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
+        List<LocalDate> monthStargazersList = stargazersService.getWeekStargazersList("mewo2/terrain");
+        LOG.debug(monthStargazersList.toString());
+    }
 }

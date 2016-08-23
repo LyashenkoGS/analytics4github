@@ -25,4 +25,9 @@ public class ProjectControllerIntegrationalTest {
     public void testStargazersEndpoint() {
         assertEquals(this.testRestTemplate.getForEntity("/stargazers?projectName=mewo2/terrain", String.class).getStatusCodeValue(), 200);
     }
+
+    @Test
+    public void testStargazersPerMonthEndpoint() {
+        assertEquals(this.testRestTemplate.getForEntity("/stargazersPerMonth?projectName=mewo2/terrain", String.class).getStatusCodeValue(), 200);
+    }
 }

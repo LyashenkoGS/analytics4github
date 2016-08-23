@@ -44,95 +44,162 @@
     </div>
 </div>
 
+<div id="container" class="col-md-8 col-md-offset-2" style="">
 
-<div id="container"
-     style="max-width: 600px;min-width: 310px; height: 300px;margin-left: auto;margin-right: auto;text-align: center">
-    <div>Aug 15, 2016 – Aug 22, 2016</div>
-    <div id="graphic">
-        <div class="alert alert-info" role="alert">Type author/repository and press analyze to
-            build a
-            graphic
+    <p class="text-center">Aug 01, 2016 – Aug 31, 2016</p>
+    <div class="row">
+        <div class="panel panel-default text-center">
+            <div id="month-frequency-plot" class="panel-body" style="height: 220px">
+                <div class="alert alert-info" role="alert">Type author/repositoryName and press "analyze" to build a graphic</div>
+            </div>
+        </div>
+    </div>
+    <p class="text-center">Aug 22, 2016 – Aug 28, 2016</p>
+    <div class="row">
+        <div class="panel panel-default text-center">
+            <div id="week-frequency-plot" class="panel-body" style="height: 220px">
+                <div class="alert alert-info" role="alert">Type author/repositoryName and press "analyze" to build a graphic</div>
+            </div>
         </div>
     </div>
 
 </div>
-
-</div>
-
 </body>
 <script type="application/javascript">
-
     $(function () {
 
         $(function () {
             $('#projectName').on('input', function (e) {
-                console.log($(this).val())
-                $('#repository').text($(this).val())
+                console.log($(this).val());
+                $('#repository').text($(this).val());
                 $('#repository').attr("href", "https://github.com/" + $(this).val())
             });
-        })
+        });
 
         /**
          * Get stargazers per week json and display as a column chart
          */
         $(function () {
             $('#analyze-btn').click(function () {
-                var inputValue = $('#projectName').val()
+                var inputValue = $('#projectName').val();
                 console.log(inputValue);
                 $.ajax({
                            //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
                            url: "/stargazers" + "?projectName=" + inputValue,
                            beforeSend: function () {
-                               $('#graphic')
+                               $('#week-frequency-plot')
                                        .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
                            }
                        })
                         .done(function (msg) {
                             var response = msg;
-                            $('#graphic').highcharts({
-                                                         chart: {
-                                                             type: 'column'
-                                                         },
-                                                         title: {
-                                                             style: {
-                                                                 "display": "none"
-                                                             }
-                                                         },
-                                                         xAxis: {
-                                                             categories: [
-                                                                 'Mon',
-                                                                 'Tue',
-                                                                 'Wed',
-                                                                 'Thu',
-                                                                 'Fri',
-                                                                 'Sat',
-                                                                 'Sun'
-                                                             ]
-                                                         },
-                                                         yAxis: {
-                                                             min: 0
-                                                         },
-                                                         tooltip: {
-                                                             headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                                                             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
-                                                                          +
-                                                                          '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                                                             footerFormat: '</table>',
-                                                             shared: true,
-                                                             useHTML: true
-                                                         },
-                                                         plotOptions: {
-                                                             column: {
-                                                                 pointPadding: 0.1,
-                                                                 borderWidth: 0,
-                                                                 groupPadding: 0
-                                                             }
-                                                         },
-                                                         series: response
-                                                     });
+                            $('#week-frequency-plot').highcharts({
+                                                                     chart: {
+                                                                         type: 'line',
+                                                                         height: '200'
+                                                                     },
+                                                                     legend: {
+                                                                         enabled: false
+                                                                     },
+                                                                     title: {
+                                                                         style: {
+                                                                             "display": "none"
+                                                                         }
+                                                                     },
+                                                                     xAxis: {
+
+                                                                         categories: [
+                                                                             'Mon',
+                                                                             'Tue',
+                                                                             'Wed',
+                                                                             'Thu',
+                                                                             'Fri',
+                                                                             'Sat',
+                                                                             'Sun'
+                                                                         ]
+                                                                     },
+                                                                     yAxis: {
+                                                                         min: 0,
+                                                                         tickInterval: 1
+                                                                     },
+                                                                     tooltip: {
+                                                                         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                                                         pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
+                                                                                      +
+                                                                                      '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                                                                         footerFormat: '</table>',
+                                                                         shared: true,
+                                                                         useHTML: true
+                                                                     },
+                                                                     plotOptions: {
+                                                                         series: {
+                                                                             color: '#1db34f'
+                                                                         }
+                                                                     },
+                                                                     series: response
+                                                                 });
                         })
                         .fail(function (jqXHR, textStatus) {
-                            $('#graphic')
+                            $('#week-frequency-plot')
+                                    .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
+                                          + textStatus
+                                          + "<div>Sorry for temporary inconvenience<div></div>");
+                        });
+
+                $.ajax({
+                           //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
+                           url: "/stargazersPerMonth" + "?projectName="
+                                + inputValue,
+                           beforeSend: function () {
+                               $('#month-frequency-plot')
+                                       .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
+                           }
+                       })
+                        .done(function (msg) {
+                            var response = msg;
+                            $('#month-frequency-plot').highcharts({
+                                                                      chart: {
+                                                                          type: 'column'
+                                                                      },
+                                                                      legend: {
+                                                                          enabled: false
+                                                                      },
+                                                                      title: {
+                                                                          style: {
+                                                                              "display": "none"
+                                                                          }
+                                                                      },
+                                                                      xAxis: {
+                                                                          tickInterval: 1,
+                                                                          min: 1
+                                                                      },
+                                                                      yAxis: {
+                                                                          min: 0
+                                                                      },
+                                                                      tooltip: {
+                                                                          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                                                          pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
+                                                                                       +
+                                                                                       '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                                                                          footerFormat: '</table>',
+                                                                          shared: true,
+                                                                          useHTML: true
+                                                                      },
+                                                                      plotOptions: {
+                                                                          column: {
+                                                                              pointPadding: 0.1,
+                                                                              borderWidth: 0,
+                                                                              groupPadding: 0
+                                                                          },
+                                                                          series: {
+                                                                              color: '#f17f49'
+                                                                          }
+                                                                      },
+                                                                      series: response
+                                                                  });
+                        })
+                        .fail(function (jqXHR, textStatus) {
+                            $('#month-frequency-plot')
                                     .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
                                           + textStatus
                                           + "<div>Sorry for temporary inconvenience<div></div>");

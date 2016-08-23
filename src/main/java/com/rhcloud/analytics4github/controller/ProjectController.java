@@ -31,4 +31,12 @@ public class ProjectController {
         LOG.info("projectName parameter :" + projectName);
         return stargazersService.getThisWeekStargazersFrequencyPerProject(projectName);
     }
+
+    @RequestMapping(value = "/stargazersPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+    public JsonNode getMonthStargazersByProject(HttpServletResponse response, @RequestParam String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
+        //Todo extract to a filter to allow access to the endpoint for clients from other domains
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        LOG.info("projectName parameter :" + projectName);
+        return stargazersService.getThisMonthStargazersFrequencyPerProject(projectName);
+    }
 }

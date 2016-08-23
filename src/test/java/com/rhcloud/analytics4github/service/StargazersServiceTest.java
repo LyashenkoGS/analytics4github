@@ -13,22 +13,16 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.client.response.MockRestResponseCreators;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.client.ExpectedCount.min;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 
 /**
  * @author lyashenkogs
@@ -41,17 +35,16 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 public class StargazersServiceTest {
     private static Logger LOG = LoggerFactory.getLogger(StargazersServiceTest.class);
 
-    @Autowired
-    private MockRestServiceServer server;
 
     @Autowired
     private StargazersService service;
 
+
     //Util method
-    private TreeMap<LocalDate, Integer> getMockWeekStargazersFrequencyMap() throws IOException, ClassNotFoundException {
+    private TreeMap<LocalDate, Integer> getFrequencyMapFromFile(String name) throws IOException, ClassNotFoundException {
         TreeMap<LocalDate, Integer> weekStargazersFrequency = null;
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("weekStargazersFrequencyMap.ser").getFile());
+        File file = new File(classLoader.getResource(name).getFile());
         FileInputStream fileIn = new FileInputStream(file);
         ObjectInputStream in = new ObjectInputStream(fileIn);
         weekStargazersFrequency = (TreeMap<LocalDate, Integer>) in.readObject();
@@ -69,9 +62,9 @@ public class StargazersServiceTest {
      * to sunday.
      */
     @Test
-    public void testParseMapToFrequencyList() throws IOException, ClassNotFoundException {
+    public void testParseWeekMapToFrequencyList() throws IOException, ClassNotFoundException {
         //given stargazersFrequencyMap and JSON that the Map should became after parsing
-        final TreeMap<LocalDate, Integer> mockWeekStargazersFrequencyMap = getMockWeekStargazersFrequencyMap();
+        final TreeMap<LocalDate, Integer> mockWeekStargazersFrequencyMap = this.getFrequencyMapFromFile("weekStargazersFrequencyMap.ser");
         final JsonNode etalonFrequencyListJSON = new ObjectMapper().readTree(new ClassPathResource("weekStargazersFrequencyForHIghChart.json")
                 .getInputStream())
                 .get(0).get("data"); //get [390,470,349,189,143,33,0]
@@ -81,5 +74,21 @@ public class StargazersServiceTest {
         JsonNode frequencyListJSON = new ObjectMapper().readTree(frequencyList.toString());
         assertEquals(frequencyListJSON, etalonFrequencyListJSON);
     }
+
+    @Test
+    public void testParseMonthMapToFrequencyList() throws IOException, ClassNotFoundException {
+        final TreeMap<LocalDate, Integer> mockWeekStargazersFrequencyMap = this.getFrequencyMapFromFile("monthStargazersFrequencyMap.ser");
+        final JsonNode etalonFrequencyListJSON = new ObjectMapper().readTree(new ClassPathResource("monthStargazersFrequencyForHighChart.json")
+                .getInputStream())
+                .get(0).get("data");
+        LOG.debug("etalon frequency: " + etalonFrequencyListJSON.toString());
+        //parse map to month frequency List
+        List<Integer> monthFrequencyList = service.parseMonthFrequencyMapToFrequencyLIst(mockWeekStargazersFrequencyMap);
+        JsonNode monthStargazersFrequncyJSON = new ObjectMapper().readTree(monthFrequencyList.toString());
+        assertEquals(etalonFrequencyListJSON.size(), monthStargazersFrequncyJSON.size());
+        assertEquals(etalonFrequencyListJSON, monthStargazersFrequncyJSON);
+
+    }
+
 
 }
