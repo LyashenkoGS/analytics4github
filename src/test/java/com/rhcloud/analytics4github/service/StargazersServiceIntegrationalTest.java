@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ServiceIntegrationalTest {
+public class StargazersServiceIntegrationalTest {
     private static Logger LOG = LoggerFactory.getLogger(com.rhcloud.analytics4github.config.InterceptorsIntegrationalTest.class);
 
     @Autowired

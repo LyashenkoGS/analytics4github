@@ -35,10 +35,15 @@
     </div>
     <div class="container">
         <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#">
+            <li id="stargazers" class="active">
+                <a data-toggle="tab" href="#starsgazers">
                     <object type="image/svg+xml" data="star.svg" height="15px"></object>
                     stars</a>
+            </li>
+            <li id="commits">
+                <a data-toggle="tab" href="#commit">
+                    <object type="image/svg+xml" data="git-commit.svg" height="15px"></object>
+                    commits</a>
             </li>
         </ul>
     </div>
@@ -50,7 +55,9 @@
     <div class="row">
         <div class="panel panel-default text-center">
             <div id="month-frequency-plot" class="panel-body" style="height: 220px">
-                <div class="alert alert-info" role="alert">Type author/repositoryName and press "analyze" to build a graphic</div>
+                <div class="alert alert-info" role="alert">Type author/repositoryName and press
+                    "analyze" to build a graphic
+                </div>
             </div>
         </div>
     </div>
@@ -58,7 +65,9 @@
     <div class="row">
         <div class="panel panel-default text-center">
             <div id="week-frequency-plot" class="panel-body" style="height: 220px">
-                <div class="alert alert-info" role="alert">Type author/repositoryName and press "analyze" to build a graphic</div>
+                <div class="alert alert-info" role="alert">Type author/repositoryName and press
+                    "analyze" to build a graphic
+                </div>
             </div>
         </div>
     </div>
@@ -83,9 +92,12 @@
             $('#analyze-btn').click(function () {
                 var inputValue = $('#projectName').val();
                 console.log(inputValue);
+                var active_tab = $("ul.nav-tabs .active").attr('id');
+                console.log("active tab: " + active_tab);
                 $.ajax({
                            //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-                           url: "/stargazers" + "?projectName=" + inputValue,
+                           url: "/" + active_tab + "?projectName="
+                                + inputValue,
                            beforeSend: function () {
                                $('#week-frequency-plot')
                                        .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
@@ -148,7 +160,7 @@
 
                 $.ajax({
                            //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-                           url: "/stargazersPerMonth" + "?projectName="
+                           url: "/" + active_tab + "PerMonth" + "?projectName="
                                 + inputValue,
                            beforeSend: function () {
                                $('#month-frequency-plot')

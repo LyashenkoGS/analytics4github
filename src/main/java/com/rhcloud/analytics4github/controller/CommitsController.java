@@ -1,7 +1,8 @@
 package com.rhcloud.analytics4github.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.rhcloud.analytics4github.service.StargazersService;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.rhcloud.analytics4github.service.CommitsService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,22 +16,25 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * @author lyashenkogs.
+ */
 @RestController
-public class ProjectController {
-    private static Logger LOG = LoggerFactory.getLogger(ProjectController.class);
+public class CommitsController {
+    private static Logger LOG = LoggerFactory.getLogger(CommitsController.class);
 
     @Autowired
-    private StargazersService stargazersService;
+    private CommitsService commitsService;
 
-    @RequestMapping(value = "/stargazers", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public JsonNode getStargazersByProject(@RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException {
+    @RequestMapping(value = "/commits", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+    public ArrayNode getStargazersByProject(@RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException {
         LOG.info("projectName parameter :" + projectName);
-        return stargazersService.getThisWeekStargazersFrequencyPerProject(projectName);
+        return commitsService.getThisWeekCommitsFrequencyPerProject(projectName);
     }
 
-    @RequestMapping(value = "/stargazersPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+    @RequestMapping(value = "/commitsPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
     public JsonNode getMonthStargazersByProject(@RequestParam String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
         LOG.info("projectName parameter :" + projectName);
-        return stargazersService.getThisMonthStargazersFrequencyPerProject(projectName);
+        return commitsService.getThisMonthCommitsFrequencyPerProject(projectName);
     }
 }

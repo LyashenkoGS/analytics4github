@@ -2,3 +2,4 @@
 .gradle
 build
 classes
+/src/test/java/com/rhcloud/analytics4github/service/CommitsServiceIntegrationalTest.java

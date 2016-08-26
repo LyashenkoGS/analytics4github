@@ -1,6 +1,7 @@
 package com.rhcloud.analytics4github.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.rhcloud.analytics4github.config.GtihubApiEndpoints;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -23,25 +25,42 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Iterate over stargazers of specified project on Github using RestTemplate
+ * Iterate over commits array of specified project on Github using RestTemplate
  *
  * @author lyashenkogs.
  */
-public class StargazersIterator implements Iterator<JsonNode> {
-    private static Logger LOG = LoggerFactory.getLogger(StargazersIterator.class);
+public class GithubApiIterator implements Iterator<JsonNode> {
+    private static Logger LOG = LoggerFactory.getLogger(GithubApiIterator.class);
 
     private final int numberOfPages;
     private final String projectName;
+    private final Enum githubEndpoint;
     private final RestTemplate restTemplate;
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
+    private Instant since = null;
     private volatile AtomicInteger counter = new AtomicInteger();
 
-    public StargazersIterator(String projectName, RestTemplate restTemplate) throws URISyntaxException {
+
+    public GithubApiIterator(String projectName, RestTemplate restTemplate, GtihubApiEndpoints endpoint
+    ) throws URISyntaxException {
         this.restTemplate = restTemplate;
         this.projectName = projectName;
-        this.numberOfPages = getLastStargazersPageNumberByProjectName(projectName);
+        this.githubEndpoint = endpoint;
+        this.numberOfPages = getLastPageNumberByProjectName(projectName);
         this.counter.set(numberOfPages);
     }
+
+    public GithubApiIterator(String projectName, RestTemplate restTemplate, GtihubApiEndpoints endpoint,
+                             Instant since) throws URISyntaxException {
+        this.restTemplate = restTemplate;
+        this.projectName = projectName;
+        this.githubEndpoint = endpoint;
+        this.numberOfPages = getLastPageNumberByProjectName(projectName);
+        this.counter.set(numberOfPages);
+        this.since = since;
+
+    }
+
 
     public int getNumberOfPages() {
         return numberOfPages;
@@ -51,11 +70,22 @@ public class StargazersIterator implements Iterator<JsonNode> {
         return projectName;
     }
 
-    private int getLastStargazersPageNumberByProjectName(String projectName) throws URISyntaxException {
-        String URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
-                .path(projectName).path("/stargazers").build().encode()
-                .toUriString();
-        LOG.debug("URL to get the last stargazers page number:" + URL);
+    private int getLastPageNumberByProjectName(String projectName) throws URISyntaxException {
+        String URL;
+
+        if (since != null) {
+            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+                    .path(projectName).path("/" + githubEndpoint.toString().toLowerCase())
+                    .queryParam("since", since)
+                    .build().encode()
+                    .toUriString();
+        } else {
+            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+                    .path(projectName).path("/" + githubEndpoint.toString().toLowerCase())
+                    .build().encode()
+                    .toUriString();
+        }
+        LOG.debug("URL to get the last commits page number:" + URL);
         ResponseEntity<JsonNode> stargazersPageResponseEntity = restTemplate.getForEntity(URL, JsonNode.class);
         String link = stargazersPageResponseEntity.getHeaders().getFirst("Link");
         LOG.debug("Link: " + link);
@@ -70,7 +100,7 @@ public class StargazersIterator implements Iterator<JsonNode> {
             }
         } catch (NullPointerException npe) {
             //  npe.printStackTrace();
-            LOG.info("Propably " + projectName + "stargazers consists from only one page");
+            LOG.info("Propably " + projectName + "commits consists from only one page");
             return 1;
         }
         return lastPageNum;
@@ -85,9 +115,19 @@ public class StargazersIterator implements Iterator<JsonNode> {
      */
     public JsonNode next() {
         if (counter.get() > 0) {
-            String basicURL = "https://api.github.com/repos/" + projectName + "/stargazers";
-            UriComponents page = UriComponentsBuilder.fromHttpUrl(basicURL)
-                    .queryParam("page", counter.getAndDecrement()).build();
+            String basicURL = "https://api.github.com/repos/" + projectName + "/" + githubEndpoint.toString().toLowerCase();
+            UriComponents page;
+            if (since != null) {
+                page = UriComponentsBuilder.fromHttpUrl(basicURL)
+                        .queryParam("page", counter.getAndDecrement())
+                        .queryParam("since", since)
+                        .build();
+            } else {
+                page = UriComponentsBuilder.fromHttpUrl(basicURL)
+                        .queryParam("page", counter.getAndDecrement())
+                        .build();
+            }
+
             String URL = page.encode().toUriString();
             LOG.debug(URL);
             //sent request

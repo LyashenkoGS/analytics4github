@@ -1,11 +1,31 @@
 package com.rhcloud.analytics4github.util;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.SUNDAY;
@@ -53,5 +73,73 @@ public class Utils {
         return LocalDate.parse(timestamp, DateTimeFormatter.ISO_DATE_TIME);
     }
 
+
+    public static Instant getThisMonthBeginInstant() {
+        LocalDateTime localDate = LocalDateTime.now().withSecond(0).withHour(0).withMinute(0)
+                .with(TemporalAdjusters.firstDayOfMonth()).truncatedTo(ChronoUnit.SECONDS);
+        Instant instant = localDate.toInstant(ZoneOffset.UTC);
+        return instant;
+    }
+
+    public static ArrayNode buildJsonForHIghChart(List<Integer> stargazersFrequencyList) throws IOException, ClassNotFoundException {
+        ArrayNode outputJson = JsonNodeFactory.instance.arrayNode();
+        outputJson.addObject().put("name", "Stars").putPOJO("data", stargazersFrequencyList);
+        return outputJson;
+    }
+
+
+    public static List<Integer> parseWeekStargazersMapFrequencyToWeekFrequencyList(TreeMap<LocalDate, Integer> weekStargazersFrequenyMap) {
+        LOG.debug("parseWeekStargazersMapFrequencyToWeekFrequencyList");
+        List<Integer> output = new ArrayList<>();
+        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+            LOG.debug(dayOfWeek.toString());
+            Optional<LocalDate> optional = weekStargazersFrequenyMap.keySet().stream()
+                    .filter(e -> DayOfWeek.from(e).equals(dayOfWeek))
+                    .findFirst();
+            if (optional.isPresent()) {
+                LOG.debug("match " + optional.get() + " with frequency " + weekStargazersFrequenyMap.get(optional.get()));
+                output.add(weekStargazersFrequenyMap.get(optional.get()));
+            } else {
+                LOG.debug("no match from " + weekStargazersFrequenyMap.keySet());
+                LOG.debug("add 0");
+                output.add(0);
+            }
+
+        }
+        LOG.debug("Output is" + output.toString());
+        return output;
+    }
+
+    public static List<Integer> parseMonthFrequencyMapToFrequencyLIst(TreeMap<LocalDate, Integer> mockWeekStargazersFrequencyMap) throws IOException {
+        int lastDayOfMonth = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
+        LOG.debug(String.valueOf(lastDayOfMonth));
+        List<Integer> monthStargazersFrequency = new ArrayList<>(lastDayOfMonth);
+        for (int dayOfMonth = 1; dayOfMonth < lastDayOfMonth + 1; dayOfMonth++) {
+            LOG.debug("day of month: " + dayOfMonth);
+            Optional<Integer> frequency = Optional.empty();
+            for (LocalDate localDate : mockWeekStargazersFrequencyMap.keySet()) {
+                if (dayOfMonth == localDate.getDayOfMonth()) {
+                    frequency = Optional.of(mockWeekStargazersFrequencyMap.get(localDate));
+                }
+            }
+            if (frequency.isPresent()) {
+                monthStargazersFrequency.add(frequency.get());
+            } else {
+                monthStargazersFrequency.add(0);
+            }
+            LOG.debug(monthStargazersFrequency.toString());
+        }
+        return monthStargazersFrequency;
+    }
+
+    public static TreeMap<LocalDate, Integer> buildStargazersFrequencyMap(List<LocalDate> stargazersList) throws IOException, URISyntaxException, ExecutionException, InterruptedException {
+        //temporary set
+        Set<LocalDate> stargazersDateSet = stargazersList.stream().collect(Collectors.toSet());
+        Map<LocalDate, Integer> stargazersFrequencyMap = stargazersDateSet.stream().collect(Collectors
+                .toMap(Function.identity(), e -> Collections.frequency(stargazersList, e)));
+        TreeMap<LocalDate, Integer> localDateIntegerNavigableMap = new TreeMap<>(stargazersFrequencyMap);
+        LOG.debug("stargazers week/month frequency map:" + localDateIntegerNavigableMap.toString());
+        return localDateIntegerNavigableMap;
+    }
 
 }
