@@ -38,6 +38,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     private final RestTemplate restTemplate;
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
     private Instant since = null;
+    private String author;
     private volatile AtomicInteger counter = new AtomicInteger();
 
 
@@ -50,14 +51,24 @@ public class GithubApiIterator implements Iterator<JsonNode> {
         this.counter.set(numberOfPages);
     }
 
-    public GithubApiIterator(String projectName, RestTemplate restTemplate, GtihubApiEndpoints endpoint,
-                             Instant since) throws URISyntaxException {
+    public GithubApiIterator(String projectName, String author, RestTemplate restTemplate, GtihubApiEndpoints endpoint
+    ) throws URISyntaxException {
+        this.author = author;
         this.restTemplate = restTemplate;
         this.projectName = projectName;
         this.githubEndpoint = endpoint;
         this.numberOfPages = getLastPageNumberByProjectName(projectName);
         this.counter.set(numberOfPages);
+    }
+
+    public GithubApiIterator(String projectName, RestTemplate restTemplate, GtihubApiEndpoints endpoint,
+                             Instant since) throws URISyntaxException {
         this.since = since;
+        this.restTemplate = restTemplate;
+        this.projectName = projectName;
+        this.githubEndpoint = endpoint;
+        this.numberOfPages = getLastPageNumberByProjectName(projectName);
+        this.counter.set(numberOfPages);
 
     }
 
@@ -77,6 +88,12 @@ public class GithubApiIterator implements Iterator<JsonNode> {
             URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
                     .path(projectName).path("/" + githubEndpoint.toString().toLowerCase())
                     .queryParam("since", since)
+                    .build().encode()
+                    .toUriString();
+        } else if (author != null) {
+            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+                    .path(projectName).path("/" + githubEndpoint.toString().toLowerCase())
+                    .queryParam("author", author)
                     .build().encode()
                     .toUriString();
         } else {
@@ -121,6 +138,11 @@ public class GithubApiIterator implements Iterator<JsonNode> {
                 page = UriComponentsBuilder.fromHttpUrl(basicURL)
                         .queryParam("page", counter.getAndDecrement())
                         .queryParam("since", since)
+                        .build();
+            } else if (author != null) {
+                page = UriComponentsBuilder.fromHttpUrl(basicURL)
+                        .queryParam("page", counter.getAndDecrement())
+                        .queryParam("author", author)
                         .build();
             } else {
                 page = UriComponentsBuilder.fromHttpUrl(basicURL)

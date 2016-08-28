@@ -73,10 +73,16 @@ public class Utils {
         return LocalDate.parse(timestamp, DateTimeFormatter.ISO_DATE_TIME);
     }
 
-
     public static Instant getThisMonthBeginInstant() {
         LocalDateTime localDate = LocalDateTime.now().withSecond(0).withHour(0).withMinute(0)
                 .with(TemporalAdjusters.firstDayOfMonth()).truncatedTo(ChronoUnit.SECONDS);
+        Instant instant = localDate.toInstant(ZoneOffset.UTC);
+        return instant;
+    }
+
+    public static Instant getThisWeekBeginInstant() {
+        LocalDateTime localDate = LocalDateTime.now().withSecond(0).withHour(0).withMinute(0)
+                .with((DayOfWeek.MONDAY)).truncatedTo(ChronoUnit.SECONDS);
         Instant instant = localDate.toInstant(ZoneOffset.UTC);
         return instant;
     }
@@ -86,7 +92,6 @@ public class Utils {
         outputJson.addObject().put("name", "Stars").putPOJO("data", stargazersFrequencyList);
         return outputJson;
     }
-
 
     public static List<Integer> parseWeekStargazersMapFrequencyToWeekFrequencyList(TreeMap<LocalDate, Integer> weekStargazersFrequenyMap) {
         LOG.debug("parseWeekStargazersMapFrequencyToWeekFrequencyList");
@@ -141,5 +146,4 @@ public class Utils {
         LOG.debug("stargazers week/month frequency map:" + localDateIntegerNavigableMap.toString());
         return localDateIntegerNavigableMap;
     }
-
 }
