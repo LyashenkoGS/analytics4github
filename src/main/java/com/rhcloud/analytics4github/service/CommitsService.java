@@ -2,7 +2,7 @@ package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.rhcloud.analytics4github.config.GtihubApiEndpoints;
+import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.util.GithubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
 
@@ -51,7 +51,7 @@ public class CommitsService {
 
     public List<LocalDate> getWeekCommitsList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException {
         List<LocalDate> thisWeekCommitsDateList = new LinkedList<>();
-        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GtihubApiEndpoints.COMMITS, Instant.now()
+        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.COMMITS, Instant.now()
                 .minus(7, ChronoUnit.DAYS)
                 .truncatedTo(ChronoUnit.SECONDS));
         while (stargazersIterator.hasNext()) {
@@ -66,7 +66,7 @@ public class CommitsService {
     public List<LocalDate> getMonthCommitsList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException {
         List<LocalDate> thisMonthCommitsDateList = new LinkedList<>();
 
-        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GtihubApiEndpoints.COMMITS, Utils.getThisMonthBeginInstant());
+        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.COMMITS, Utils.getThisMonthBeginInstant());
         while (stargazersIterator.hasNext()) {
             List<JsonNode> commitPagesBatch = stargazersIterator.next(5);
             //Get localDatesList

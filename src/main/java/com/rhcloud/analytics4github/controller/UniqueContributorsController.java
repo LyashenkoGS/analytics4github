@@ -1,7 +1,7 @@
 package com.rhcloud.analytics4github.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.rhcloud.analytics4github.service.StargazersService;
+import com.rhcloud.analytics4github.service.UniqueContributorsService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,21 +16,21 @@ import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-public class ProjectController {
-    private static Logger LOG = LoggerFactory.getLogger(ProjectController.class);
+public class UniqueContributorsController {
+    private static Logger LOG = LoggerFactory.getLogger(StargazersController.class);
 
     @Autowired
-    private StargazersService stargazersService;
+    private UniqueContributorsService uniqueContributorsService;
 
-    @RequestMapping(value = "/stargazers", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+    @RequestMapping(value = "/uniqueContributors", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
     public JsonNode getStargazersByProject(@RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException {
         LOG.info("projectName parameter :" + projectName);
-        return stargazersService.getThisWeekStargazersFrequencyPerProject(projectName);
+        return uniqueContributorsService.getUniqueContributorsFrequencyByWeek(projectName);
     }
 
-    @RequestMapping(value = "/stargazersPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+    @RequestMapping(value = "/uniqueContributorsPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
     public JsonNode getMonthStargazersByProject(@RequestParam String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
         LOG.info("projectName parameter :" + projectName);
-        return stargazersService.getThisMonthStargazersFrequencyPerProject(projectName);
+        return uniqueContributorsService.getUniqueContributorsFrequencyByMonth(projectName);
     }
 }

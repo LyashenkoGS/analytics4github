@@ -9,8 +9,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.List;
@@ -25,20 +25,21 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UniqueContributorsServiceTest {
+    //private static Logger LOG = LoggerFactory.getLogger(UniqueContributorsServiceTest.class);
     private static String PROJECT = "e-government-ua/i";
+    private static Author AUTHOR_1 = new Author("ElenaShebaldenkova", "");
+    private static Author AUTHOR_2 = new Author("kurbpa", "");
+
+   /*@Autowired
+  private RestTemplate restTemplate;*/
 
     @Autowired
-    RestTemplate restTemplate;
-
-    @Autowired
-    UniqueContributorsService uniqueContributorsService;
+    private UniqueContributorsService uniqueContributorsService;
 
     @Test
     public void isUniqueContributor() throws Exception {
-        Author author1 = new Author("ElenaShebaldenkova", "");
-        Author author2 = new Author("kurbpa", "");
-        assertTrue(uniqueContributorsService.isUniqueContributor(PROJECT, author1, Instant.parse("2016-08-01T00:00:00Z")));
-        assertFalse(uniqueContributorsService.isUniqueContributor(PROJECT, author2, Instant.parse("2016-08-01T00:00:00Z")));
+        assertTrue(uniqueContributorsService.isUniqueContributor(PROJECT, AUTHOR_1, Instant.parse("2016-08-01T00:00:00Z")));
+        assertFalse(uniqueContributorsService.isUniqueContributor(PROJECT, AUTHOR_2, Instant.parse("2016-08-01T00:00:00Z")));
     }
 
     @Test
@@ -55,5 +56,26 @@ public class UniqueContributorsServiceTest {
     public void getAuthorNameAndEmail() throws InterruptedException, ExecutionException, URISyntaxException {
         List<JsonNode> commitsPerMonth = uniqueContributorsService.getCommits(PROJECT, Utils.getThisWeekBeginInstant());
         uniqueContributorsService.getAuthorNameAndEmail(commitsPerMonth);
+    }
+
+    @Test
+    public void getFirstContributionDate() throws Exception {
+        uniqueContributorsService.getFirstContributionDate(AUTHOR_1, PROJECT);
+        uniqueContributorsService.getFirstContributionDate(AUTHOR_2, PROJECT);
+    }
+
+    @Test
+    public void getFirstAuthorCommitFrequencyList() throws InterruptedException, ExecutionException, URISyntaxException {
+        uniqueContributorsService.getFirstAuthorCommitFrequencyList(PROJECT, Utils.getThisMonthBeginInstant());
+    }
+
+    @Test
+    public void uniqueContributorsFrequencyByMonth() throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
+        uniqueContributorsService.getUniqueContributorsFrequencyByMonth(PROJECT);
+    }
+
+    @Test
+    public void uniqueContributorsFrequencyByWeek() throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
+        uniqueContributorsService.getUniqueContributorsFrequencyByWeek(PROJECT);
     }
 }

@@ -2,7 +2,7 @@ package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.rhcloud.analytics4github.config.GtihubApiEndpoints;
+import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.util.GithubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
 
@@ -49,7 +49,7 @@ public class StargazersService {
 
     public List<LocalDate> getWeekStargazersList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException {
         List<LocalDate> thisWeekAllStargazersDateList = new LinkedList<>();
-        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GtihubApiEndpoints.STARGAZERS);
+        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.STARGAZERS);
         while (stargazersIterator.hasNext()) {
             List<JsonNode> stargazerPagesBatch = stargazersIterator.next(5);
 
@@ -75,7 +75,7 @@ public class StargazersService {
 
     public List<LocalDate> getMonthStargazersList(String projectName) throws URISyntaxException, ExecutionException, InterruptedException {
         List<LocalDate> thisMonthAllStargazersDateList = new LinkedList<>();
-        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GtihubApiEndpoints.STARGAZERS);
+        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.STARGAZERS);
         while (stargazersIterator.hasNext()) {
             List<JsonNode> stargazerPagesBatch = stargazersIterator.next(5);
 

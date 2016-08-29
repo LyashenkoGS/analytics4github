@@ -2,9 +2,13 @@ package com.rhcloud.analytics4github.util;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -25,6 +29,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.time.DayOfWeek.MONDAY;
@@ -82,9 +88,8 @@ public class Utils {
 
     public static Instant getThisWeekBeginInstant() {
         LocalDateTime localDate = LocalDateTime.now().withSecond(0).withHour(0).withMinute(0)
-                .with((DayOfWeek.MONDAY)).truncatedTo(ChronoUnit.SECONDS);
-        Instant instant = localDate.toInstant(ZoneOffset.UTC);
-        return instant;
+                .with((MONDAY)).truncatedTo(ChronoUnit.SECONDS);
+        return localDate.toInstant(ZoneOffset.UTC);
     }
 
     public static ArrayNode buildJsonForHIghChart(List<Integer> stargazersFrequencyList) throws IOException, ClassNotFoundException {
@@ -145,5 +150,47 @@ public class Utils {
         TreeMap<LocalDate, Integer> localDateIntegerNavigableMap = new TreeMap<>(stargazersFrequencyMap);
         LOG.debug("stargazers week/month frequency map:" + localDateIntegerNavigableMap.toString());
         return localDateIntegerNavigableMap;
+    }
+
+    public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since) {
+        String URL;
+        if (since != null) {
+            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+                    .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
+                    .queryParam("since", since)
+                    .build().encode()
+                    .toUriString();
+        } else if (author != null) {
+            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+                    .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
+                    .queryParam("author", author)
+                    .build().encode()
+                    .toUriString();
+        } else {
+            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+                    .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
+                    .build().encode()
+                    .toUriString();
+        }
+        LOG.debug("URL to get the last commits page number:" + URL);
+        HttpHeaders headers = restTemplate.headForHeaders(URL);
+        String link = headers.getFirst("Link");
+        LOG.debug("Link: " + link);
+        LOG.debug("parse link by regexp");
+        Pattern p = Pattern.compile("page=(\\d*)>; rel=\"last\"");
+        int lastPageNum = 0;
+        try {
+            Matcher m = p.matcher(link);
+            if (m.find()) {
+                lastPageNum = Integer.valueOf(m.group(1));
+                LOG.debug("parse result: " + lastPageNum);
+            }
+        } catch (NullPointerException npe) {
+            //  npe.printStackTrace();
+            LOG.info("Propably " + repository + "commits consists from only one page");
+            return 1;
+        }
+        return lastPageNum;
+
     }
 }

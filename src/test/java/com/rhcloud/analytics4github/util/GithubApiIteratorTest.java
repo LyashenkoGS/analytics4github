@@ -1,7 +1,7 @@
 package com.rhcloud.analytics4github.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.rhcloud.analytics4github.config.GtihubApiEndpoints;
+import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class GithubApiIteratorTest {
 
     @Test
     public void testCommitsBatchNext() throws URISyntaxException, ExecutionException, InterruptedException {
-        GithubApiIterator githubApiIterator = new GithubApiIterator(PROJECT_NAME, template, GtihubApiEndpoints.COMMITS);
+        GithubApiIterator githubApiIterator = new GithubApiIterator(PROJECT_NAME, template, GitHubApiEndpoints.COMMITS);
         List<JsonNode> pages = new ArrayList<>();
         while (githubApiIterator.hasNext()) {
             pages.addAll(githubApiIterator.next(5));
@@ -42,7 +42,7 @@ public class GithubApiIteratorTest {
 
     @Test
     public void testStargazersBatchNext() throws URISyntaxException, ExecutionException, InterruptedException {
-        GithubApiIterator githubApiIterator = new GithubApiIterator(PROJECT_NAME, template, GtihubApiEndpoints.STARGAZERS);
+        GithubApiIterator githubApiIterator = new GithubApiIterator(PROJECT_NAME, template, GitHubApiEndpoints.STARGAZERS);
         List<JsonNode> pages = new ArrayList<>();
         while (githubApiIterator.hasNext()) {
             pages.addAll(githubApiIterator.next(5));
