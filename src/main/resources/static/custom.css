@@ -1,0 +1,10 @@
+
+#about:hover{
+    color: #4078c0;
+    cursor:pointer;
+}
+#about {
+    font-size: 14px;
+    color: black;
+    font-weight: 600;
+}

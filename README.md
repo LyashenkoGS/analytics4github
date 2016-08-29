@@ -10,6 +10,7 @@
 Java web application to enhance github.com search mechanism.
 Provided options facilitate search of new perspective projects with good commits/stars/contributors grown.
 Internally, the existed GitHub API is using.  
+[[https://github.com/lyashenkogs/analytics4github/blob/master/demo.gif]]
 [http://analytics4github-lyashenkogs.rhcloud.com/](http://analytics4github-lyashenkogs.rhcloud.com/)
 ## Prerequisites
 
