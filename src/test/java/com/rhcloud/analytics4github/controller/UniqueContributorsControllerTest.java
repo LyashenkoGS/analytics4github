@@ -23,7 +23,7 @@ public class UniqueContributorsControllerTest {
     private TestRestTemplate testRestTemplate;
 
     @Test
-    public void testStargazersEndpoint() {
+    public void uniqueContributors() {
         assertEquals(this.testRestTemplate.getForEntity("/uniqueContributors?projectName=" + PROJECT, String.class).getStatusCodeValue(), 200);
     }
 
