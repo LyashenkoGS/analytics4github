@@ -37,7 +37,7 @@ public class StatisticsServiceTest {
     @Test
     public void getRequestsStatistic() throws Exception {
         ArrayList<RequestToAPI> requestToAPIs = new ArrayList<>();
-        requestToAPIs.add(new RequestToAPI("testRepository","/commits"));
+        requestToAPIs.add(new RequestToAPI("testRepository", "/commits"));
         when(repository.findAll()).thenReturn(requestToAPIs);
         List<RequestToAPI> requestsStatistic = statisticsService.getRequestsStatistic();
         assertEquals(requestsStatistic, requestToAPIs);

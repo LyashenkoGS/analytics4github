@@ -2,6 +2,7 @@ package com.rhcloud.analytics4github.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
@@ -24,18 +25,23 @@ import java.io.InputStreamReader;
 public class AddOAuthTokenInterceptor implements ClientHttpRequestInterceptor {
     private static Logger LOG = LoggerFactory.getLogger(AddOAuthTokenInterceptor.class);
 
-    @Value("${token.file}")
-    private String tokenFile;
+    private String tokenValue = "";
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body,
                                         ClientHttpRequestExecution execution) throws IOException {
 
+        HttpHeaders headers = request.getHeaders();
+        headers.add("Authorization", "token " + tokenValue);
+        return execution.execute(request, body);
+    }
+
+    @Autowired
+    public AddOAuthTokenInterceptor(@Value("${token.file}") String tokenFile) {
         //Todo replace with NIO features; Getting token procedure should be execute once during the context load
-        String tokenValue = "";
         try (FileInputStream fstream = new FileInputStream(tokenFile);
              BufferedReader br = new BufferedReader(new InputStreamReader(fstream))) {
-            tokenValue = br.readLine();
+            this.tokenValue = br.readLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,13 +50,8 @@ public class AddOAuthTokenInterceptor implements ClientHttpRequestInterceptor {
         if (tokenValue.isEmpty()) {
             LOG.warn("token value from " + tokenFile + " is empty");
             LOG.warn("cant get token from a file, trying to get from the environment variable GITHUB_TOKEN");
-            tokenValue = System.getenv("GITHUB_TOKEN");
+            this.tokenValue = System.getenv("GITHUB_TOKEN");
             LOG.debug("token value: " + tokenValue);
         }
-
-
-        HttpHeaders headers = request.getHeaders();
-        headers.add("Authorization", "token " + tokenValue);
-        return execution.execute(request, body);
     }
 }

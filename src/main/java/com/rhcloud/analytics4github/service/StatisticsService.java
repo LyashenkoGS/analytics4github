@@ -18,7 +18,7 @@ public class StatisticsService {
     private RequestToApiRepository repository;
 
 
-    public List<RequestToAPI> getRequestsStatistic(){
+    public List<RequestToAPI> getRequestsStatistic() {
         return repository.findAll();
     }
 }

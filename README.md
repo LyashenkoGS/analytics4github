@@ -20,6 +20,13 @@ and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN.
 
 ## Development
 
-### IntellijIdea
+##### IntellijIdea
 To reload controllers after editing - press ctl + f9 and wait till application restart.
 It'll execute "Make" and trigger hot-redeploy via spring-boot-devtools.
+
+
+## Monitoring
+To watch logs in real-time install [rhc client](https://developers.openshift.com/managing-your-applications/client-tools.html).  
+
+        rhc <app-name> tail
+ 

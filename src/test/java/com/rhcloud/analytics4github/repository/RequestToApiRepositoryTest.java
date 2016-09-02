@@ -4,20 +4,15 @@ import com.rhcloud.analytics4github.domain.RequestToAPI;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Integration test with an embedded mondodb
@@ -35,7 +30,7 @@ public class RequestToApiRepositoryTest {
 
     @Test
     public void saveReadTest() {
-      final String testRepositoryName = "testRepository";
+        final String testRepositoryName = "testRepository";
         repository.save(new RequestToAPI(testRepositoryName, "/commits"));
         List<RequestToAPI> testRepository = repository.findByRepository(testRepositoryName);
         List<RequestToAPI> retrievedTestRepository = repository.findByRepository(testRepositoryName);

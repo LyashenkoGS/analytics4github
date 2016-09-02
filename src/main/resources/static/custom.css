@@ -1,17 +1,19 @@
 
-#about:hover{
+#about:hover {
     color: #4078c0;
-    cursor:pointer;
+    cursor: pointer;
 }
+
 #about {
     font-size: 14px;
     color: black;
     font-weight: 600;
 }
 
-footer{
+footer {
     margin-top: 20px;
 }
-footer a{
+
+footer a {
     font-size: 85%;
 }

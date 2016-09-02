@@ -9,6 +9,6 @@ import java.util.List;
 /**
  * @author lyashenkogs.
  */
-public interface RequestToApiRepository  extends MongoRepository<RequestToAPI,String>{
+public interface RequestToApiRepository extends MongoRepository<RequestToAPI, String> {
     List<RequestToAPI> findByRepository(String repository);
 }

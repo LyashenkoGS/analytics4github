@@ -36,7 +36,7 @@ public class StatisticsAggregationFilter {
         registrationBean.setFilter(this.requestsStatisticAggregatorFilter());
         registrationBean.addUrlPatterns("/commits");
         registrationBean.addUrlPatterns("/stargazers");
-       registrationBean.addUrlPatterns("/uniqueContributors");
+        registrationBean.addUrlPatterns("/uniqueContributors");
         registrationBean.setOrder(1);
         return registrationBean;
     }
@@ -55,9 +55,14 @@ public class StatisticsAggregationFilter {
                     String url = requestURL.toString();
                     String queryString = ((HttpServletRequest) request).getQueryString();
                     LOG.info(url + "?" + queryString);
-                    RequestToAPI interceptedRequest = new RequestToAPI(request.getParameter("projectName"),url);
+                    RequestToAPI interceptedRequest = new RequestToAPI(request.getParameter("projectName"), url);
                     LOG.info(interceptedRequest.toString());
-                    requestToApiRepository.save(interceptedRequest);
+                    try{
+                    requestToApiRepository.save(interceptedRequest);}
+                    catch (Exception ex){
+                        LOG.error("CANT SAVE STATISTIC DO DB !!");
+                        ex.printStackTrace();
+                    }
                 }
                 chain.doFilter(request, response);
             }

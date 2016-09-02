@@ -5,7 +5,8 @@
     <title>analytics4github</title>
     <link rel="shortcut icon" type="image/png" href="favicon.png"/>
     <meta property="og:site_name" content="analytics4github — analyze repositories pragmatically">
-    <meta property="og:image" content="http://analytics4github-lyashenkogs.rhcloud.com/social-media.png">
+    <meta property="og:image"
+          content="http://analytics4github-lyashenkogs.rhcloud.com/social-media.png">
     <meta property="og:description"
           content="What the project do ?
 The main objective - provide analytics features to evaluate young and ambitious projects on Github.com.
@@ -115,7 +116,8 @@ who need to critically analyze activity of a repository on github.com">
                             Do one thing and do it well
                         </li>
                         <li>Simple and functional design</li>
-                        <li>Adhere <a href="http://www.reactivemanifesto.org/">The Reactive Manifesto</a> where it is
+                        <li>Adhere <a href="http://www.reactivemanifesto.org/">The Reactive
+                            Manifesto</a> where it is
                             possible
                         </li>
 
@@ -168,18 +170,18 @@ who need to critically analyze activity of a repository on github.com">
 
 </div>
 
-<footer class="container col-md-10 col-md-offset-1" >
+<footer class="container col-md-10 col-md-offset-1">
     <div class="row text-muted text-center">
-    <div><a href="https://github.com/LyashenkoGS/analytics4github">
-        <img src="mark-github.svg"
-             style="height:26px"> </a></div>
-    <span>© 2016 lyashenkogs</span>
-    <div class="small"><span> <a href="https://octicons.github.com/">
+        <div><a href="https://github.com/LyashenkoGS/analytics4github">
+            <img src="mark-github.svg"
+                 style="height:26px"> </a></div>
+        <span>© 2016 lyashenkogs</span>
+        <div class="small"><span> <a href="https://octicons.github.com/">
         icon attribution
     </a>
     </span>
+        </div>
     </div>
-  </div>
 </footer>
 </body>
 <script type="application/javascript">
@@ -203,126 +205,126 @@ who need to critically analyze activity of a repository on github.com">
                 var active_tab = $("ul.nav-tabs .active").attr('id');
                 console.log("active tab: " + active_tab);
                 $.ajax({
-                    //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-                    url: "/" + active_tab + "?projectName="
-                    + inputValue,
-                    beforeSend: function () {
-                        $('#week-frequency-plot')
-                                .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
-                    }
-                })
+                           //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
+                           url: "/" + active_tab + "?projectName="
+                                + inputValue,
+                           beforeSend: function () {
+                               $('#week-frequency-plot')
+                                       .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
+                           }
+                       })
                         .done(function (msg) {
                             var response = msg;
                             $('#week-frequency-plot').highcharts({
-                                chart: {
-                                    type: 'line',
-                                    height: '200'
-                                },
-                                legend: {
-                                    enabled: false
-                                },
-                                title: {
-                                    style: {
-                                        "display": "none"
-                                    }
-                                },
-                                xAxis: {
+                                                                     chart: {
+                                                                         type: 'line',
+                                                                         height: '200'
+                                                                     },
+                                                                     legend: {
+                                                                         enabled: false
+                                                                     },
+                                                                     title: {
+                                                                         style: {
+                                                                             "display": "none"
+                                                                         }
+                                                                     },
+                                                                     xAxis: {
 
-                                    categories: [
-                                        'Mon',
-                                        'Tue',
-                                        'Wed',
-                                        'Thu',
-                                        'Fri',
-                                        'Sat',
-                                        'Sun'
-                                    ]
-                                },
-                                yAxis: {
-                                    min: 0,
-                                    tickInterval: 1
-                                },
-                                tooltip: {
-                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
-                                    +
-                                    '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                                    footerFormat: '</table>',
-                                    shared: true,
-                                    useHTML: true
-                                },
-                                plotOptions: {
-                                    series: {
-                                        color: '#1db34f'
-                                    }
-                                },
-                                series: response
-                            });
+                                                                         categories: [
+                                                                             'Mon',
+                                                                             'Tue',
+                                                                             'Wed',
+                                                                             'Thu',
+                                                                             'Fri',
+                                                                             'Sat',
+                                                                             'Sun'
+                                                                         ]
+                                                                     },
+                                                                     yAxis: {
+                                                                         min: 0,
+                                                                         tickInterval: 1
+                                                                     },
+                                                                     tooltip: {
+                                                                         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                                                         pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
+                                                                                      +
+                                                                                      '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                                                                         footerFormat: '</table>',
+                                                                         shared: true,
+                                                                         useHTML: true
+                                                                     },
+                                                                     plotOptions: {
+                                                                         series: {
+                                                                             color: '#1db34f'
+                                                                         }
+                                                                     },
+                                                                     series: response
+                                                                 });
                         })
                         .fail(function (jqXHR, textStatus) {
                             $('#week-frequency-plot')
                                     .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
-                                            + textStatus
-                                            + "<div>Sorry for temporary inconvenience<div></div>");
+                                          + textStatus
+                                          + "<div>Sorry for temporary inconvenience<div></div>");
                         });
 
                 $.ajax({
-                    //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-                    url: "/" + active_tab + "PerMonth" + "?projectName="
-                    + inputValue,
-                    beforeSend: function () {
-                        $('#month-frequency-plot')
-                                .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
-                    }
-                })
+                           //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
+                           url: "/" + active_tab + "PerMonth" + "?projectName="
+                                + inputValue,
+                           beforeSend: function () {
+                               $('#month-frequency-plot')
+                                       .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
+                           }
+                       })
                         .done(function (msg) {
                             var response = msg;
                             $('#month-frequency-plot').highcharts({
-                                chart: {
-                                    type: 'column'
-                                },
-                                legend: {
-                                    enabled: false
-                                },
-                                title: {
-                                    style: {
-                                        "display": "none"
-                                    }
-                                },
-                                xAxis: {
-                                    tickInterval: 1,
-                                    min: 1
-                                },
-                                yAxis: {
-                                    min: 0
-                                },
-                                tooltip: {
-                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
-                                    +
-                                    '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                                    footerFormat: '</table>',
-                                    shared: true,
-                                    useHTML: true
-                                },
-                                plotOptions: {
-                                    column: {
-                                        pointPadding: 0.1,
-                                        borderWidth: 0,
-                                        groupPadding: 0
-                                    },
-                                    series: {
-                                        color: '#f17f49'
-                                    }
-                                },
-                                series: response
-                            });
+                                                                      chart: {
+                                                                          type: 'column'
+                                                                      },
+                                                                      legend: {
+                                                                          enabled: false
+                                                                      },
+                                                                      title: {
+                                                                          style: {
+                                                                              "display": "none"
+                                                                          }
+                                                                      },
+                                                                      xAxis: {
+                                                                          tickInterval: 1,
+                                                                          min: 1
+                                                                      },
+                                                                      yAxis: {
+                                                                          min: 0
+                                                                      },
+                                                                      tooltip: {
+                                                                          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                                                          pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
+                                                                                       +
+                                                                                       '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                                                                          footerFormat: '</table>',
+                                                                          shared: true,
+                                                                          useHTML: true
+                                                                      },
+                                                                      plotOptions: {
+                                                                          column: {
+                                                                              pointPadding: 0.1,
+                                                                              borderWidth: 0,
+                                                                              groupPadding: 0
+                                                                          },
+                                                                          series: {
+                                                                              color: '#f17f49'
+                                                                          }
+                                                                      },
+                                                                      series: response
+                                                                  });
                         })
                         .fail(function (jqXHR, textStatus) {
                             $('#month-frequency-plot')
                                     .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
-                                            + textStatus
-                                            + "<div>Sorry for temporary inconvenience<div></div>");
+                                          + textStatus
+                                          + "<div>Sorry for temporary inconvenience<div></div>");
                         });
             })
         })

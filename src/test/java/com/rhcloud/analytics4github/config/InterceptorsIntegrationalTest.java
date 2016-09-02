@@ -27,9 +27,6 @@ public class InterceptorsIntegrationalTest {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    private StargazersService stargazersService;
-
     @Test
     public void testIncreaseRateLimitByOAuthTokenInterceptor() throws URISyntaxException {
         //given a REST template(@Autowired), an Interceptor (@Autowired) and an URL
@@ -43,10 +40,5 @@ public class InterceptorsIntegrationalTest {
         assertEquals(Integer.parseInt(rateLimit), 5000);
     }
 
-    @Test
-    public void serviceIntegrationalTest() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException {
-        ArrayNode thisWeekStargazersFrequencyPerProject = stargazersService.getThisWeekStargazersFrequencyPerProject("mewo2/terrain");
-        LOG.debug(thisWeekStargazersFrequencyPerProject.toString());
-    }
 
 }

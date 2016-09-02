@@ -28,9 +28,12 @@ jar {
     version = '0.0.1-SNAPSHOT'
 }
 //exclude integrations tests, that use mondoDb
-test{
+test {
     exclude 'com/rhcloud/analytics4github/repository/RequestToApiRepositoryTest.class'
+    exclude 'com/rhcloud/analytics4github/controller/StatisticsControllerTest.class'
     exclude 'com/rhcloud/analytics4github/config/StatisticsAggregationFilterTest.class'
+    testLogging.showStandardStreams = true
+    testLogging.exceptionFormat = 'full'
 }
 
 sourceCompatibility = 1.8
@@ -54,7 +57,7 @@ dependencies {
     compile("org.jsoup:jsoup:1.8.3")
     compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     testCompile("org.springframework.boot:spring-boot-starter-test")
-  //  testCompile "de.flapdoodle.embed:de.flapdoodle.embed.mongo"
+    //  testCompile "de.flapdoodle.embed:de.flapdoodle.embed.mongo"
 }
 
 task wrapper(type: Wrapper) {

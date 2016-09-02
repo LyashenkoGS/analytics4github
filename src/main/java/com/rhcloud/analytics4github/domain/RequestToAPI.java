@@ -11,11 +11,11 @@ import java.time.temporal.ChronoUnit;
  */
 @Document
 public class RequestToAPI {
-    @Id
-    private String id;
     private final String repository;
     private final String requestTime;
     private final String endpoint;
+    @Id
+    private String id;
 
     public RequestToAPI(String repository, String endpoint) {
         this.repository = repository;
@@ -27,7 +27,9 @@ public class RequestToAPI {
         return requestTime;
     }
 
-    public String getEndpoint() {return endpoint;}
+    public String getEndpoint() {
+        return endpoint;
+    }
 
     public String getRepository() {
         return repository;

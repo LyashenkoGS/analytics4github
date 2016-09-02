@@ -21,7 +21,7 @@ public class StatisticsController {
     private StatisticsService statisticsService;
 
     @RequestMapping(value = "/requests")
-   private List<RequestToAPI> getRequests() {
+    private List<RequestToAPI> getRequests() {
         return statisticsService.getRequestsStatistic();
     }
 
