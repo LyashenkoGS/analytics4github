@@ -27,15 +27,6 @@ public class AddOAuthTokenInterceptor implements ClientHttpRequestInterceptor {
 
     private String tokenValue = "";
 
-    @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body,
-                                        ClientHttpRequestExecution execution) throws IOException {
-
-        HttpHeaders headers = request.getHeaders();
-        headers.add("Authorization", "token " + tokenValue);
-        return execution.execute(request, body);
-    }
-
     @Autowired
     public AddOAuthTokenInterceptor(@Value("${token.file}") String tokenFile) {
         //Todo replace with NIO features; Getting token procedure should be execute once during the context load
@@ -53,5 +44,14 @@ public class AddOAuthTokenInterceptor implements ClientHttpRequestInterceptor {
             this.tokenValue = System.getenv("GITHUB_TOKEN");
             LOG.debug("token value: " + tokenValue);
         }
+    }
+
+    @Override
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body,
+                                        ClientHttpRequestExecution execution) throws IOException {
+
+        HttpHeaders headers = request.getHeaders();
+        headers.add("Authorization", "token " + tokenValue);
+        return execution.execute(request, body);
     }
 }

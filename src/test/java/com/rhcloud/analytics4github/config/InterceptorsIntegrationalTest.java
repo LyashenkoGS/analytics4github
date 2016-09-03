@@ -1,8 +1,5 @@
 package com.rhcloud.analytics4github.config;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.rhcloud.analytics4github.service.StargazersService;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -13,9 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
 

@@ -39,6 +39,42 @@ who need to critically analyze activity of a repository on github.com">
                         <div class="input-group-btn">
                             <button id="analyze-btn" type="button" class="btn btn-default">analyze
                             </button>
+                            <button id="random-repo-btn" type="button" class="btn btn-default"
+                                    data-toggle="tooltip" data-placement="bottom" title="get random top rating repository from
+https://github.com/trending?since=monthly"><span class="glyphicon-refresh">random trending repository</span>
+                                <script>
+                                    /**
+                                     * get random top trending repo and set in name to the main input field on the page
+                                     */
+                                    (function () {
+                                        $('#random-repo-btn').click(function () {
+                                            $.ajax({
+                                                       //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
+                                                       url: "/randomRequestTrendingRepoName"
+                                                   })
+                                                    .done(function (msg) {
+                                                        var response = msg;
+                                                        $('#projectName').text(msg);
+                                                        $('#projectName').val(msg);
+                                                        $('#projectName').attr("href",
+                                                                               "https://github.com/"
+                                                                               + msg)
+                                                        console.log(msg)
+                                                        $('#repository').text(msg);
+                                                        $('#repository').attr("href", "https://github.com" +msg)
+                                                    })
+                                                    .fail(function (jqXHR, textStatus) {
+                                                        console.log(textStatus)
+                                                        console.log(jqXHR)
+                                                        $('#month-frequency-plot')
+                                                                .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
+                                                                      + textStatus
+                                                                      + "<div>Sorry for temporary inconvenience<div></div>");
+                                                    });
+                                        });
+                                    })()
+                                </script>
+                            </button>
                         </div>
                     </div>
 
@@ -183,17 +219,17 @@ who need to critically analyze activity of a repository on github.com">
             (function () {
                 var curr = new Date; // get current date
                 var firstDay = new Date(curr.setDate(curr.getDate() - curr.getDay()));// First day is the day of the month - the day of the week
-                var lastDay = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));// last day is the first day + 6
+                var last = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));// last day is the first day + 6
 
                 var locale = "en-us";
                 var startMonth = firstDay.toLocaleString(locale, {month: "short"});
-                var endMonth = lastDay.toLocaleString(locale, {month: "short"});
+                var endMonth = last.toLocaleString(locale, {month: "short"});
 
                 document.getElementById('current-week-interval').textContent
                         =
                         startMonth + " " + firstDay.getDate() + ", " + firstDay.getFullYear()
                         + " - " +
-                        endMonth + " " + lastDay.getDate() + ", " + lastDay.getFullYear();
+                        endMonth + " " + last.getDate() + ", " + last.getFullYear();
             })()
         </script>
     </p>
