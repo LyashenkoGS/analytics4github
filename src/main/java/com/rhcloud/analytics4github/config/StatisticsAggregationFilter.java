@@ -57,9 +57,10 @@ public class StatisticsAggregationFilter {
                     LOG.info(url + "?" + queryString);
                     RequestToAPI interceptedRequest = new RequestToAPI(request.getParameter("projectName"), url);
                     LOG.info(interceptedRequest.toString());
-                    try{
-                    requestToApiRepository.save(interceptedRequest);}
-                    catch (Exception ex){
+                    try {
+                        requestToApiRepository.save(interceptedRequest);
+                    } catch (Exception ex) {
+                        //TODO: implement notification and failover policy
                         LOG.error("CANT SAVE STATISTIC DO DB !!");
                         ex.printStackTrace();
                     }

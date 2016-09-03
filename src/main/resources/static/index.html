@@ -147,7 +147,25 @@ who need to critically analyze activity of a repository on github.com">
             </div>
         </div>
     </div>
-    <p class="text-center">Aug 01, 2016 – Aug 31, 2016</p>
+    <p id="current-month-interval" class="text-center">
+        <script type="application/javascript">
+            /**
+             * Display interval from the current month begin to the current month end on UI
+             */
+            (function () {
+                var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+                var lastDay = new Date(y, m + 1, 0).getDate();
+                var objDate = new Date(),
+                        locale = "en-us",
+                        month = objDate.toLocaleString(locale, {month: "short"});
+
+                var intervalStart = month + " " + "01" + ", " + new Date().getFullYear();
+                var intervalEnd = month + " " + lastDay + ", " + new Date().getFullYear();
+                document.getElementById('current-month-interval').textContent
+                        = intervalStart + " - " + intervalEnd;
+            })()
+        </script>
+    </p>
     <div class="row">
         <div class="panel panel-default text-center">
             <div id="month-frequency-plot" class="panel-body" style="height: 220px">
@@ -157,7 +175,28 @@ who need to critically analyze activity of a repository on github.com">
             </div>
         </div>
     </div>
-    <p class="text-center">Aug 29, 2016 – Sep 3, 2016</p>
+    <p id="current-week-interval" class="text-center">
+        <script type="application/javascript">
+            /**
+             * Display interval from the current week month  to the current saturday  on UI
+             */
+            (function () {
+                var curr = new Date; // get current date
+                var firstDay = new Date(curr.setDate(curr.getDate() - curr.getDay()));// First day is the day of the month - the day of the week
+                var lastDay = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));// last day is the first day + 6
+
+                var locale = "en-us";
+                var startMonth = firstDay.toLocaleString(locale, {month: "short"});
+                var endMonth = lastDay.toLocaleString(locale, {month: "short"});
+
+                document.getElementById('current-week-interval').textContent
+                        =
+                        startMonth + " " + firstDay.getDate() + ", " + firstDay.getFullYear()
+                        + " - " +
+                        endMonth + " " + lastDay.getDate() + ", " + lastDay.getFullYear();
+            })()
+        </script>
+    </p>
     <div class="row">
         <div class="panel panel-default text-center">
             <div id="week-frequency-plot" class="panel-body" style="height: 220px">
