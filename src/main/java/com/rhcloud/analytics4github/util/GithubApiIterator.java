@@ -143,8 +143,13 @@ public class GithubApiIterator implements Iterator<JsonNode> {
                         .collect(Collectors.toList()));//compose all in one task
         List<JsonNode> jsonNodes = result.get();//
         LOG.debug("batch completed, counter:" + counter.get());
-
         return jsonNodes;
     }
 
+    /**
+     * invoke explicitly after every class usage to close ThreadPool correctly
+     */
+    public void close(){
+        this.executor.shutdown();
+    }
 }

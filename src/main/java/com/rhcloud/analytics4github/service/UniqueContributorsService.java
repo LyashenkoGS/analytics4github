@@ -74,6 +74,7 @@ public class UniqueContributorsService {
             List<JsonNode> commitPagesBatch = githubApiIterator.next(5);
             commitPages.addAll(commitPagesBatch);
         }
+        githubApiIterator.close();
         LOG.debug(commitPages.toString());
         for (JsonNode page : commitPages) {
             for (JsonNode commit : page) {

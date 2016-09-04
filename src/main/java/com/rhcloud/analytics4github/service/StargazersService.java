@@ -68,6 +68,7 @@ public class StargazersService {
                     .anyMatch((e) -> !Utils.isWithinThisWeekRange(e));
             if (batchContainStargazersOutOfRange) break;
         }
+        stargazersIterator.close();
 
         LOG.debug("finish parsing stargazers" + thisWeekAllStargazersDateList.toString());
         return thisWeekAllStargazersDateList;
@@ -94,6 +95,7 @@ public class StargazersService {
                     .anyMatch((e) -> !Utils.isWithinThisMonthRange(e));
             if (batchContainStargazersOutOfRange) break;
         }
+        stargazersIterator.close();
 
         LOG.debug("finish parsing stargazers" + thisMonthAllStargazersDateList.toString());
         return thisMonthAllStargazersDateList;

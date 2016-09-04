@@ -36,6 +36,7 @@ public class GithubApiIteratorTest {
         while (githubApiIterator.hasNext()) {
             pages.addAll(githubApiIterator.next(5));
         }
+        githubApiIterator.close();
         LOG.debug("commits pages: " + pages.toString());
         Assert.assertFalse(pages.isEmpty());
     }
@@ -47,6 +48,7 @@ public class GithubApiIteratorTest {
         while (githubApiIterator.hasNext()) {
             pages.addAll(githubApiIterator.next(5));
         }
+        githubApiIterator.close();
         LOG.debug("stargazer pages: " + pages.toString());
         Assert.assertFalse(pages.isEmpty());
     }

@@ -59,6 +59,7 @@ public class CommitsService {
             //Get localDatesList
             parseCommitPagesBatch(thisWeekCommitsDateList, commitPagesBatch);
         }
+        stargazersIterator.close();
         LOG.debug("finish parsing commits" + thisWeekCommitsDateList.toString());
         return thisWeekCommitsDateList;
     }
@@ -72,6 +73,7 @@ public class CommitsService {
             //Get localDatesList
             parseCommitPagesBatch(thisMonthCommitsDateList, commitPagesBatch);
         }
+        stargazersIterator.close();
         LOG.debug("finish parsing commits" + thisMonthCommitsDateList.toString());
         return thisMonthCommitsDateList;
     }
