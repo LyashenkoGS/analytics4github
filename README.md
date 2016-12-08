@@ -10,13 +10,19 @@
 Java web application to enhance github.com search mechanism.
 Provided options facilitate search of new perspective projects with good commits/stars/contributors grown.
 Internally, the existed GitHub API is using.  
-![Demo](https://github.com/LyashenkoGS/analytics4github/blob/master/demo.gif) 
+![Demo](https://github.com/LyashenkoGS/analytics4github/blob/master/demo.gif) x
 ## Prerequisites
 
 * Java 1.8
 * Gradle >= 2.3 
 * Generate OAuth token for Github [https://github.com/settings/tokens](https://github.com/settings/tokens)
 and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN.
+## Deployment
+
+To run locally execute
+
+        gradle build -x test
+        java -jar build/libs/*.jar 
 
 ## Development
 
