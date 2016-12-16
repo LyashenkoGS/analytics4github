@@ -10,15 +10,17 @@
 Java web application to enhance github.com search mechanism.
 Provided options facilitate search of new perspective projects with good commits/stars/contributors grown.
 Internally, the existed GitHub API is using.  
-![Demo](https://github.com/LyashenkoGS/analytics4github/blob/master/demo.gif) x
+![Demo](https://github.com/LyashenkoGS/analytics4github/blob/master/demo.gif) 
+
 ## Prerequisites
 
 * Java 1.8
 * Gradle >= 2.3 
-* Generate OAuth token for Github [https://github.com/settings/tokens](https://github.com/settings/tokens)
-and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN.
-## Deployment
+* access to [GitHub REST API ](https://developer.github.com/v3/)
+* access to [GitHub trending page](https://github.com/trending)
+* Generate OAuth token for Github [https://github.com/settings/tokens](https://github.com/settings/tokens) and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN. 
 
+## Deployment
 To run locally execute
 
         gradle build -x test
@@ -30,9 +32,8 @@ To run locally execute
 To reload controllers after editing - press ctl + f9 and wait till application restart.
 It'll execute "Make" and trigger hot-redeploy via spring-boot-devtools.
 
-
 ## Monitoring
-To watch logs in real-time install [rhc client](https://developers.openshift.com/managing-your-applications/client-tools.html).  
+To watch logs in real-time install [rhc client](https://developers.openshift.com/managing-your-applications/client-tools.html). 
 
         rhc <app-name> tail
  
