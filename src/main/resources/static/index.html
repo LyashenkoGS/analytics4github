@@ -42,37 +42,8 @@ who need to critically analyze activity of a repository on github.com">
                             <button id="random-repo-btn" type="button" class="btn btn-default"
                                     data-toggle="tooltip" data-placement="bottom" title="get random top rating repository from
 https://github.com/trending?since=monthly"><span class="glyphicon-refresh">random trending repository</span>
-                                <script>
-                                    /**
-                                     * get random top trending repo and set in name to the main input field on the page
-                                     */
-                                    (function () {
-                                        $('#random-repo-btn').click(function () {
-                                            $.ajax({
-                                                       //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-                                                       url: "/randomRequestTrendingRepoName"
-                                                   })
-                                                    .done(function (msg) {
-                                                        var response = msg;
-                                                        $('#projectName').text(msg);
-                                                        $('#projectName').val(msg);
-                                                        $('#projectName').attr("href",
-                                                                               "https://github.com/"
-                                                                               + msg)
-                                                        console.log(msg)
-                                                        $('#repository').text(msg);
-                                                        $('#repository').attr("href", "https://github.com" +msg)
-                                                    })
-                                                    .fail(function (jqXHR, textStatus) {
-                                                        console.log(textStatus)
-                                                        console.log(jqXHR)
-                                                        $('#month-frequency-plot')
-                                                                .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
-                                                                      + textStatus
-                                                                      + "<div>Sorry for temporary inconvenience<div></div>");
-                                                    });
-                                        });
-                                    })()
+                                <script src="getRandomTrendingRepository.js">
+
                                 </script>
                             </button>
                         </div>
@@ -183,25 +154,14 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
             </div>
         </div>
     </div>
-    <p id="current-month-interval" class="text-center">
-        <script type="application/javascript">
-            /**
-             * Display interval from the current month begin to the current month end on UI
-             */
-            (function () {
-                var date = new Date(), y = date.getFullYear(), m = date.getMonth();
-                var lastDay = new Date(y, m + 1, 0).getDate();
-                var objDate = new Date(),
-                        locale = "en-us",
-                        month = objDate.toLocaleString(locale, {month: "short"});
+    <div id="analitic-period" class="text-center">
+        <span id="previousDate" class="prevDate"><img src="arrow-left.svg"></span>
+        <p id="current-month-interval">
 
-                var intervalStart = month + " " + "01" + ", " + new Date().getFullYear();
-                var intervalEnd = month + " " + lastDay + ", " + new Date().getFullYear();
-                document.getElementById('current-month-interval').textContent
-                        = intervalStart + " - " + intervalEnd;
-            })()
-        </script>
-    </p>
+        </p>
+        <span id="nextDate" class="nexDate"><img src="arrow-right.svg"></span>
+    </div>
+
     <div class="row">
         <div class="panel panel-default text-center">
             <div id="month-frequency-plot" class="panel-body" style="height: 220px">
@@ -212,26 +172,7 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
         </div>
     </div>
     <p id="current-week-interval" class="text-center">
-        <script type="application/javascript">
-            /**
-             * Display interval from the current week month  to the current saturday  on UI
-             */
-            (function () {
-                var curr = new Date; // get current date
-                var firstDay = new Date(curr.setDate(curr.getDate() - curr.getDay()));// First day is the day of the month - the day of the week
-                var last = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));// last day is the first day + 6
 
-                var locale = "en-us";
-                var startMonth = firstDay.toLocaleString(locale, {month: "short"});
-                var endMonth = last.toLocaleString(locale, {month: "short"});
-
-                document.getElementById('current-week-interval').textContent
-                        =
-                        startMonth + " " + firstDay.getDate() + ", " + firstDay.getFullYear()
-                        + " - " +
-                        endMonth + " " + last.getDate() + ", " + last.getFullYear();
-            })()
-        </script>
     </p>
     <div class="row">
         <div class="panel panel-default text-center">
@@ -259,6 +200,77 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
     </div>
 </footer>
 </body>
+<script type="application/javascript">
+    /**
+     * Display interval from the current month begin to the current month end on UI
+     */
+    var date = new Date();
+
+    function currentDate() {
+        var year = date.getFullYear(), month = date.getMonth();
+        var lastDay = new Date(year, month + 1, 0).getDate();
+        var objDate = new Date(),
+            locale = "en-us",
+            month = objDate.toLocaleString(locale, {month: "short"});
+
+        var intervalStart = month + " " + "01" + ", " + new Date().getFullYear();
+        var intervalEnd = month + " " + lastDay + ", " + new Date().getFullYear();
+        document.getElementById('current-month-interval').textContent
+            = intervalStart + " - " + intervalEnd;
+    }
+    currentDate();
+    $("#previousDate").click(
+        function (){
+            date.setMonth(date.getMonth()-1);
+            var year = date.getFullYear();
+            var month = date.getMonth();
+            var lastDay = new Date(year, month + 1, 0).getDate();
+            var objDate = date,
+                locale = "en-us",
+                month = objDate.toLocaleString(locale, {month: "short"});
+
+            var intervalStart = month + " " + "01" + ", " + date.getFullYear();
+            var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
+            document.getElementById('current-month-interval').textContent
+                = intervalStart + " - " + intervalEnd;
+        });
+    $("#nextDate").click(
+        function (){
+            date.setMonth(date.getMonth()+1);
+            var year = date.getFullYear();
+            var month = date.getMonth();
+            var lastDay = new Date(year, month + 1, 0).getDate();
+            var objDate = date,
+                locale = "en-us",
+                month = objDate.toLocaleString(locale, {month: "short"});
+
+            var intervalStart = month + " " + "01" + ", " + date.getFullYear();
+            var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
+            document.getElementById('current-month-interval').textContent
+                = intervalStart + " - " + intervalEnd;
+        });
+
+</script>
+<script type="application/javascript">
+    /**
+     * Display interval from the current week month  to the current saturday  on UI
+     */
+    (function () {
+        var curr = new Date; // get current date
+        var firstDay = new Date(curr.setDate(curr.getDate() - curr.getDay()));// First day is the day of the month - the day of the week
+        var last = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));// last day is the first day + 6
+
+        var locale = "en-us";
+        var startMonth = firstDay.toLocaleString(locale, {month: "short"});
+        var endMonth = last.toLocaleString(locale, {month: "short"});
+
+        document.getElementById('current-week-interval').textContent
+            =
+            startMonth + " " + firstDay.getDate() + ", " + firstDay.getFullYear()
+            + " - " +
+            endMonth + " " + last.getDate() + ", " + last.getFullYear();
+    })()
+</script>
 <script type="application/javascript">
     $(function () {
 
@@ -416,10 +428,10 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
                     (i[r].q = i[r].q || []).push(arguments)
                 }, i[r].l = 1 * new Date();
         a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
+                month = s.getElementsByTagName(o)[0];
         a.async = 1;
         a.src = g;
-        m.parentNode.insertBefore(a, m)
+        month.parentNode.insertBefore(a, month)
     })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
     ga('create', 'UA-81812642-2', 'auto');

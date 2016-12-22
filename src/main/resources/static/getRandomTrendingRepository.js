@@ -24,8 +24,7 @@
             })
             .fail(function (jqXHR, textStatus) {
                 console.log(textStatus)
-                console.log(jqXHR)
-                console.log("azazaza")
+               // console.log(jqXHR)
                 $('#month-frequency-plot')
                     .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
                         + textStatus
