@@ -20,7 +20,6 @@ who need to critically analyze activity of a repository on github.com">
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <link rel="stylesheet" href="custom.css">
     <link rel="stylesheet" href="bootstrap.min.css">
-
 </head>
 <body>
 <div class="navbar navbar-default navbar-static-top">
@@ -42,20 +41,15 @@ who need to critically analyze activity of a repository on github.com">
                             <button id="random-repo-btn" type="button" class="btn btn-default"
                                     data-toggle="tooltip" data-placement="bottom" title="get random top rating repository from
 https://github.com/trending?since=monthly"><span class="glyphicon-refresh">random trending repository</span>
-                                <script src="getRandomTrendingRepository.js">
-
-                                </script>
                             </button>
                         </div>
                     </div>
-
                 </div>
                 <!-- trigger modal -->
                 <p id="about" class="navbar-text" data-toggle="modal" data-target="#myModal">
                     About</p>
             </div>
         </div>
-
         <div class="row col-md-10 col-md-offset-1">
             <div class="panel-body">
                 <object type="image/svg+xml" data="repo.svg" height="15px"></object>
@@ -85,8 +79,6 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
     </div>
 </div>
 <div id="container" class="col-md-10 col-md-offset-1" style="">
-
-
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -110,7 +102,6 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
                             href="https://en.wikipedia.org/wiki/The_Pragmatic_Programmer">pragmatic
                         programmers</a>, who need to
                         critically analyze activity of a repository on github.com
-
                     </p>
                     <h4>Principles</h4>
                     <p>
@@ -142,11 +133,8 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
                         <li>
                             <a href="lyashenkogs@gmail.com">lyashenkogs@gmail.com</a>
                         </li>
-
                     </ul>
-
                     </p>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
@@ -161,7 +149,6 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
         </p>
         <span id="nextDate" class="nexDate"><img src="arrow-right.svg"></span>
     </div>
-
     <div class="row">
         <div class="panel panel-default text-center">
             <div id="month-frequency-plot" class="panel-body" style="height: 220px">
@@ -172,7 +159,6 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
         </div>
     </div>
     <p id="current-week-interval" class="text-center">
-
     </p>
     <div class="row">
         <div class="panel panel-default text-center">
@@ -183,9 +169,7 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
             </div>
         </div>
     </div>
-
 </div>
-
 <footer class="container col-md-10 col-md-offset-1">
     <div class="row text-muted text-center">
         <div><a href="https://github.com/LyashenkoGS/analytics4github">
@@ -200,242 +184,9 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
     </div>
 </footer>
 </body>
-<script type="application/javascript">
-    /**
-     * Display interval from the current month begin to the current month end on UI
-     */
-    var date = new Date();
-
-    function currentDate() {
-        var year = date.getFullYear(), month = date.getMonth();
-        var lastDay = new Date(year, month + 1, 0).getDate();
-        var objDate = new Date(),
-            locale = "en-us",
-            month = objDate.toLocaleString(locale, {month: "short"});
-
-        var intervalStart = month + " " + "01" + ", " + new Date().getFullYear();
-        var intervalEnd = month + " " + lastDay + ", " + new Date().getFullYear();
-        document.getElementById('current-month-interval').textContent
-            = intervalStart + " - " + intervalEnd;
-    }
-    currentDate();
-    $("#previousDate").click(
-        function (){
-            date.setMonth(date.getMonth()-1);
-            var year = date.getFullYear();
-            var month = date.getMonth();
-            var lastDay = new Date(year, month + 1, 0).getDate();
-            var objDate = date,
-                locale = "en-us",
-                month = objDate.toLocaleString(locale, {month: "short"});
-
-            var intervalStart = month + " " + "01" + ", " + date.getFullYear();
-            var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
-            document.getElementById('current-month-interval').textContent
-                = intervalStart + " - " + intervalEnd;
-        });
-    $("#nextDate").click(
-        function (){
-            date.setMonth(date.getMonth()+1);
-            var year = date.getFullYear();
-            var month = date.getMonth();
-            var lastDay = new Date(year, month + 1, 0).getDate();
-            var objDate = date,
-                locale = "en-us",
-                month = objDate.toLocaleString(locale, {month: "short"});
-
-            var intervalStart = month + " " + "01" + ", " + date.getFullYear();
-            var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
-            document.getElementById('current-month-interval').textContent
-                = intervalStart + " - " + intervalEnd;
-        });
-
-</script>
-<script type="application/javascript">
-    /**
-     * Display interval from the current week month  to the current saturday  on UI
-     */
-    (function () {
-        var curr = new Date; // get current date
-        var firstDay = new Date(curr.setDate(curr.getDate() - curr.getDay()));// First day is the day of the month - the day of the week
-        var last = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));// last day is the first day + 6
-
-        var locale = "en-us";
-        var startMonth = firstDay.toLocaleString(locale, {month: "short"});
-        var endMonth = last.toLocaleString(locale, {month: "short"});
-
-        document.getElementById('current-week-interval').textContent
-            =
-            startMonth + " " + firstDay.getDate() + ", " + firstDay.getFullYear()
-            + " - " +
-            endMonth + " " + last.getDate() + ", " + last.getFullYear();
-    })()
-</script>
-<script type="application/javascript">
-    $(function () {
-
-        $(function () {
-            $('#projectName').on('input', function (e) {
-                console.log($(this).val());
-                $('#repository').text($(this).val());
-                $('#repository').attr("href", "https://github.com/" + $(this).val())
-            });
-        });
-
-        /**
-         * Get stargazers per week json and display as a column chart
-         */
-        $(function () {
-            $('#analyze-btn').click(function () {
-                var inputValue = $('#projectName').val();
-                console.log(inputValue);
-                var active_tab = $("ul.nav-tabs .active").attr('id');
-                console.log("active tab: " + active_tab);
-                $.ajax({
-                           //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-                           url: "/" + active_tab + "?projectName="
-                                + inputValue,
-                           beforeSend: function () {
-                               $('#week-frequency-plot')
-                                       .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
-                           }
-                       })
-                        .done(function (msg) {
-                            var response = msg;
-                            $('#week-frequency-plot').highcharts({
-                                                                     chart: {
-                                                                         type: 'line',
-                                                                         height: '200'
-                                                                     },
-                                                                     legend: {
-                                                                         enabled: false
-                                                                     },
-                                                                     title: {
-                                                                         style: {
-                                                                             "display": "none"
-                                                                         }
-                                                                     },
-                                                                     xAxis: {
-
-                                                                         categories: [
-                                                                             'Mon',
-                                                                             'Tue',
-                                                                             'Wed',
-                                                                             'Thu',
-                                                                             'Fri',
-                                                                             'Sat',
-                                                                             'Sun'
-                                                                         ]
-                                                                     },
-                                                                     yAxis: {
-                                                                         min: 0,
-                                                                         tickInterval: 1
-                                                                     },
-                                                                     tooltip: {
-                                                                         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                                                                         pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
-                                                                                      +
-                                                                                      '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                                                                         footerFormat: '</table>',
-                                                                         shared: true,
-                                                                         useHTML: true
-                                                                     },
-                                                                     plotOptions: {
-                                                                         series: {
-                                                                             color: '#1db34f'
-                                                                         }
-                                                                     },
-                                                                     series: response
-                                                                 });
-                        })
-                        .fail(function (jqXHR, textStatus) {
-                            $('#week-frequency-plot')
-                                    .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
-                                          + textStatus
-                                          + "<div>Sorry for temporary inconvenience<div></div>");
-                        });
-
-                $.ajax({
-                           //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-                           url: "/" + active_tab + "PerMonth" + "?projectName="
-                                + inputValue,
-                           beforeSend: function () {
-                               $('#month-frequency-plot')
-                                       .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
-                           }
-                       })
-                        .done(function (msg) {
-                            var response = msg;
-                            $('#month-frequency-plot').highcharts({
-                                                                      chart: {
-                                                                          type: 'column'
-                                                                      },
-                                                                      legend: {
-                                                                          enabled: false
-                                                                      },
-                                                                      title: {
-                                                                          style: {
-                                                                              "display": "none"
-                                                                          }
-                                                                      },
-                                                                      xAxis: {
-                                                                          tickInterval: 1,
-                                                                          min: 1
-                                                                      },
-                                                                      yAxis: {
-                                                                          min: 0
-                                                                      },
-                                                                      tooltip: {
-                                                                          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                                                                          pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
-                                                                                       +
-                                                                                       '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                                                                          footerFormat: '</table>',
-                                                                          shared: true,
-                                                                          useHTML: true
-                                                                      },
-                                                                      plotOptions: {
-                                                                          column: {
-                                                                              pointPadding: 0.1,
-                                                                              borderWidth: 0,
-                                                                              groupPadding: 0
-                                                                          },
-                                                                          series: {
-                                                                              color: '#f17f49'
-                                                                          }
-                                                                      },
-                                                                      series: response
-                                                                  });
-                        })
-                        .fail(function (jqXHR, textStatus) {
-                            $('#month-frequency-plot')
-                                    .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
-                                          + textStatus
-                                          + "<div>Sorry for temporary inconvenience<div></div>");
-                        });
-            })
-        })
-
-    });
-</script>
+<script src="customScript.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
-<script>
-    (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
-        i[r] = i[r] || function () {
-                    (i[r].q = i[r].q || []).push(arguments)
-                }, i[r].l = 1 * new Date();
-        a = s.createElement(o),
-                month = s.getElementsByTagName(o)[0];
-        a.async = 1;
-        a.src = g;
-        month.parentNode.insertBefore(a, month)
-    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-    ga('create', 'UA-81812642-2', 'auto');
-    ga('send', 'pageview');
-
-</script>
+<script src="googleAnalitics.js"></script>
 </html>
