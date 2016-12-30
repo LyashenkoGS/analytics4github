@@ -1,5 +1,6 @@
 package com.rhcloud.analytics4github.service;
 
+import com.rhcloud.analytics4github.exception.TrendingException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -19,18 +20,19 @@ import java.util.List;
  */
 @Service
 public class GithubTrendingService {
+
+    public static  String HTTPS_GITHUB_COM_TRENDING_SINCE_MONTHLY = "https://github.com/trending?since=monthly";
     private static Logger LOG = LoggerFactory.getLogger(GithubTrendingService.class);
 
-    private final List<String> trendingRepos;
+    private List<String> trendingRepos;
 
     public GithubTrendingService() {
-        trendingRepos = getThisMonthTrendingRepos();
-
+       // trendingRepos = getThisMonthTrendingRepos();
     }
 
     public List<String> getThisMonthTrendingRepos() {
         try {
-            Document doc = Jsoup.connect("https://github.com/trending?since=monthly").get();
+            Document doc = Jsoup.connect(HTTPS_GITHUB_COM_TRENDING_SINCE_MONTHLY).get();
             Elements elements = doc.select("h3>a");
             List<String> trendingRepos = new ArrayList<>();
             elements.forEach(element -> {
@@ -38,11 +40,13 @@ public class GithubTrendingService {
                 trendingRepos.add(element.attr("href"));
             });
             return trendingRepos;
+
         } catch (Exception ex) {
             LOG.error("CAN'T GET TRENDING REPOS!!");
+            LOG.error(ex.getMessage(), ex.getCause());
             ex.printStackTrace();
+            throw new TrendingException("trending doesn't work",ex.getCause());
         }
-        return new ArrayList<>();
     }
 
     public List<String> getTrendingRepos() {
