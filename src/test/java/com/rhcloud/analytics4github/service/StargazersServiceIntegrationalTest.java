@@ -1,7 +1,6 @@
 package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -45,7 +44,6 @@ public class StargazersServiceIntegrationalTest {
             LOG.debug(thisWeekStargazersFrequencyPerProject.toString());
         }
     }
-
 
     @Test
     public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException {
