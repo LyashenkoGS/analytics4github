@@ -43,7 +43,6 @@ To watch logs in real-time install [rhc client](https://developers.openshift.com
 * Generate github token and save to file token.txt in the project directory
 * build a JAR
 * execute
-
         docker build .
         docker run -p 8080:8080 $imageId
 Alternatively. Add a line to  Dockerfile 
