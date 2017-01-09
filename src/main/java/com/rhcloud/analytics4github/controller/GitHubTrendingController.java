@@ -1,12 +1,14 @@
 package com.rhcloud.analytics4github.controller;
 
-import com.rhcloud.analytics4github.service.GitHubTrendingService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
+import com.rhcloud.analytics4github.exception.TrendingException;
+import com.rhcloud.analytics4github.service.GitHubTrendingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Random;
 
 /**
@@ -15,6 +17,8 @@ import java.util.Random;
  */
 @RestController
 public class GitHubTrendingController {
+    private static Logger LOG = LoggerFactory.getLogger(GitHubTrendingController.class);
+
     @Autowired
     private GitHubTrendingService trendingService;
 
@@ -26,4 +30,12 @@ public class GitHubTrendingController {
         int index = random.nextInt(trendingService.getCachedTrendingRepos().size());
         return trendingService.getCachedTrendingRepos().get(index);
     }
+    @ExceptionHandler(value = {TrendingException.class,IllegalArgumentException.class})
+    public String trendingException(HttpServletRequest req, TrendingException e) throws TrendingException,IllegalArgumentException {
+        LOG.error("Trending Exception", e);
+        // Nothing to do
+        return e.getMessage();
+    }
+
 }
+

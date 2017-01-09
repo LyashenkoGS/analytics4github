@@ -26,7 +26,7 @@ public class GitHubTrendingServiceTest {
         assertTrue("We expect that there is more than zero trending repositories", trendingService.getCachedTrendingRepos().size() > 0);
     }
 
-    @Test(expected = TrendingException.class)
+    @Test(expected=TrendingException.class)
     public void noAccessToGitHubTrending() throws Exception {
         //break the service
         String originalURL = GitHubTrendingService.GITHUB_TRENDING_URL;
