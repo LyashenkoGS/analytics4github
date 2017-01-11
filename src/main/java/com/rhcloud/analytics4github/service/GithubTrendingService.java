@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Parse https://github.com/trending and get  this month most popular repositories
- * Parser start on the class instantiation and save date to a internal cache.
+ * Parses https://github.com/trending and gets  this month most popular repositories
+ * Parser start on the class instantiation and saves data to an internal cache.
  *
  * @author lyashenkogs.
  * @since 9/3/16
@@ -28,18 +28,18 @@ public class GithubTrendingService {
 
     }
 
-    private List<String> getThisMonthTrendingRepos() {
+    public List<String> getThisMonthTrendingRepos() {
         try {
             Document doc = Jsoup.connect("https://github.com/trending?since=monthly").get();
-            Elements elements = doc.select("h3.repo-list-name>a");
+            Elements elements = doc.select("h3>a");
             List<String> trendingRepos = new ArrayList<>();
-            elements.forEach(e -> {
-                LOG.info(e.attr("href"));
-                trendingRepos.add(e.attr("href"));
+            elements.forEach(element -> {
+                LOG.info(element.attr("href"));
+                trendingRepos.add(element.attr("href"));
             });
             return trendingRepos;
         } catch (Exception ex) {
-            LOG.error("CANT GET TRENDING REPOS!!");
+            LOG.error("CAN'T GET TRENDING REPOS!!");
             ex.printStackTrace();
         }
         return new ArrayList<>();
