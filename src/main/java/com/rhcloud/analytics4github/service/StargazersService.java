@@ -1,8 +1,10 @@
 package com.rhcloud.analytics4github.service;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
+import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.util.GithubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
 
@@ -31,20 +33,21 @@ public class StargazersService {
     @Autowired
     private RestTemplate template;
 
-    public ArrayNode getThisWeekStargazersFrequencyPerProject(String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException {
+    public ResponceForFrontendDto getThisWeekStargazersFrequencyPerProject(String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException{
         TreeMap<LocalDate, Integer> weekStargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getWeekStargazersList(projectName));
         List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(weekStargazersFrequencyMap);
-        ArrayNode buildedJsonForHighChart = Utils.buildJsonForHIghChart(frequencyList);
-        LOG.debug("builded json for highchart.js :" + buildedJsonForHighChart);
-        return buildedJsonForHighChart;
+        ResponceForFrontendDto buildedDtoForFrontend = Utils.buildJsonForFrontend(frequencyList);
+        LOG.debug("builded json for highchart.js :" + buildedDtoForFrontend);
+        return buildedDtoForFrontend;
     }
 
-    public ArrayNode getThisMonthStargazersFrequencyPerProject(String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
+
+    public ResponceForFrontendDto getThisMonthStargazersFrequencyPerProject(String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
         TreeMap<LocalDate, Integer> stargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthStargazersList(projectName));
         List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(stargazersFrequencyMap);
-        ArrayNode buildedJsonForHighChart = Utils.buildJsonForHIghChart(frequencyList);
-        LOG.debug("builded json for highchart.js :" + buildedJsonForHighChart);
-        return buildedJsonForHighChart;
+        ResponceForFrontendDto buildedDtoForFrontend = Utils.buildJsonForFrontend(frequencyList);
+        LOG.debug("builded json for highchart.js :" + buildedDtoForFrontend);
+        return buildedDtoForFrontend;
     }
 
     public List<LocalDate> getWeekStargazersList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException {

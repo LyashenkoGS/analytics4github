@@ -19,6 +19,7 @@ Internally, the existed GitHub API is using.
 and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN.
 
 ## Development
+![architecture](./documentation/Arhitecture.png)
 
 ##### IntellijIdea
 To reload controllers after editing - press ctl + f9 and wait till application restart.

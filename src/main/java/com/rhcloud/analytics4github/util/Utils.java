@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 
+import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -96,6 +97,13 @@ public class Utils {
         ArrayNode outputJson = JsonNodeFactory.instance.arrayNode();
         outputJson.addObject().put("name", "Stars").putPOJO("data", stargazersFrequencyList);
         return outputJson;
+    }
+
+    public static ResponceForFrontendDto buildJsonForFrontend(List<Integer> stargazersFrequencyList) throws IOException, ClassNotFoundException {
+        ResponceForFrontendDto outputDto = new ResponceForFrontendDto();
+        outputDto.setName("Stars");
+        outputDto.setData(stargazersFrequencyList);
+        return outputDto;
     }
 
     public static List<Integer> parseWeekStargazersMapFrequencyToWeekFrequencyList(TreeMap<LocalDate, Integer> weekStargazersFrequenyMap) {

@@ -2,6 +2,7 @@ package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class StargazersServiceIntegrationalTest {
         String repositoryName;
         while ((repositoryName = br.readLine()) != null) {
             LOG.debug(repositoryName);
-            ArrayNode thisWeekStargazersFrequencyPerProject = stargazersService.getThisWeekStargazersFrequencyPerProject(repositoryName);
+            ResponceForFrontendDto thisWeekStargazersFrequencyPerProject = stargazersService.getThisWeekStargazersFrequencyPerProject(repositoryName);
             LOG.debug(thisWeekStargazersFrequencyPerProject.toString());
         }
     }

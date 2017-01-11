@@ -9,6 +9,14 @@ public class ResponceForFrontendDto {
     private String name;
     private List<Integer> data;
 
+    public ResponceForFrontendDto() {
+    }
+
+    public ResponceForFrontendDto(String name, List<Integer> data) {
+        this.name = name;
+        this.data = data;
+    }
+
     public String getName() {
         return name;
     }
