@@ -2,6 +2,7 @@ package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -42,18 +43,16 @@ public class CommitsServiceIntegrationalTest {
         String repositoryName;
         while ((repositoryName = br.readLine()) != null) {
             LOG.debug(repositoryName);
-            ArrayNode thisWeekCommitsFrequencyPerProject = commitsService.getThisWeekCommitsFrequencyPerProject(repositoryName);
+            ResponceForFrontendDto thisWeekCommitsFrequencyPerProject = commitsService.getThisWeekCommitsFrequencyPerProject(repositoryName);
             LOG.debug(thisWeekCommitsFrequencyPerProject.toString());
         }
     }
-
 
     @Test
     public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
         List<LocalDate> monthStargazersList = commitsService.getMonthCommitsList(PROJECT_NAME);
         LOG.debug(monthStargazersList.toString());
     }
-
 
     @Test
     public void getWeekCommitsListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException {

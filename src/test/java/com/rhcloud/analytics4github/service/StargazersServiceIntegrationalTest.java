@@ -47,7 +47,6 @@ public class StargazersServiceIntegrationalTest {
         }
     }
 
-
     @Test
     public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException {
         List<LocalDate> monthStargazersList = stargazersService.getMonthStargazersList("mewo2/terrain");

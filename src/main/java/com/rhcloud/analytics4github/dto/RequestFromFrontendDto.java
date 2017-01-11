@@ -4,19 +4,19 @@ package com.rhcloud.analytics4github.dto;
  * Created by Iron on 27.12.2016.
  */
 public class RequestFromFrontendDto {
-    private String repositoryName;
+    private String projectName;
     private String startPeriod;
     private String endPeriod;
 
     public RequestFromFrontendDto() {
     }
 
-    public String getRepositoryName() {
-        return repositoryName;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public void setRepositoryName(String repositoryName) {
-        this.repositoryName = repositoryName;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     public String getStartPeriod() {

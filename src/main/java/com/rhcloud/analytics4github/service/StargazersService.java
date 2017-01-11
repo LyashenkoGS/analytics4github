@@ -41,7 +41,6 @@ public class StargazersService {
         return buildedDtoForFrontend;
     }
 
-
     public ResponceForFrontendDto getThisMonthStargazersFrequencyPerProject(String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
         TreeMap<LocalDate, Integer> stargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthStargazersList(projectName));
         List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(stargazersFrequencyMap);

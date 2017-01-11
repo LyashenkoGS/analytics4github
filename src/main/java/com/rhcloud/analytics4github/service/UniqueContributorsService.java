@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.domain.Author;
+import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.util.GithubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
 
@@ -171,21 +172,21 @@ public class UniqueContributorsService {
         return firstAuthorCommitFrequencyList;
     }
 
-    public ArrayNode getUniqueContributorsFrequencyByMonth(String repository) throws IOException, ClassNotFoundException, InterruptedException, ExecutionException, URISyntaxException {
+    public ResponceForFrontendDto getUniqueContributorsFrequencyByMonth(String repository) throws IOException, ClassNotFoundException, InterruptedException, ExecutionException, URISyntaxException {
         TreeMap<LocalDate, Integer> commitsFrequencyMap = Utils.buildStargazersFrequencyMap(getFirstAuthorCommitFrequencyList
                 (repository, Utils.getThisMonthBeginInstant()));
         List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(commitsFrequencyMap);
-        ArrayNode buildedJsonForHighChart = Utils.buildJsonForHIghChart(frequencyList);
-        LOG.debug("builded json for highchart.js :" + buildedJsonForHighChart);
-        return buildedJsonForHighChart;
+        ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
+        LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
+        return responceForFrontendDto;
     }
 
-    public ArrayNode getUniqueContributorsFrequencyByWeek(String repository) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
+    public ResponceForFrontendDto getUniqueContributorsFrequencyByWeek(String repository) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
         List<LocalDate> firstAuthorCommitFrequencyList = getFirstAuthorCommitFrequencyList(repository, Utils.getThisWeekBeginInstant());
         TreeMap<LocalDate, Integer> weekContributorsFrequencyMap = Utils.buildStargazersFrequencyMap(firstAuthorCommitFrequencyList);
         List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(weekContributorsFrequencyMap);
-        ArrayNode buildedJsonForHighChart = Utils.buildJsonForHIghChart(frequencyList);
-        LOG.debug("builded json for highchart.js :" + buildedJsonForHighChart);
-        return buildedJsonForHighChart;
+        ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
+        LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
+        return responceForFrontendDto;
     }
 }

@@ -3,6 +3,7 @@ package com.rhcloud.analytics4github.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
+import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.util.GithubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
 
@@ -78,20 +79,20 @@ public class CommitsService {
         return thisMonthCommitsDateList;
     }
 
-    public ArrayNode getThisWeekCommitsFrequencyPerProject(String projectName) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException {
+    public ResponceForFrontendDto getThisWeekCommitsFrequencyPerProject(String projectName) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException {
         TreeMap<LocalDate, Integer> weekStargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getWeekCommitsList(projectName));
         List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(weekStargazersFrequencyMap);
-        ArrayNode buildedJsonForHighChart = Utils.buildJsonForHIghChart(frequencyList);
-        LOG.debug("builded json for highchart.js :" + buildedJsonForHighChart);
-        return buildedJsonForHighChart;
+        ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
+        LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
+        return responceForFrontendDto;
 
     }
 
-    public JsonNode getThisMonthCommitsFrequencyPerProject(String projectName) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException {
+    public ResponceForFrontendDto getThisMonthCommitsFrequencyPerProject(String projectName) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException {
         TreeMap<LocalDate, Integer> commitsFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthCommitsList(projectName));
         List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(commitsFrequencyMap);
-        ArrayNode buildedJsonForHighChart = Utils.buildJsonForHIghChart(frequencyList);
-        LOG.debug("builded json for highchart.js :" + buildedJsonForHighChart);
-        return buildedJsonForHighChart;
+        ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
+        LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
+        return responceForFrontendDto;
     }
 }
