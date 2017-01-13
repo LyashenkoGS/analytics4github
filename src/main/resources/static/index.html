@@ -67,8 +67,8 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
                                                         console.log(textStatus)
                                                         console.log(jqXHR)
                                                         $('#month-frequency-plot')
-                                                                .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
-                                                                      + textStatus
+                                                                .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
+                                                                      + jqXHR.responseText
                                                                       + "<div>Sorry for temporary inconvenience<div></div>");
                                                     });
                                         });
@@ -338,8 +338,8 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
                         })
                         .fail(function (jqXHR, textStatus) {
                             $('#week-frequency-plot')
-                                    .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
-                                          + textStatus
+                                    .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
+                                          +jqXHR.responseText.toS
                                           + "<div>Sorry for temporary inconvenience<div></div>");
                         });
 

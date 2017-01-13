@@ -6,6 +6,8 @@ import com.rhcloud.analytics4github.service.GitHubTrendingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,19 +25,17 @@ public class GitHubTrendingController {
     private GitHubTrendingService trendingService;
 
     @RequestMapping(value = "/randomRequestTrendingRepoName", method = RequestMethod.GET)
-    @ResponseBody
-    public String getRandomTrendingRepo() {
+    public ResponseEntity<String> getRandomTrendingRepo() throws TrendingException {
         Random random = new Random();
-        trendingService.getCachedTrendingRepos().size();
-        int index = random.nextInt(trendingService.getCachedTrendingRepos().size());
-        return trendingService.getCachedTrendingRepos().get(index);
+        try {
+            int index = random.nextInt(trendingService.parseTrendingReposWebPage().size());
+            return new ResponseEntity<String>(trendingService.parseTrendingReposWebPage().get(index),HttpStatus.OK);
+        } catch (TrendingException e) {
+            LOG.error("TCan't parse top trending repositories !");
+            return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    @ExceptionHandler(value = {TrendingException.class,IllegalArgumentException.class})
-    public String trendingException(HttpServletRequest req, TrendingException e) throws TrendingException,IllegalArgumentException {
-        LOG.error("Trending Exception", e);
-        // Nothing to do
-        return e.getMessage();
-    }
+
 
 }
 
