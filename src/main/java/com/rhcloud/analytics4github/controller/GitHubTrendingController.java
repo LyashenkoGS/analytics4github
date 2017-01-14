@@ -26,8 +26,9 @@ public class GitHubTrendingController {
 
     @RequestMapping(value = "/randomRequestTrendingRepoName", method = RequestMethod.GET)
     public ResponseEntity<String> getRandomTrendingRepo() throws TrendingException {
-        Random random = new Random();
+
         try {
+            Random random = new Random();
             int index = random.nextInt(trendingService.parseTrendingReposWebPage().size());
             return new ResponseEntity<String>(trendingService.parseTrendingReposWebPage().get(index),HttpStatus.OK);
         } catch (TrendingException e) {
