@@ -35,7 +35,7 @@ public class GitHubTrendingController {
             int index = random.nextInt(trendingService.getTrendingRepos().size());
             return new ResponseEntity<String>(trendingService.getTrendingRepos().get(index), HttpStatus.OK);
         } catch (Exception e) {
-            LOG.error("tCan't parse top trending repositories !");
+            LOG.error("Can't parse top trending repositories !");
             return new ResponseEntity<String>("Can't parse top trending repositories,    "+e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -21,8 +21,7 @@ import java.util.List;
 @Service
 public class GitHubTrendingService {
 
-//    static String GITHUB_TRENDING_URL = "https://github.com/trending?since=monthly";
-        static String GITHUB_TRENDING_URL = "";
+    static String GITHUB_TRENDING_URL = "https://github.com/trending?since=monthly";
     private static Logger LOG = LoggerFactory.getLogger(GitHubTrendingService.class);
     private List<String> trendingRepos = new ArrayList<>();
 
