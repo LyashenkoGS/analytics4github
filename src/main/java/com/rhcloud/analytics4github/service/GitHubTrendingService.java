@@ -21,11 +21,10 @@ import java.util.List;
 @Service
 public class GitHubTrendingService {
 
-    static String GITHUB_TRENDING_URL = "https://github.com/trending?since=monthly";
-//    static String GITHUB_TRENDING_URL = "";
+//    static String GITHUB_TRENDING_URL = "https://github.com/trending?since=monthly";
+        static String GITHUB_TRENDING_URL = "";
     private static Logger LOG = LoggerFactory.getLogger(GitHubTrendingService.class);
-
-//    private List<String> cachedTrendingRepos = new ArrayList<>();
+    private List<String> trendingRepos = new ArrayList<>();
 
     /**
      * Parses a GitHub trending web page and returns top 10 trending repositories
@@ -37,7 +36,6 @@ public class GitHubTrendingService {
         try {
             Document webPageDocument = Jsoup.connect(GITHUB_TRENDING_URL).get();
             Elements elements = webPageDocument.select("h3>a");
-            List<String> trendingRepos = new ArrayList<>();
             LOG.info("Top trending repositories according to " + GITHUB_TRENDING_URL);
             elements.forEach(element -> {
                 LOG.info(element.attr("href"));
@@ -47,7 +45,9 @@ public class GitHubTrendingService {
         } catch (Exception exception) {
             throw new TrendingException("Can't parse top trending repositories !", exception);
         }
-
+    }
+    public List<String> getTrendingRepos() {
+        return trendingRepos;
     }
 
 }

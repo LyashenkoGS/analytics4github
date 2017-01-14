@@ -12,6 +12,4 @@ import static org.slf4j.LoggerFactory.getLogger;
 @ControllerAdvice
 public class GlobalDefaultExceptionHandler  {
     private static Logger LOG = getLogger(GlobalDefaultExceptionHandler.class);
-
-
 }

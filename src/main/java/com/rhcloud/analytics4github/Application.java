@@ -23,12 +23,4 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @PostConstruct
-    public void initIt() {
-        try {
-            gitHubTrendingService.parseTrendingReposWebPage();
-        } catch (TrendingException exception) {
-            LOG.error(String.valueOf(exception));
-        }
-    }
 }
