@@ -2,6 +2,7 @@ package com.rhcloud.analytics4github.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.service.CommitsService;
 
 import org.slf4j.Logger;
@@ -27,13 +28,13 @@ public class CommitsController {
     private CommitsService commitsService;
 
     @RequestMapping(value = "/commits", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public ArrayNode getStargazersByProject(@RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException {
+    public ArrayNode getStargazersByProject(@RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException, GitHubRESTApiException {
         LOG.info("projectName parameter :" + projectName);
         return commitsService.getThisWeekCommitsFrequencyPerProject(projectName);
     }
 
     @RequestMapping(value = "/commitsPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public JsonNode getMonthStargazersByProject(@RequestParam String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
+    public JsonNode getMonthStargazersByProject(@RequestParam String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
         LOG.info("projectName parameter :" + projectName);
         return commitsService.getThisMonthCommitsFrequencyPerProject(projectName);
     }

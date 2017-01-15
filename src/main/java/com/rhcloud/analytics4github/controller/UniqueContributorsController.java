@@ -1,6 +1,7 @@
 package com.rhcloud.analytics4github.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.service.UniqueContributorsService;
 
 import org.slf4j.Logger;
@@ -23,13 +24,13 @@ public class UniqueContributorsController {
     private UniqueContributorsService uniqueContributorsService;
 
     @RequestMapping(value = "/uniqueContributors", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public JsonNode getStargazersByProject(@RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException {
+    public JsonNode getStargazersByProject(@RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException, GitHubRESTApiException {
         LOG.info("projectName parameter :" + projectName);
         return uniqueContributorsService.getUniqueContributorsFrequencyByWeek(projectName);
     }
 
     @RequestMapping(value = "/uniqueContributorsPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public JsonNode getMonthStargazersByProject(@RequestParam String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
+    public JsonNode getMonthStargazersByProject(@RequestParam String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
         LOG.info("projectName parameter :" + projectName);
         return uniqueContributorsService.getUniqueContributorsFrequencyByMonth(projectName);
     }

@@ -3,6 +3,7 @@ package com.rhcloud.analytics4github.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.util.GithubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
 
@@ -31,7 +32,7 @@ public class StargazersService {
     @Autowired
     private RestTemplate template;
 
-    public ArrayNode getThisWeekStargazersFrequencyPerProject(String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException {
+    public ArrayNode getThisWeekStargazersFrequencyPerProject(String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException, GitHubRESTApiException {
         TreeMap<LocalDate, Integer> weekStargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getWeekStargazersList(projectName));
         List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(weekStargazersFrequencyMap);
         ArrayNode buildedJsonForHighChart = Utils.buildJsonForHIghChart(frequencyList);
@@ -39,7 +40,7 @@ public class StargazersService {
         return buildedJsonForHighChart;
     }
 
-    public ArrayNode getThisMonthStargazersFrequencyPerProject(String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
+    public ArrayNode getThisMonthStargazersFrequencyPerProject(String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
         TreeMap<LocalDate, Integer> stargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthStargazersList(projectName));
         List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(stargazersFrequencyMap);
         ArrayNode buildedJsonForHighChart = Utils.buildJsonForHIghChart(frequencyList);
@@ -47,7 +48,7 @@ public class StargazersService {
         return buildedJsonForHighChart;
     }
 
-    public List<LocalDate> getWeekStargazersList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException {
+    public List<LocalDate> getWeekStargazersList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException, GitHubRESTApiException {
         List<LocalDate> thisWeekAllStargazersDateList = new LinkedList<>();
         GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.STARGAZERS);
         while (stargazersIterator.hasNext()) {
@@ -74,7 +75,7 @@ public class StargazersService {
         return thisWeekAllStargazersDateList;
     }
 
-    public List<LocalDate> getMonthStargazersList(String projectName) throws URISyntaxException, ExecutionException, InterruptedException {
+    public List<LocalDate> getMonthStargazersList(String projectName) throws URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
         List<LocalDate> thisMonthAllStargazersDateList = new LinkedList<>();
         GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.STARGAZERS);
         while (stargazersIterator.hasNext()) {
