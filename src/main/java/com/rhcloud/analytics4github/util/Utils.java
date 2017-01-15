@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -12,11 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
@@ -152,7 +149,8 @@ public class Utils {
         return localDateIntegerNavigableMap;
     }
 
-    public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since) {
+    //Reuest to GithubApi
+    public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since) throws GitHubRESTApiException {
         String URL;
         if (since != null) {
             URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
@@ -173,24 +171,30 @@ public class Utils {
                     .toUriString();
         }
         LOG.debug("URL to get the last commits page number:" + URL);
-        HttpHeaders headers = restTemplate.headForHeaders(URL);
-        String link = headers.getFirst("Link");
-        LOG.debug("Link: " + link);
-        LOG.debug("parse link by regexp");
-        Pattern p = Pattern.compile("page=(\\d*)>; rel=\"last\"");
-        int lastPageNum = 0;
-        try {
-            Matcher m = p.matcher(link);
-            if (m.find()) {
-                lastPageNum = Integer.valueOf(m.group(1));
-                LOG.debug("parse result: " + lastPageNum);
-            }
-        } catch (NullPointerException npe) {
-            //  npe.printStackTrace();
-            LOG.info("Propably " + repository + "commits consists from only one page");
-            return 1;
-        }
-        return lastPageNum;
 
+        //Retrieve all headers of the resource specified by the URI template.
+        try {
+            HttpHeaders headers = restTemplate.headForHeaders(URL);
+            String link = headers.getFirst("Link");
+            LOG.debug("Link: " + link);
+            LOG.debug("parse link by regexp");
+            Pattern p = Pattern.compile("page=(\\d*)>; rel=\"last\"");
+            int lastPageNum = 0;
+
+            try {
+                Matcher m = p.matcher(link);
+                if (m.find()) {
+                    lastPageNum = Integer.valueOf(m.group(1));
+                    LOG.debug("parse result: " + lastPageNum);
+                }
+            } catch (NullPointerException npe) {
+                //  npe.printStackTrace();
+                LOG.info("Propably " + repository + "commits consists from only one page");
+                return 1;
+            }
+            return lastPageNum;
+        } catch (Exception e) {
+            throw new GitHubRESTApiException("GitHubRESTApiException reuest doesn't correct",e);
+        }
     }
 }
