@@ -2,6 +2,7 @@ package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ public class CommitsServiceIntegrationalTest {
      * in /resources/RepositoriesForTest.txt
      */
     @Test
-    public void testGetThisWeekCommitsFrequencyPerProject() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException {
+    public void testGetThisWeekCommitsFrequencyPerProject() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
         InputStream repositoriesList = new ClassPathResource("RepositoriesForTest.txt")
                 .getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(repositoriesList));
@@ -49,14 +50,14 @@ public class CommitsServiceIntegrationalTest {
 
 
     @Test
-    public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
+    public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException, GitHubRESTApiException {
         List<LocalDate> monthStargazersList = commitsService.getMonthCommitsList(PROJECT_NAME);
         LOG.debug(monthStargazersList.toString());
     }
 
 
     @Test
-    public void getWeekCommitsListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
+    public void getWeekCommitsListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException, GitHubRESTApiException {
         List<LocalDate> weekCommitsList = commitsService.getWeekCommitsList(PROJECT_NAME);
         LOG.debug(weekCommitsList.toString());
     }

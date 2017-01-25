@@ -149,7 +149,6 @@ public class Utils {
         return localDateIntegerNavigableMap;
     }
 
-    //Reuest to GithubApi
     public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since) throws GitHubRESTApiException {
         String URL;
         if (since != null) {
@@ -171,8 +170,6 @@ public class Utils {
                     .toUriString();
         }
         LOG.debug("URL to get the last commits page number:" + URL);
-
-        //Retrieve all headers of the resource specified by the URI template.
         try {
             HttpHeaders headers = restTemplate.headForHeaders(URL);
             String link = headers.getFirst("Link");
@@ -180,7 +177,6 @@ public class Utils {
             LOG.debug("parse link by regexp");
             Pattern p = Pattern.compile("page=(\\d*)>; rel=\"last\"");
             int lastPageNum = 0;
-
             try {
                 Matcher m = p.matcher(link);
                 if (m.find()) {
@@ -188,7 +184,6 @@ public class Utils {
                     LOG.debug("parse result: " + lastPageNum);
                 }
             } catch (NullPointerException npe) {
-                //  npe.printStackTrace();
                 LOG.info("Propably " + repository + "commits consists from only one page");
                 return 1;
             }

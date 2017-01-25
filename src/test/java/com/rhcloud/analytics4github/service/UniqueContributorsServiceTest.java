@@ -2,6 +2,7 @@ package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rhcloud.analytics4github.domain.Author;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.util.Utils;
 
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class UniqueContributorsServiceTest {
     }
 
     @Test
-    public void getUniqueContributors() throws InterruptedException, ExecutionException, URISyntaxException {
+    public void getUniqueContributors() throws InterruptedException, ExecutionException, URISyntaxException, GitHubRESTApiException {
         uniqueContributorsService.getUniqueContributors(PROJECT, Utils.getThisMonthBeginInstant());
     }
 
@@ -53,7 +54,7 @@ public class UniqueContributorsServiceTest {
     }
 
     @Test
-    public void getAuthorNameAndEmail() throws InterruptedException, ExecutionException, URISyntaxException {
+    public void getAuthorNameAndEmail() throws InterruptedException, ExecutionException, URISyntaxException, GitHubRESTApiException {
         List<JsonNode> commitsPerMonth = uniqueContributorsService.getCommits(PROJECT, Utils.getThisWeekBeginInstant());
         uniqueContributorsService.getAuthorNameAndEmail(commitsPerMonth);
     }
@@ -65,17 +66,17 @@ public class UniqueContributorsServiceTest {
     }
 
     @Test
-    public void getFirstAuthorCommitFrequencyList() throws InterruptedException, ExecutionException, URISyntaxException {
+    public void getFirstAuthorCommitFrequencyList() throws InterruptedException, ExecutionException, URISyntaxException, GitHubRESTApiException {
         uniqueContributorsService.getFirstAuthorCommitFrequencyList(PROJECT, Utils.getThisMonthBeginInstant());
     }
 
     @Test
-    public void uniqueContributorsFrequencyByMonth() throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
+    public void uniqueContributorsFrequencyByMonth() throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
         uniqueContributorsService.getUniqueContributorsFrequencyByMonth(PROJECT);
     }
 
     @Test
-    public void uniqueContributorsFrequencyByWeek() throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
+    public void uniqueContributorsFrequencyByWeek() throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
         uniqueContributorsService.getUniqueContributorsFrequencyByWeek(PROJECT);
     }
 }

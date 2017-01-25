@@ -23,7 +23,6 @@ public class GitHubTrendingService {
 
     static String GITHUB_TRENDING_URL = "https://github.com/trending?since=monthly";
     private static Logger LOG = LoggerFactory.getLogger(GitHubTrendingService.class);
-    private List<String> trendingRepos = new ArrayList<>();
 
     /**
      * Parses a GitHub trending web page and returns top 10 trending repositories
@@ -36,6 +35,7 @@ public class GitHubTrendingService {
             Document webPageDocument = Jsoup.connect(GITHUB_TRENDING_URL).get();
             Elements elements = webPageDocument.select("h3>a");
             LOG.info("Top trending repositories according to " + GITHUB_TRENDING_URL);
+            List<String> trendingRepos = new ArrayList<>();
             elements.forEach(element -> {
                 LOG.info(element.attr("href"));
                 trendingRepos.add(element.attr("href"));
@@ -45,8 +45,6 @@ public class GitHubTrendingService {
             throw new TrendingException("Can't parse top trending repositories !", exception);
         }
     }
-    public List<String> getTrendingRepos() {
-        return trendingRepos;
-    }
+
 
 }

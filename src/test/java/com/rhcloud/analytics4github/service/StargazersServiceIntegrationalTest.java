@@ -1,6 +1,7 @@
 package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class StargazersServiceIntegrationalTest {
      * in /resources/RepositoriesForTest.txt
      */
     @Test
-    public void thisWeekStargazersFrequencyPerProjectTest() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException {
+    public void thisWeekStargazersFrequencyPerProjectTest() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
         InputStream repositoriesList = new ClassPathResource("RepositoriesForTest.txt")
                 .getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(repositoriesList));
@@ -46,13 +47,13 @@ public class StargazersServiceIntegrationalTest {
     }
 
     @Test
-    public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException {
+    public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, GitHubRESTApiException {
         List<LocalDate> monthStargazersList = stargazersService.getMonthStargazersList("mewo2/terrain");
         LOG.debug(monthStargazersList.toString());
     }
 
     @Test
-    public void getWeekStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
+    public void getWeekStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException, GitHubRESTApiException {
         List<LocalDate> monthStargazersList = stargazersService.getWeekStargazersList("mewo2/terrain");
         LOG.debug(monthStargazersList.toString());
     }

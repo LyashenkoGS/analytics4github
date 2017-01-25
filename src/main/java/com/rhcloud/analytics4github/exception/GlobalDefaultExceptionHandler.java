@@ -15,11 +15,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 @ControllerAdvice
 public class GlobalDefaultExceptionHandler  {
     private static Logger LOG = getLogger(GlobalDefaultExceptionHandler.class);
+
     @ExceptionHandler(value = {GitHubRESTApiException.class})
-    public ResponseEntity<String> gitHubRESTAPIException(GitHubRESTApiException e) throws GitHubRESTApiException {
-        LOG.error("GitHub REST API Exception", e);
-        // Nothing to do
-        return new ResponseEntity<String>("GitHub REST API Exception inccorrect request,   ", HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> gitHubRESTAPIException(GitHubRESTApiException exception) throws GitHubRESTApiException {
+        LOG.error(exception.getMessage(), exception);
+        return new ResponseEntity<String>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
 }
