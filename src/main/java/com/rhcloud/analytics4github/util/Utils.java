@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 
+import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,10 +63,11 @@ public class Utils {
         return isWithinThisWeekRange;
     }
 
-    public static boolean isWithinThisMonthRange(LocalDate timestamp) {
+    public static boolean isWithinThisMonthRange(LocalDate timestamp, RequestFromFrontendDto requestFromFrontendDto) {
         LOG.debug("Check is the " + timestamp + " is within this month range");
-        LocalDate monthStart = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate monthEnd = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate monthStart = requestFromFrontendDto.getStartPeriod();
+        LocalDate monthEnd = requestFromFrontendDto.getEndPeriod();
+
         boolean isWithinThisMonthRange = ((timestamp.isAfter(monthStart) || timestamp.isEqual(monthStart))
                 && (timestamp.isBefore(monthEnd) || timestamp.isEqual(monthEnd)));
         LOG.debug(String.valueOf(isWithinThisMonthRange));
@@ -91,12 +93,6 @@ public class Utils {
         LocalDateTime localDate = LocalDateTime.now().withSecond(0).withHour(0).withMinute(0)
                 .with((MONDAY)).truncatedTo(ChronoUnit.SECONDS);
         return localDate.toInstant(ZoneOffset.UTC);
-    }
-
-    public static ArrayNode buildJsonForHIghChart(List<Integer> stargazersFrequencyList) throws IOException, ClassNotFoundException {
-        ArrayNode outputJson = JsonNodeFactory.instance.arrayNode();
-        outputJson.addObject().put("name", "Stars").putPOJO("data", stargazersFrequencyList);
-        return outputJson;
     }
 
     public static ResponceForFrontendDto buildJsonForFrontend(List<Integer> stargazersFrequencyList) throws IOException, ClassNotFoundException {
@@ -153,8 +149,8 @@ public class Utils {
     public static TreeMap<LocalDate, Integer> buildStargazersFrequencyMap(List<LocalDate> stargazersList) throws IOException, URISyntaxException, ExecutionException, InterruptedException {
         //temporary set
         Set<LocalDate> stargazersDateSet = stargazersList.stream().collect(Collectors.toSet());
-        Map<LocalDate, Integer> stargazersFrequencyMap = stargazersDateSet.stream().collect(Collectors
-                .toMap(Function.identity(), e -> Collections.frequency(stargazersList, e)));
+        Map<LocalDate, Integer> stargazersFrequencyMap = stargazersDateSet.stream()
+                .collect(Collectors.toMap(Function.identity(), e -> Collections.frequency(stargazersList, e)));
         TreeMap<LocalDate, Integer> localDateIntegerNavigableMap = new TreeMap<>(stargazersFrequencyMap);
         LOG.debug("stargazers week/month frequency map:" + localDateIntegerNavigableMap.toString());
         return localDateIntegerNavigableMap;

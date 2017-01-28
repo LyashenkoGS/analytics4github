@@ -21,7 +21,6 @@ public class GithubTrendingControllerTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    @Ignore
     @Test
     public void getRandomTrendingRepo() {
         assertEquals(this.testRestTemplate.getForEntity("/randomRequestTrendingRepoName", String.class).getStatusCodeValue(), 200);

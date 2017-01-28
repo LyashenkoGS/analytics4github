@@ -1,12 +1,19 @@
 package com.rhcloud.analytics4github.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+
 /**
  * Created by Iron on 27.12.2016.
  */
 public class RequestFromFrontendDto {
     private String projectName;
-    private String startPeriod;
-    private String endPeriod;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate startPeriod;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate endPeriod;
 
     public RequestFromFrontendDto() {
     }
@@ -19,19 +26,19 @@ public class RequestFromFrontendDto {
         this.projectName = projectName;
     }
 
-    public String getStartPeriod() {
+    public LocalDate getStartPeriod() {
         return startPeriod;
     }
 
-    public void setStartPeriod(String startPeriod) {
+    public void setStartPeriod(LocalDate startPeriod) {
         this.startPeriod = startPeriod;
     }
 
-    public String getEndPeriod() {
+    public LocalDate getEndPeriod() {
         return endPeriod;
     }
 
-    public void setEndPeriod(String endPeriod) {
+    public void setEndPeriod(LocalDate endPeriod) {
         this.endPeriod = endPeriod;
     }
 }

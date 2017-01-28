@@ -33,10 +33,34 @@
 })();
 
 var date = new Date();
+var endPeriod = new Date();
+
+function parseDateToISOString(date) {
+    var dateReturn = '';
+    dateReturn+=date.getFullYear()+'-';
+    if ((date.getMonth()+1).toString().length==1){
+        dateReturn+=0;
+        dateReturn+=(date.getMonth()+1)+'-';
+    }else {
+        dateReturn+=(date.getMonth()+1)+'-';
+    }
+    if (date.getDate().toString().length==1){
+        dateReturn+=0;
+        dateReturn+=date.getDate();
+    } else{
+        dateReturn+=date.getDate();
+    }
+    return dateReturn;
+}
+
 /**
  * Display interval from the current month begin to the current month end on UI
  */
 function displayCurrentDate() {
+    date.setMonth(date.getMonth(), 1);
+    date.setHours(00,00,00);
+    endPeriod.setHours(23,59,59);
+    endPeriod.setFullYear(date.getFullYear(), date.getMonth()+1,0);
     var year = date.getFullYear(), month = date.getMonth();
     var lastDay = new Date(year, month + 1, 0).getDate();
     var objDate = new Date(),
@@ -54,7 +78,8 @@ displayCurrentDate();
  */
 $("#previousDate").click(
     function () {
-        date.setMonth(date.getMonth() - 1);
+        date.setMonth(date.getMonth() - 1, 1);
+        endPeriod.setFullYear(date.getFullYear(), date.getMonth()+1, 0);
         var year = date.getFullYear();
         var month = date.getMonth();
         var lastDay = new Date(year, month + 1, 0).getDate();
@@ -72,7 +97,8 @@ $("#previousDate").click(
  */
 $("#nextDate").click(
     function () {
-        date.setMonth(date.getMonth() + 1);
+        date.setMonth(date.getMonth() + 1, 1);
+        endPeriod.setFullYear(date.getFullYear(), date.getMonth()+1, 0);
         var year = date.getFullYear();
         var month = date.getMonth();
         var lastDay = new Date(year, month + 1, 0).getDate();
@@ -186,7 +212,7 @@ $(function () {
             $.ajax({
                 //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
                 url: "/" + active_tab + "PerMonth" + "?projectName="
-                + inputValue,
+                + inputValue + "&startPeriod=" + parseDateToISOString(date) + "&endPeriod=" + parseDateToISOString(endPeriod),
                 beforeSend: function () {
                     $('#month-frequency-plot')
                         .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");

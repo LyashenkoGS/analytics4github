@@ -30,7 +30,7 @@ public class StargazersController {
     @RequestMapping(value = "/stargazersPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
     public Collection<ResponceForFrontendDto> getMonthStargazersByProject(RequestFromFrontendDto requestFromFrontendDto) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
         LOG.info("projectName parameter :" + requestFromFrontendDto.getProjectName());
-        return Collections.singletonList(stargazersService.getThisMonthStargazersFrequencyPerProject(requestFromFrontendDto.getProjectName()));
+        return Collections.singletonList(stargazersService.getThisMonthStargazersFrequencyPerProject(requestFromFrontendDto));
     }
 
 }

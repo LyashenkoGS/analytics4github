@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
+import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.util.GithubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -41,8 +43,8 @@ public class StargazersService {
         return buildedDtoForFrontend;
     }
 
-    public ResponceForFrontendDto getThisMonthStargazersFrequencyPerProject(String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
-        TreeMap<LocalDate, Integer> stargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthStargazersList(projectName));
+    public ResponceForFrontendDto getThisMonthStargazersFrequencyPerProject(RequestFromFrontendDto requestFromFrontendDto) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
+        TreeMap<LocalDate, Integer> stargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthStargazersList(requestFromFrontendDto));
         List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(stargazersFrequencyMap);
         ResponceForFrontendDto buildedDtoForFrontend = Utils.buildJsonForFrontend(frequencyList);
         LOG.debug("builded json for highchart.js :" + buildedDtoForFrontend);
@@ -76,25 +78,25 @@ public class StargazersService {
         return thisWeekAllStargazersDateList;
     }
 
-    public List<LocalDate> getMonthStargazersList(String projectName) throws URISyntaxException, ExecutionException, InterruptedException {
+    public List<LocalDate> getMonthStargazersList(RequestFromFrontendDto requestFromFrontendDto) throws URISyntaxException, ExecutionException, InterruptedException {
         List<LocalDate> thisMonthAllStargazersDateList = new LinkedList<>();
-        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.STARGAZERS);
+        GithubApiIterator stargazersIterator = new GithubApiIterator(requestFromFrontendDto.getProjectName(), template, GitHubApiEndpoints.STARGAZERS);
         while (stargazersIterator.hasNext()) {
             List<JsonNode> stargazerPagesBatch = stargazersIterator.next(5);
-
+            //parse pages where localDate withing month period
             List<LocalDate> stargazersFrequency = StreamSupport.stream(stargazerPagesBatch.spliterator(), false)
-                    .map(e -> e.get(0).get("starred_at"))//get element "starred_at from each JSON inside the node
-                    .map(e -> Utils.parseTimestamp(e.textValue()))
-                    .filter(Utils::isWithinThisMonthRange)
+                    .map(jsonNode -> jsonNode.get(0).get("starred_at"))//get element "starred_at from each JSON inside the node
+                    .map(jsonNode -> Utils.parseTimestamp(jsonNode.textValue()))
+                    .filter(localDate -> Utils.isWithinThisMonthRange(localDate, requestFromFrontendDto))
                     .collect(Collectors.toList());
             LOG.debug(stargazersFrequency.toString());
 
             thisMonthAllStargazersDateList.addAll(stargazersFrequency);
 
             boolean batchContainStargazersOutOfRange = StreamSupport.stream(stargazerPagesBatch.spliterator(), false)
-                    .map(e -> e.get(0).get("starred_at"))//get element "starred_at from each JSON inside the node
-                    .map(e -> Utils.parseTimestamp(e.textValue()))
-                    .anyMatch((e) -> !Utils.isWithinThisMonthRange(e));
+                    .map(jsonNode -> jsonNode.get(0).get("starred_at"))//get element "starred_at from each JSON inside the node
+                    .map(jsonNode -> Utils.parseTimestamp(jsonNode.textValue()))
+                    .anyMatch((localDate) -> !Utils.isWithinThisMonthRange(localDate, requestFromFrontendDto));
             if (batchContainStargazersOutOfRange) break;
         }
         stargazersIterator.close();
