@@ -39,6 +39,6 @@ public class CommitsController {
     @RequestMapping(value = "/commitsPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
     public Collection<ResponceForFrontendDto> getMonthStargazersByProject(RequestFromFrontendDto requestFromFrontendDto) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
         LOG.info("projectName parameter :" + requestFromFrontendDto.getProjectName());
-        return Collections.singletonList(commitsService.getThisMonthCommitsFrequencyPerProject(requestFromFrontendDto.getProjectName()));
+         return Collections.singletonList(commitsService.getThisMonthCommitsFrequencyPerProject(requestFromFrontendDto));
     }
 }

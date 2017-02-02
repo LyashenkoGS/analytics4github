@@ -2,6 +2,7 @@ package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +51,11 @@ public class CommitsServiceIntegrationalTest {
 
     @Test
     public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
-        List<LocalDate> monthStargazersList = commitsService.getMonthCommitsList(PROJECT_NAME);
+        RequestFromFrontendDto requestFromFrontendDto = new RequestFromFrontendDto();
+        requestFromFrontendDto.setProjectName("mewo2/terrain");
+        requestFromFrontendDto.setStartPeriod(LocalDate.parse("2017-01-01"));
+        requestFromFrontendDto.setEndPeriod(LocalDate.parse("2017-01-31"));
+        List<LocalDate> monthStargazersList = commitsService.getMonthCommitsList(requestFromFrontendDto);
         LOG.debug(monthStargazersList.toString());
     }
 

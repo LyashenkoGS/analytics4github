@@ -1,8 +1,8 @@
 package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
+import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.util.GithubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
@@ -33,18 +33,12 @@ public class CommitsService {
     private RestTemplate template;
 
     private void parseCommitPagesBatch(List<LocalDate> thisWeekCommitsDateList, List<JsonNode> commitPagesBatch) {
-        for (JsonNode commitPage :
-                commitPagesBatch) {
-            for (JsonNode commit :
-                    commitPage) {
+        for (JsonNode commitPage : commitPagesBatch) {
+            for (JsonNode commit : commitPage) {
                 LOG.debug("commit: " + commit);
-                JsonNode jsonNode = commit.get("commit")
-                        .get("author")
-                        .get("date");
-                String s = jsonNode.textValue();
-                LOG.debug("commitDate: " + s);
-                LocalDate localDate = Utils.parseTimestamp(s);
-                LOG.debug(localDate.toString());
+                LOG.debug("commitDate: " + commit.get("commit").get("author").get("date").textValue());
+                LocalDate localDate = Utils.parseTimestamp(commit.get("commit").get("author").get("date").textValue());
+                LOG.debug("parsed commit date: "+ localDate.toString());
                 thisWeekCommitsDateList.add(localDate);
             }
         }
@@ -65,10 +59,10 @@ public class CommitsService {
         return thisWeekCommitsDateList;
     }
 
-    public List<LocalDate> getMonthCommitsList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException {
+    public List<LocalDate> getMonthCommitsList(RequestFromFrontendDto requestFromFrontendDto) throws URISyntaxException, IOException, ExecutionException, InterruptedException {
         List<LocalDate> thisMonthCommitsDateList = new LinkedList<>();
-
-        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.COMMITS, Utils.getThisMonthBeginInstant());
+        GithubApiIterator stargazersIterator = new GithubApiIterator(requestFromFrontendDto.getProjectName(), template,
+                GitHubApiEndpoints.COMMITS, Utils.getPeriodBeginInstant(requestFromFrontendDto));
         while (stargazersIterator.hasNext()) {
             List<JsonNode> commitPagesBatch = stargazersIterator.next(5);
             //Get localDatesList
@@ -88,9 +82,9 @@ public class CommitsService {
 
     }
 
-    public ResponceForFrontendDto getThisMonthCommitsFrequencyPerProject(String projectName) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException {
-        TreeMap<LocalDate, Integer> commitsFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthCommitsList(projectName));
-        List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(commitsFrequencyMap);
+    public ResponceForFrontendDto getThisMonthCommitsFrequencyPerProject(RequestFromFrontendDto requestFromFrontendDto) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException {
+        TreeMap<LocalDate, Integer> commitsFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthCommitsList(requestFromFrontendDto));
+        List<Integer> frequencyList = Utils.parseMonthFrequencyMapCommitToFrequencyLIst(commitsFrequencyMap, requestFromFrontendDto);
         ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
         LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
         return responceForFrontendDto;

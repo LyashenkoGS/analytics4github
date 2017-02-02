@@ -88,6 +88,11 @@ public class Utils {
         Instant instant = localDate.toInstant(ZoneOffset.UTC);
         return instant;
     }
+    public static Instant getPeriodBeginInstant(RequestFromFrontendDto requestFromFrontendDto){
+        LocalDateTime localDateTime = requestFromFrontendDto.getStartPeriod().atStartOfDay();
+        Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
+        return instant;
+    }
 
     public static Instant getThisWeekBeginInstant() {
         LocalDateTime localDate = LocalDateTime.now().withSecond(0).withHour(0).withMinute(0)
@@ -146,6 +151,28 @@ public class Utils {
         return monthStargazersFrequency;
     }
 
+    public static List<Integer> parseMonthFrequencyMapCommitToFrequencyLIst(TreeMap<LocalDate, Integer> mockWeekStargazersFrequencyMap, RequestFromFrontendDto requestFromFrontendDto) throws IOException {
+        int lastDayOfMonth = requestFromFrontendDto.getEndPeriod().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
+        LOG.debug(String.valueOf(lastDayOfMonth));
+        List<Integer> monthStargazersFrequency = new ArrayList<>(lastDayOfMonth);
+        for (int dayOfMonth = 1; dayOfMonth < lastDayOfMonth + 1; dayOfMonth++) {
+            LOG.debug("day of month: " + dayOfMonth);
+            Optional<Integer> frequency = Optional.empty();
+            for (LocalDate localDate : mockWeekStargazersFrequencyMap.keySet()) {
+                if (dayOfMonth == localDate.getDayOfMonth()) {
+                    frequency = Optional.of(mockWeekStargazersFrequencyMap.get(localDate));
+                }
+            }
+            if (frequency.isPresent()) {
+                monthStargazersFrequency.add(frequency.get());
+            } else {
+                monthStargazersFrequency.add(0);
+            }
+            LOG.debug(monthStargazersFrequency.toString());
+        }
+        return monthStargazersFrequency;
+    }
+
     public static TreeMap<LocalDate, Integer> buildStargazersFrequencyMap(List<LocalDate> stargazersList) throws IOException, URISyntaxException, ExecutionException, InterruptedException {
         //temporary set
         Set<LocalDate> stargazersDateSet = stargazersList.stream().collect(Collectors.toSet());
@@ -156,7 +183,7 @@ public class Utils {
         return localDateIntegerNavigableMap;
     }
 
-    public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since) {
+    public static int getLastPageNumber(String repository, RestTemplate  restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since) {
         String URL;
         if (since != null) {
             URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
