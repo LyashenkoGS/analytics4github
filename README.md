@@ -6,7 +6,7 @@
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/LyashenkoGS/analytics4github/blob/master/LICENCE)  
 
 
-[http://analytics4github-lyashenkogs.rhcloud.com/](http://analytics4github-lyashenkogs.rhcloud.com/)
+[http://analytics4github.org](http://analytics4github.org)
 Java web application to enhance github.com search mechanism.
 Provided options facilitate search of new perspective projects with good commits/stars/contributors grown.
 Internally, the existed GitHub API is using.  
