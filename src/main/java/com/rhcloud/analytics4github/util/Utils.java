@@ -1,9 +1,6 @@
 package com.rhcloud.analytics4github.util;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
-
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import org.slf4j.Logger;
@@ -14,21 +11,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -46,6 +33,7 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
  * @author lyashenkogs.
  */
 public class Utils {
+    private static final String HTTPS_API_GITHUB_COM_REPOS = "https://api.github.com/repos/";
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
 
     /**
@@ -85,13 +73,12 @@ public class Utils {
     public static Instant getThisMonthBeginInstant() {
         LocalDateTime localDate = LocalDateTime.now().withSecond(0).withHour(0).withMinute(0)
                 .with(TemporalAdjusters.firstDayOfMonth()).truncatedTo(ChronoUnit.SECONDS);
-        Instant instant = localDate.toInstant(ZoneOffset.UTC);
-        return instant;
+        return localDate.toInstant(ZoneOffset.UTC);
     }
-    public static Instant getPeriodBeginInstant(RequestFromFrontendDto requestFromFrontendDto){
-        LocalDateTime localDateTime = requestFromFrontendDto.getStartPeriod().atStartOfDay();
-        Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
-        return instant;
+
+    public static Instant getPeriodInstant(LocalDate localDate) {
+        LocalDateTime localDateTime = localDate.atStartOfDay();
+        return localDateTime.toInstant(ZoneOffset.UTC);
     }
 
     public static Instant getThisWeekBeginInstant() {
@@ -183,28 +170,30 @@ public class Utils {
         return localDateIntegerNavigableMap;
     }
 
-    public static int getLastPageNumber(String repository, RestTemplate  restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since) {
-        String URL;
+    public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since, Instant until) {
+        String url;
         if (since != null) {
-            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+            url = UriComponentsBuilder.fromHttpUrl(HTTPS_API_GITHUB_COM_REPOS)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .queryParam("since", since)
+                    .queryParam("until", until)
                     .build().encode()
                     .toUriString();
         } else if (author != null) {
-            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+            url = UriComponentsBuilder.fromHttpUrl(HTTPS_API_GITHUB_COM_REPOS)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .queryParam("author", author)
+                    .queryParam("until", until)
                     .build().encode()
                     .toUriString();
         } else {
-            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+            url = UriComponentsBuilder.fromHttpUrl(HTTPS_API_GITHUB_COM_REPOS)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .build().encode()
                     .toUriString();
         }
-        LOG.debug("URL to get the last commits page number:" + URL);
-        HttpHeaders headers = restTemplate.headForHeaders(URL);
+        LOG.debug("URL to get the last commits page number:" + url);
+        HttpHeaders headers = restTemplate.headForHeaders(url);
         String link = headers.getFirst("Link");
         LOG.debug("Link: " + link);
         LOG.debug("parse link by regexp");
@@ -222,6 +211,5 @@ public class Utils {
             return 1;
         }
         return lastPageNum;
-
     }
 }

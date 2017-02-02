@@ -48,7 +48,7 @@ public class CommitsService {
         List<LocalDate> thisWeekCommitsDateList = new LinkedList<>();
         GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.COMMITS, Instant.now()
                 .minus(7, ChronoUnit.DAYS)
-                .truncatedTo(ChronoUnit.SECONDS));
+                .truncatedTo(ChronoUnit.SECONDS),null);
         while (stargazersIterator.hasNext()) {
             List<JsonNode> commitPagesBatch = stargazersIterator.next(5);
             //Get localDatesList
@@ -62,7 +62,8 @@ public class CommitsService {
     public List<LocalDate> getMonthCommitsList(RequestFromFrontendDto requestFromFrontendDto) throws URISyntaxException, IOException, ExecutionException, InterruptedException {
         List<LocalDate> thisMonthCommitsDateList = new LinkedList<>();
         GithubApiIterator stargazersIterator = new GithubApiIterator(requestFromFrontendDto.getProjectName(), template,
-                GitHubApiEndpoints.COMMITS, Utils.getPeriodBeginInstant(requestFromFrontendDto));
+                GitHubApiEndpoints.COMMITS, Utils.getPeriodInstant(requestFromFrontendDto.getStartPeriod()),
+                Utils.getPeriodInstant(requestFromFrontendDto.getEndPeriod()));
         while (stargazersIterator.hasNext()) {
             List<JsonNode> commitPagesBatch = stargazersIterator.next(5);
             //Get localDatesList

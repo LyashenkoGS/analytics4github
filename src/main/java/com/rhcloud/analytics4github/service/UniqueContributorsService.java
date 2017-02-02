@@ -19,11 +19,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -68,7 +64,7 @@ public class UniqueContributorsService {
     }
 
     List<JsonNode> getCommits(String repository, Instant since) throws URISyntaxException, ExecutionException, InterruptedException {
-        GithubApiIterator githubApiIterator = new GithubApiIterator(repository, restTemplate, GitHubApiEndpoints.COMMITS, since);
+        GithubApiIterator githubApiIterator = new GithubApiIterator(repository, restTemplate, GitHubApiEndpoints.COMMITS, since,null);
         List<JsonNode> commitPages = new ArrayList<>();
         List<JsonNode> commits = new ArrayList<>();
         while (githubApiIterator.hasNext()) {
@@ -116,7 +112,7 @@ public class UniqueContributorsService {
         int reliableLastPageNumber = 0;
         String URL;
         if (author.getEmail() != null && !author.getEmail().isEmpty()) {
-            reliableLastPageNumber = Utils.getLastPageNumber(repository, restTemplate, GitHubApiEndpoints.COMMITS, author.getEmail(), null);
+            reliableLastPageNumber = Utils.getLastPageNumber(repository, restTemplate, GitHubApiEndpoints.COMMITS, author.getEmail(), null, null);
             URL = UriComponentsBuilder
                     .fromHttpUrl("https://api.github.com/repos/")
                     .path(repository).path("/" + GitHubApiEndpoints.COMMITS.toString().toLowerCase())
@@ -125,7 +121,7 @@ public class UniqueContributorsService {
                     .build().encode()
                     .toUriString();
         } else {
-            reliableLastPageNumber = Utils.getLastPageNumber(repository, restTemplate, GitHubApiEndpoints.COMMITS, author.getName(), null);
+            reliableLastPageNumber = Utils.getLastPageNumber(repository, restTemplate, GitHubApiEndpoints.COMMITS, author.getName(), null,null);
             URL = UriComponentsBuilder
                     .fromHttpUrl("https://api.github.com/repos/")
                     .path(repository).path("/" + GitHubApiEndpoints.COMMITS.toString().toLowerCase())
