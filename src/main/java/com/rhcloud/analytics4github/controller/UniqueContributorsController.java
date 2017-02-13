@@ -35,6 +35,6 @@ public class UniqueContributorsController {
     @RequestMapping(value = "/uniqueContributorsPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
     public Collection<ResponceForFrontendDto> getMonthStargazersByProject(RequestFromFrontendDto requestFromFrontendDto) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
         LOG.info("projectName parameter :" + requestFromFrontendDto.getProjectName());
-        return Collections.singletonList(uniqueContributorsService.getUniqueContributorsFrequencyByMonth(requestFromFrontendDto.getProjectName()));
+        return Collections.singletonList(uniqueContributorsService.getUniqueContributorsFrequencyByMonth(requestFromFrontendDto));
     }
 }

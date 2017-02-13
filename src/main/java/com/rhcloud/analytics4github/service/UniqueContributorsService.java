@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.domain.Author;
+import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.util.GithubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
@@ -34,12 +35,13 @@ public class UniqueContributorsService {
     @Autowired
     private RestTemplate restTemplate;
 
-    boolean isUniqueContributor(String repository, Author author, Instant uniqueSince) {
+    boolean isUniqueContributor(String repository, Author author, Instant uniqueSince, Instant uniqueUntil) {
         String queryByAuthorName = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
                 .path(repository)
                 .path("/" + GitHubApiEndpoints.COMMITS.toString().toLowerCase())
                 .queryParam("author", author.getName())
-                .queryParam("until", uniqueSince)
+                .queryParam("since", uniqueSince)
+                .queryParam("until", uniqueUntil)
                 .build().encode()
                 .toUriString();
         LOG.debug(queryByAuthorName);
@@ -53,7 +55,8 @@ public class UniqueContributorsService {
                     .path(repository)
                     .path("/" + GitHubApiEndpoints.COMMITS.toString().toLowerCase())
                     .queryParam("author", author.getEmail())
-                    .queryParam("until", uniqueSince)
+                    .queryParam("since", uniqueSince)
+                    .queryParam("until", uniqueUntil)
                     .build().encode()
                     .toUriString();
             LOG.debug(queryByAuthorEmail);
@@ -63,8 +66,8 @@ public class UniqueContributorsService {
         } else return false;
     }
 
-    List<JsonNode> getCommits(String repository, Instant since) throws URISyntaxException, ExecutionException, InterruptedException {
-        GithubApiIterator githubApiIterator = new GithubApiIterator(repository, restTemplate, GitHubApiEndpoints.COMMITS, since,null);
+    List<JsonNode> getCommits(String repository, Instant since, Instant until) throws URISyntaxException, ExecutionException, InterruptedException {
+        GithubApiIterator githubApiIterator = new GithubApiIterator(repository, restTemplate, GitHubApiEndpoints.COMMITS, since, until);
         List<JsonNode> commitPages = new ArrayList<>();
         List<JsonNode> commits = new ArrayList<>();
         while (githubApiIterator.hasNext()) {
@@ -99,10 +102,10 @@ public class UniqueContributorsService {
         return authors;
     }
 
-    Set<Author> getUniqueContributors(String projectName, Instant uniqueSince) throws InterruptedException, ExecutionException, URISyntaxException {
-        Set<Author> authorsPerPeriod = getAuthorNameAndEmail(getCommits(projectName, uniqueSince));
+    Set<Author> getUniqueContributors(String projectName, Instant uniqueSince, Instant uniqueUntil) throws InterruptedException, ExecutionException, URISyntaxException {
+        Set<Author> authorsPerPeriod = getAuthorNameAndEmail(getCommits(projectName, uniqueSince, uniqueUntil));
         Set<Author> newAuthors = authorsPerPeriod.parallelStream()
-                .filter(e -> isUniqueContributor(projectName, e, uniqueSince))
+                .filter(e -> isUniqueContributor(projectName, e, uniqueSince, uniqueUntil))
                 .collect(Collectors.toSet());
         LOG.debug("since" + uniqueSince + "  are " + newAuthors.size() + " new authors: " + newAuthors.toString());
         return newAuthors;
@@ -153,8 +156,8 @@ public class UniqueContributorsService {
         }
     }
 
-    List<LocalDate> getFirstAuthorCommitFrequencyList(String repository, Instant since) throws InterruptedException, ExecutionException, URISyntaxException {
-        Set<Author> uniqueContributors = getUniqueContributors(repository, since);
+    List<LocalDate> getFirstAuthorCommitFrequencyList(String repository, Instant since, Instant until) throws InterruptedException, ExecutionException, URISyntaxException {
+        Set<Author> uniqueContributors = getUniqueContributors(repository, since, until);
         List<LocalDate> firstAuthorCommitFrequencyList = new ArrayList<>();
         for (Author author : uniqueContributors) {
             try {
@@ -168,9 +171,10 @@ public class UniqueContributorsService {
         return firstAuthorCommitFrequencyList;
     }
 
-    public ResponceForFrontendDto getUniqueContributorsFrequencyByMonth(String repository) throws IOException, ClassNotFoundException, InterruptedException, ExecutionException, URISyntaxException {
+    public ResponceForFrontendDto getUniqueContributorsFrequencyByMonth(RequestFromFrontendDto requestFromFrontendDto) throws IOException, ClassNotFoundException, InterruptedException, ExecutionException, URISyntaxException {
         TreeMap<LocalDate, Integer> commitsFrequencyMap = Utils.buildStargazersFrequencyMap(getFirstAuthorCommitFrequencyList
-                (repository, Utils.getThisMonthBeginInstant()));
+                (requestFromFrontendDto.getProjectName(), Utils.getPeriodInstant(requestFromFrontendDto.getStartPeriod()),
+                        Utils.getPeriodInstant(requestFromFrontendDto.getEndPeriod())));
         List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(commitsFrequencyMap);
         ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
         LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
@@ -178,7 +182,7 @@ public class UniqueContributorsService {
     }
 
     public ResponceForFrontendDto getUniqueContributorsFrequencyByWeek(String repository) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException {
-        List<LocalDate> firstAuthorCommitFrequencyList = getFirstAuthorCommitFrequencyList(repository, Utils.getThisWeekBeginInstant());
+        List<LocalDate> firstAuthorCommitFrequencyList = getFirstAuthorCommitFrequencyList(repository, Utils.getThisWeekBeginInstant(), null);
         TreeMap<LocalDate, Integer> weekContributorsFrequencyMap = Utils.buildStargazersFrequencyMap(firstAuthorCommitFrequencyList);
         List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(weekContributorsFrequencyMap);
         ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
