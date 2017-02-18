@@ -35,13 +35,12 @@ public class UniqueContributorsService {
     @Autowired
     private RestTemplate restTemplate;
 
-    boolean isUniqueContributor(String repository, Author author, Instant uniqueSince, Instant uniqueUntil) {
+    boolean isUniqueContributor(String repository, Author author, Instant uniqueSince) {
         String queryByAuthorName = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
                 .path(repository)
                 .path("/" + GitHubApiEndpoints.COMMITS.toString().toLowerCase())
                 .queryParam("author", author.getName())
-                .queryParam("since", uniqueSince)
-                .queryParam("until", uniqueUntil)
+                .queryParam("until", uniqueSince)
                 .build().encode()
                 .toUriString();
         LOG.debug(queryByAuthorName);
@@ -55,8 +54,7 @@ public class UniqueContributorsService {
                     .path(repository)
                     .path("/" + GitHubApiEndpoints.COMMITS.toString().toLowerCase())
                     .queryParam("author", author.getEmail())
-                    .queryParam("since", uniqueSince)
-                    .queryParam("until", uniqueUntil)
+                    .queryParam("until", uniqueSince)
                     .build().encode()
                     .toUriString();
             LOG.debug(queryByAuthorEmail);
@@ -105,7 +103,7 @@ public class UniqueContributorsService {
     Set<Author> getUniqueContributors(String projectName, Instant uniqueSince, Instant uniqueUntil) throws InterruptedException, ExecutionException, URISyntaxException {
         Set<Author> authorsPerPeriod = getAuthorNameAndEmail(getCommits(projectName, uniqueSince, uniqueUntil));
         Set<Author> newAuthors = authorsPerPeriod.parallelStream()
-                .filter(e -> isUniqueContributor(projectName, e, uniqueSince, uniqueUntil))
+                .filter(author -> isUniqueContributor(projectName, author, uniqueSince))
                 .collect(Collectors.toSet());
         LOG.debug("since" + uniqueSince + "  are " + newAuthors.size() + " new authors: " + newAuthors.toString());
         return newAuthors;

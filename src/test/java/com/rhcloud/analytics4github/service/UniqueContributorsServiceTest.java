@@ -41,13 +41,10 @@ public class UniqueContributorsServiceTest {
     @Autowired
     private UniqueContributorsService uniqueContributorsService;
 
-    @Ignore
     @Test
     public void isUniqueContributor() throws Exception {
-        assertTrue(uniqueContributorsService.isUniqueContributor(PROJECT, AUTHOR_1, Instant.parse(UNIQUE_SINCE),
-                Instant.parse(UNIQUE_UNTIL)));
-        assertFalse(uniqueContributorsService.isUniqueContributor(PROJECT, AUTHOR_2, Instant.parse(UNIQUE_SINCE),
-                Instant.parse(UNIQUE_UNTIL)));
+        assertTrue(uniqueContributorsService.isUniqueContributor(PROJECT, AUTHOR_1, Instant.parse(UNIQUE_SINCE)));
+        assertFalse(uniqueContributorsService.isUniqueContributor(PROJECT, AUTHOR_2, Instant.parse(UNIQUE_SINCE)));
     }
 
     @Test
