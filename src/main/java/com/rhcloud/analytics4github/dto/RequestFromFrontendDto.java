@@ -9,6 +9,7 @@ import java.time.LocalDate;
  * Created by Iron on 27.12.2016.
  */
 public class RequestFromFrontendDto {
+
     private String projectName;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startPeriod;

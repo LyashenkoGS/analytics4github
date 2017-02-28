@@ -51,13 +51,19 @@ public class Utils {
         return isWithinThisWeekRange;
     }
 
+    /**
+     *
+     * @param timestamp String representing date and time in ISO 8601 YYYY-MM-DDTHH:MM:SSZ
+     * @param requestFromFrontendDto DTO came from frontend
+     * @return if commit is withing analitics period
+     */
     public static boolean isWithinThisMonthRange(LocalDate timestamp, RequestFromFrontendDto requestFromFrontendDto) {
         LOG.debug("Check is the " + timestamp + " is within this month range");
         LocalDate monthStart = requestFromFrontendDto.getStartPeriod();
         LocalDate monthEnd = requestFromFrontendDto.getEndPeriod();
 
-        boolean isWithinThisMonthRange = ((timestamp.isAfter(monthStart) || timestamp.isEqual(monthStart))
-                && (timestamp.isBefore(monthEnd) || timestamp.isEqual(monthEnd)));
+        boolean isWithinThisMonthRange = (timestamp.isAfter(monthStart) || timestamp.isEqual(monthStart))
+                && (timestamp.isBefore(monthEnd) || timestamp.isEqual(monthEnd));
         LOG.debug(String.valueOf(isWithinThisMonthRange));
         return isWithinThisMonthRange;
     }
@@ -138,7 +144,8 @@ public class Utils {
         return monthStargazersFrequency;
     }
 
-    public static List<Integer> parseMonthFrequencyMapCommitToFrequencyLIst(TreeMap<LocalDate, Integer> mockWeekStargazersFrequencyMap, RequestFromFrontendDto requestFromFrontendDto) throws IOException {
+    public static List<Integer> parseMonthFrequencyMapCommitToFrequencyLIst(
+            TreeMap<LocalDate, Integer> mockWeekStargazersFrequencyMap, RequestFromFrontendDto requestFromFrontendDto) throws IOException {
         int lastDayOfMonth = requestFromFrontendDto.getEndPeriod().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
         LOG.debug(String.valueOf(lastDayOfMonth));
         List<Integer> monthStargazersFrequency = new ArrayList<>(lastDayOfMonth);

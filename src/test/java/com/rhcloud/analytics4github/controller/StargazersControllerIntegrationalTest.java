@@ -23,11 +23,14 @@ public class StargazersControllerIntegrationalTest {
 
     @Test
     public void testStargazersEndpoint() {
-        assertEquals(200, testRestTemplate.getForEntity("/stargazers?projectName=mewo2/terrain", String.class).getStatusCodeValue());
+        assertEquals(200, testRestTemplate.getForEntity("/stargazers?projectName=mewo2/terrain",
+                String.class).getStatusCodeValue());
     }
 
     @Test
     public void testStargazersPerMonthEndpoint() {
-        assertEquals(200, testRestTemplate.getForEntity("/stargazersPerMonth?projectName=mewo2/terrain&startPeriod=2017-01-01&endPeriod=2017-01-31", String.class).getStatusCodeValue());
+        assertEquals(200, testRestTemplate.getForEntity(
+                "/stargazersPerMonth?projectName=mewo2/terrain&startPeriod=2017-01-01&endPeriod=2017-01-31",
+                String.class).getStatusCodeValue());
     }
 }

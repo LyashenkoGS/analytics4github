@@ -6,6 +6,7 @@ import java.util.List;
  * Created by Iron on 27.12.2016.
  */
 public class ResponceForFrontendDto {
+
     private String name;
     private List<Integer> data;
 

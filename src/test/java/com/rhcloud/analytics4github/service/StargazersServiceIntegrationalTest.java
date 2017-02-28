@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 @SpringBootTest
 public class StargazersServiceIntegrationalTest {
     private static Logger LOG = LoggerFactory.getLogger(com.rhcloud.analytics4github.config.InterceptorsIntegrationalTest.class);
+    private static String PROJECT_NAME = "mewo2/terrain";
 
     @Autowired
     private StargazersService stargazersService;
@@ -51,7 +52,7 @@ public class StargazersServiceIntegrationalTest {
     @Test
     public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException {
         RequestFromFrontendDto requestFromFrontendDto = new RequestFromFrontendDto();
-        requestFromFrontendDto.setProjectName("mewo2/terrain");
+        requestFromFrontendDto.setProjectName(PROJECT_NAME);
         requestFromFrontendDto.setStartPeriod(LocalDate.parse("2017-01-01"));
         requestFromFrontendDto.setEndPeriod(LocalDate.parse("2017-01-31"));
         List<LocalDate> monthStargazersList = stargazersService.getMonthStargazersList(requestFromFrontendDto);
@@ -60,7 +61,7 @@ public class StargazersServiceIntegrationalTest {
 
     @Test
     public void getWeekStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
-        List<LocalDate> monthStargazersList = stargazersService.getWeekStargazersList("mewo2/terrain");
+        List<LocalDate> monthStargazersList = stargazersService.getWeekStargazersList(PROJECT_NAME);
         LOG.debug(monthStargazersList.toString());
     }
 }

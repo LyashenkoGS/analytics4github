@@ -3,6 +3,11 @@
  */
 
 /**
+ * This file include all JavaScript methods which used on UI
+ * and method wich send ajax for backend
+ */
+
+/**
  * This method display random trending repository to analyze
  */
 (function () {
