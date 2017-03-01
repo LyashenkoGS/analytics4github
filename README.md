@@ -23,8 +23,8 @@ Internally, the existed GitHub API is using.
 ## Deployment
 To run locally execute
 
-        gradle build -x test
-        java -jar build/libs/*.jar 
+      gradle build -x test
+      java -jar build/libs/*.jar 
 
 ## Development
 ![architecture](./documentation/Arhitecture.png)
@@ -33,18 +33,16 @@ To run locally execute
 To reload controllers after editing - press ctl + f9 and wait till application restart.
 It'll execute "Make" and trigger hot-redeploy via spring-boot-devtools.
 
-## Monitoring
-To watch logs in real-time install [rhc client](https://developers.openshift.com/managing-your-applications/client-tools.html). 
 
-        rhc <app-name> tail
- 
 ##Deployment 
 ###Docker
 
-* Generate github token and save to file token.txt in the project directory
-* build a JAR
+* Generate a GitHub token and save to the file token.txt in the project directory
 * execute
-        docker build .
-        docker run -p 8080:8080 $imageId
+
+      docker build -t lyashenkogs/analytics4github:0.0.2 .
+      docker run -p 8080:8080 lyashenkogs/analytics4github:0.0.2
+        
 Alternatively. Add a line to  Dockerfile 
-ENTRYPOINT [ "sh", "-c", "export GITHUB_TOKEN=your token value" ]
+
+    ENTRYPOINT [ "sh", "-c", "export GITHUB_TOKEN=your token value" ]

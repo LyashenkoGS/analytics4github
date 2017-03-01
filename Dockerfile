@@ -1,7 +1,12 @@
-FROM frolvlad/alpine-oraclejdk8:slim
+FROM strictlybusiness/oracle-java8
 VOLUME /tmp
-ADD ./build/libs/analytics4github-0.0.1-SNAPSHOT.jar app.jar
+#copy the project files
 ADD token.txt /var/token.txt
-RUN sh -c 'touch /app.jar'
+ADD gradle /gradle
+ADD gradlew /gradlew
+ADD src /src
+ADD build.gradle /build.gradle
 ENV JAVA_OPTS=""
-ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar /app.jar" ]
+#build the project
+RUN sh -c './gradlew build -x test'
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar /build/libs/analytics4github-0.0.1-SNAPSHOT.jar" ]
