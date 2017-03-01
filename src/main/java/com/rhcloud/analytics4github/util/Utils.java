@@ -1,9 +1,8 @@
 package com.rhcloud.analytics4github.util;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
-
+import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
+import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -12,21 +11,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -44,6 +33,7 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
  * @author lyashenkogs.
  */
 public class Utils {
+    private static final String HTTPS_API_GITHUB_COM_REPOS = "https://api.github.com/repos/";
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
 
     /**
@@ -61,12 +51,19 @@ public class Utils {
         return isWithinThisWeekRange;
     }
 
-    public static boolean isWithinThisMonthRange(LocalDate timestamp) {
+    /**
+     *
+     * @param timestamp String representing date and time in ISO 8601 YYYY-MM-DDTHH:MM:SSZ
+     * @param requestFromFrontendDto DTO came from frontend
+     * @return if commit is withing analitics period
+     */
+    public static boolean isWithinThisMonthRange(LocalDate timestamp, RequestFromFrontendDto requestFromFrontendDto) {
         LOG.debug("Check is the " + timestamp + " is within this month range");
-        LocalDate monthStart = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate monthEnd = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
-        boolean isWithinThisMonthRange = ((timestamp.isAfter(monthStart) || timestamp.isEqual(monthStart))
-                && (timestamp.isBefore(monthEnd) || timestamp.isEqual(monthEnd)));
+        LocalDate monthStart = requestFromFrontendDto.getStartPeriod();
+        LocalDate monthEnd = requestFromFrontendDto.getEndPeriod();
+
+        boolean isWithinThisMonthRange = (timestamp.isAfter(monthStart) || timestamp.isEqual(monthStart))
+                && (timestamp.isBefore(monthEnd) || timestamp.isEqual(monthEnd));
         LOG.debug(String.valueOf(isWithinThisMonthRange));
         return isWithinThisMonthRange;
     }
@@ -82,8 +79,12 @@ public class Utils {
     public static Instant getThisMonthBeginInstant() {
         LocalDateTime localDate = LocalDateTime.now().withSecond(0).withHour(0).withMinute(0)
                 .with(TemporalAdjusters.firstDayOfMonth()).truncatedTo(ChronoUnit.SECONDS);
-        Instant instant = localDate.toInstant(ZoneOffset.UTC);
-        return instant;
+        return localDate.toInstant(ZoneOffset.UTC);
+    }
+
+    public static Instant getPeriodInstant(LocalDate localDate) {
+        LocalDateTime localDateTime = localDate.atStartOfDay();
+        return localDateTime.toInstant(ZoneOffset.UTC);
     }
 
     public static Instant getThisWeekBeginInstant() {
@@ -92,10 +93,11 @@ public class Utils {
         return localDate.toInstant(ZoneOffset.UTC);
     }
 
-    public static ArrayNode buildJsonForHIghChart(List<Integer> stargazersFrequencyList) throws IOException, ClassNotFoundException {
-        ArrayNode outputJson = JsonNodeFactory.instance.arrayNode();
-        outputJson.addObject().put("name", "Stars").putPOJO("data", stargazersFrequencyList);
-        return outputJson;
+    public static ResponceForFrontendDto buildJsonForFrontend(List<Integer> stargazersFrequencyList) throws IOException, ClassNotFoundException {
+        ResponceForFrontendDto outputDto = new ResponceForFrontendDto();
+        outputDto.setName("Stars");
+        outputDto.setData(stargazersFrequencyList);
+        return outputDto;
     }
 
     public static List<Integer> parseWeekStargazersMapFrequencyToWeekFrequencyList(TreeMap<LocalDate, Integer> weekStargazersFrequenyMap) {
@@ -142,38 +144,63 @@ public class Utils {
         return monthStargazersFrequency;
     }
 
+    public static List<Integer> parseMonthFrequencyMapCommitToFrequencyLIst(
+            TreeMap<LocalDate, Integer> mockWeekStargazersFrequencyMap, RequestFromFrontendDto requestFromFrontendDto) throws IOException {
+        int lastDayOfMonth = requestFromFrontendDto.getEndPeriod().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
+        LOG.debug(String.valueOf(lastDayOfMonth));
+        List<Integer> monthStargazersFrequency = new ArrayList<>(lastDayOfMonth);
+        for (int dayOfMonth = 1; dayOfMonth < lastDayOfMonth + 1; dayOfMonth++) {
+            LOG.debug("day of month: " + dayOfMonth);
+            Optional<Integer> frequency = Optional.empty();
+            for (LocalDate localDate : mockWeekStargazersFrequencyMap.keySet()) {
+                if (dayOfMonth == localDate.getDayOfMonth()) {
+                    frequency = Optional.of(mockWeekStargazersFrequencyMap.get(localDate));
+                }
+            }
+            if (frequency.isPresent()) {
+                monthStargazersFrequency.add(frequency.get());
+            } else {
+                monthStargazersFrequency.add(0);
+            }
+            LOG.debug(monthStargazersFrequency.toString());
+        }
+        return monthStargazersFrequency;
+    }
+
     public static TreeMap<LocalDate, Integer> buildStargazersFrequencyMap(List<LocalDate> stargazersList) throws IOException, URISyntaxException, ExecutionException, InterruptedException {
         //temporary set
         Set<LocalDate> stargazersDateSet = stargazersList.stream().collect(Collectors.toSet());
-        Map<LocalDate, Integer> stargazersFrequencyMap = stargazersDateSet.stream().collect(Collectors
-                .toMap(Function.identity(), e -> Collections.frequency(stargazersList, e)));
+        Map<LocalDate, Integer> stargazersFrequencyMap = stargazersDateSet.stream()
+                .collect(Collectors.toMap(Function.identity(), e -> Collections.frequency(stargazersList, e)));
         TreeMap<LocalDate, Integer> localDateIntegerNavigableMap = new TreeMap<>(stargazersFrequencyMap);
         LOG.debug("stargazers week/month frequency map:" + localDateIntegerNavigableMap.toString());
         return localDateIntegerNavigableMap;
     }
 
-    public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since) {
-        String URL;
+    public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since, Instant until) {
+        String url;
         if (since != null) {
-            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+            url = UriComponentsBuilder.fromHttpUrl(HTTPS_API_GITHUB_COM_REPOS)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .queryParam("since", since)
+                    .queryParam("until", until)
                     .build().encode()
                     .toUriString();
         } else if (author != null) {
-            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+            url = UriComponentsBuilder.fromHttpUrl(HTTPS_API_GITHUB_COM_REPOS)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .queryParam("author", author)
+                    .queryParam("until", until)
                     .build().encode()
                     .toUriString();
         } else {
-            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+            url = UriComponentsBuilder.fromHttpUrl(HTTPS_API_GITHUB_COM_REPOS)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .build().encode()
                     .toUriString();
         }
-        LOG.debug("URL to get the last commits page number:" + URL);
-        HttpHeaders headers = restTemplate.headForHeaders(URL);
+        LOG.debug("URL to get the last commits page number:" + url);
+        HttpHeaders headers = restTemplate.headForHeaders(url);
         String link = headers.getFirst("Link");
         LOG.debug("Link: " + link);
         LOG.debug("parse link by regexp");
@@ -191,6 +218,5 @@ public class Utils {
             return 1;
         }
         return lastPageNum;
-
     }
 }

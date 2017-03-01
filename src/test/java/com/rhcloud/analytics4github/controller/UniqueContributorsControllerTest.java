@@ -24,11 +24,14 @@ public class UniqueContributorsControllerTest {
 
     @Test
     public void uniqueContributors() {
-        assertEquals(this.testRestTemplate.getForEntity("/uniqueContributors?projectName=" + PROJECT, String.class).getStatusCodeValue(), 200);
+        assertEquals(this.testRestTemplate.getForEntity("/uniqueContributors?projectName=" +
+                PROJECT, String.class).getStatusCodeValue(), 200);
     }
 
     @Test
     public void uniqueContributorsPerMonth() {
-        assertEquals(this.testRestTemplate.getForEntity("/uniqueContributorsPerMonth?projectName=" + PROJECT, String.class).getStatusCodeValue(), 200);
+        assertEquals(this.testRestTemplate.getForEntity(
+                "/uniqueContributorsPerMonth?projectName=" + PROJECT+
+                        "&startPeriod=2017-01-01&endPeriod=2017-01-31", String.class).getStatusCodeValue(), 200);
     }
 }

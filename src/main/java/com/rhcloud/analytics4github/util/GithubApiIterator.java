@@ -2,7 +2,6 @@ package com.rhcloud.analytics4github.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
@@ -35,6 +34,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     private final RestTemplate restTemplate;
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
     private Instant since = null;
+    private Instant until = null;
     private String author;
     private volatile AtomicInteger counter = new AtomicInteger();
 
@@ -59,14 +59,14 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     }
 
     public GithubApiIterator(String projectName, RestTemplate restTemplate, GitHubApiEndpoints endpoint,
-                             Instant since) throws URISyntaxException {
+                             Instant since, Instant until) throws URISyntaxException {
         this.since = since;
+        this.until = until;
         this.restTemplate = restTemplate;
         this.projectName = projectName;
         this.githubEndpoint = endpoint;
         this.numberOfPages = getLastPageNumber(projectName);
         this.counter.set(numberOfPages);
-
     }
 
     public int getNumberOfPages() {
@@ -78,7 +78,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     }
 
     public int getLastPageNumber(String projectName) throws URISyntaxException {
-        return Utils.getLastPageNumber(projectName, restTemplate, githubEndpoint, author, since);
+        return Utils.getLastPageNumber(projectName, restTemplate, githubEndpoint, author, since, until);
     }
 
     public synchronized boolean hasNext() {
@@ -149,7 +149,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     /**
      * invoke explicitly after every class usage to close ThreadPool correctly
      */
-    public void close(){
+    public void close() {
         this.executor.shutdown();
     }
 }

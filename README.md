@@ -27,6 +27,7 @@ To run locally execute
         java -jar build/libs/*.jar 
 
 ## Development
+![architecture](./documentation/Arhitecture.png)
 
 ##### IntellijIdea
 To reload controllers after editing - press ctl + f9 and wait till application restart.
