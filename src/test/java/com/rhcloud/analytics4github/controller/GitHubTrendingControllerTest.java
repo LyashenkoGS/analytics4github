@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class GithubTrendingControllerTest {
+public class GitHubTrendingControllerTest {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
