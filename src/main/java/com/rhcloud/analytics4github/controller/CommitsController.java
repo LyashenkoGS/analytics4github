@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.service.CommitsService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class CommitsController {
     private CommitsService commitsService;
 
     @RequestMapping(value = "/commits", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public ArrayNode getStargazersByProject(@RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException, GitHubRESTApiException {
+    public JsonNode getStargazersByProject(@RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException, GitHubRESTApiException {
         LOG.info("projectName parameter :" + projectName);
         return commitsService.getThisWeekCommitsFrequencyPerProject(projectName);
     }
