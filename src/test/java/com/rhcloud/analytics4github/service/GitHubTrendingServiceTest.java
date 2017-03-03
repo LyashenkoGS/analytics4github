@@ -31,7 +31,8 @@ public class GitHubTrendingServiceTest {
         //break the service
         String originalURL = GitHubTrendingService.GITHUB_TRENDING_URL;
         GitHubTrendingService.GITHUB_TRENDING_URL = "";
-        System.out.println(trendingService.parseTrendingReposWebPage());
+       trendingService.parseTrendingReposWebPage();
+       trendingService.getTrendingRepos();
         //fix the service
         GitHubTrendingService.GITHUB_TRENDING_URL = originalURL;
     }

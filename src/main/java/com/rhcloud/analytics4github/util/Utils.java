@@ -3,7 +3,6 @@ package com.rhcloud.analytics4github.util;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
-
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +16,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -41,6 +34,8 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
  * @author lyashenkogs.
  */
 public class Utils {
+
+    static String CREATE_URL = "https://api.github.com/repos/";
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
 
     /**
@@ -149,28 +144,30 @@ public class Utils {
         return localDateIntegerNavigableMap;
     }
 
+
     public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since) throws GitHubRESTApiException {
         String URL;
+        try {
         if (since != null) {
-            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+            URL = UriComponentsBuilder.fromHttpUrl(CREATE_URL)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .queryParam("since", since)
                     .build().encode()
                     .toUriString();
         } else if (author != null) {
-            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+            URL = UriComponentsBuilder.fromHttpUrl(CREATE_URL)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .queryParam("author", author)
                     .build().encode()
                     .toUriString();
         } else {
-            URL = UriComponentsBuilder.fromHttpUrl("https://api.github.com/repos/")
+            URL = UriComponentsBuilder.fromHttpUrl(CREATE_URL)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .build().encode()
                     .toUriString();
         }
         LOG.debug("URL to get the last commits page number:" + URL);
-        try {
+
             HttpHeaders headers = restTemplate.headForHeaders(URL);
             String link = headers.getFirst("Link");
             LOG.debug("Link: " + link);
@@ -184,12 +181,12 @@ public class Utils {
                     LOG.debug("parse result: " + lastPageNum);
                 }
             } catch (NullPointerException npe) {
-                LOG.info("Propably " + repository + "commits consists from only one page");
+                LOG.info("Probably " + repository + "commits consists from only one page");
                 return 1;
             }
             return lastPageNum;
         } catch (Exception e) {
-            throw new GitHubRESTApiException("GitHubRESTApiException reuest doesn't correct",e);
+            throw new GitHubRESTApiException(" GitHubRESTApiException request doesn't correct", e);
         }
     }
 }

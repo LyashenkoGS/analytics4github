@@ -22,19 +22,26 @@ import java.util.Random;
 @RestController
 public class GitHubTrendingController {
     private static Logger LOG = LoggerFactory.getLogger(GitHubTrendingController.class);
-
-    @Autowired
     private GitHubTrendingService trendingService;
 
+    @Autowired
+    public void setTrendingService(GitHubTrendingService trendingService) {
+        this.trendingService = trendingService;
+    }
+
     @RequestMapping(value = "/randomRequestTrendingRepoName", method = RequestMethod.GET)
-    public ResponseEntity<String> getRandomTrendingRepo() {
+    public ResponseEntity getRandomTrendingRepo() {
         try {
-            List<String> trendingRepos = trendingService.parseTrendingReposWebPage();
-            int index = new Random().nextInt(trendingService.parseTrendingReposWebPage().size());
-            return new ResponseEntity<String>(trendingRepos.get(index), HttpStatus.OK);
+            List<String> trendingRepos = trendingService.getTrendingRepos();
+            int index = new Random().nextInt(trendingService.getTrendingRepos().size());
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(trendingRepos.get(index));
         } catch (TrendingException e) {
             LOG.error(e.getMessage());
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
         }
     }
 }
