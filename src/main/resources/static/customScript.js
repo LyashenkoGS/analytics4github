@@ -35,6 +35,7 @@
                         + "<div>Sorry for temporary inconvenience<div></div>");
             });
     });
+    getRequestsLeft();
 })();
 
 var date = new Date();
@@ -153,14 +154,14 @@ $(function () {
             console.log("active tab: " + active_tab);
             $.ajax({
                 //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-                url: "/" + active_tab + "?projectName="
-                + inputValue,
+                url: "/" + active_tab + "?projectName=" + inputValue,
                 beforeSend: function () {
                     $('#week-frequency-plot')
                         .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
                 }
             })
-                .done(function (msg) {
+                .done(function (msg, status, header) {
+                    getRequestsLeft();
                     var response = msg;
                     $('#week-frequency-plot').highcharts({
                         chart: {
@@ -224,6 +225,7 @@ $(function () {
                 }
             })
                 .done(function (msg) {
+                    getRequestsLeft();
                     var response = msg;
                     $('#month-frequency-plot').highcharts({
                         chart: {
@@ -275,3 +277,11 @@ $(function () {
         })
     })
 });
+function getRequestsLeft() {
+    $.ajax({
+        url : "getRequestsLeft",
+        success: function(data) {
+            document.getElementById('requestsLeft').innerHTML = "Requests Left: "+data;
+        }
+    })
+}

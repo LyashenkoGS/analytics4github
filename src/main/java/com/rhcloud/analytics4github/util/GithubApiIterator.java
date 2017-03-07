@@ -107,7 +107,6 @@ public class GithubApiIterator implements Iterator<JsonNode> {
                         .queryParam("page", counter.getAndDecrement())
                         .build();
             }
-
             String URL = page.encode().toUriString();
             LOG.debug(URL);
             //sent request

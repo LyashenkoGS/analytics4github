@@ -1,6 +1,5 @@
 package com.rhcloud.analytics4github.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
