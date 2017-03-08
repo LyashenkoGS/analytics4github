@@ -6,6 +6,10 @@ package com.rhcloud.analytics4github.exception;
  */
 public class TrendingException extends Exception {
 
+    public TrendingException(String message) {
+        super(message);
+    }
+
     public TrendingException(String message, Throwable cause) {
         super(message, cause);
     }

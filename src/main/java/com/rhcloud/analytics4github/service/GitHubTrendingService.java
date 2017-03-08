@@ -58,6 +58,6 @@ public class GitHubTrendingService {
     public List<String> getTrendingRepos() throws TrendingException{
         if(!trendingRepos.isEmpty()){
             return trendingRepos;
-        }else return new ArrayList<>();
+        }else   throw new TrendingException("Can't parse top trending repositories !");
     }
 }
