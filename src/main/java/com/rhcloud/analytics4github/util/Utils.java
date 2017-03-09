@@ -33,7 +33,9 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
  *
  * @author lyashenkogs.
  */
-public class Utils {
+public abstract  class Utils {
+    private Utils() {
+    }
 
     static String CREATE_URL = "https://api.github.com/repos/";
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
@@ -186,7 +188,7 @@ public class Utils {
             }
             return lastPageNum;
         } catch (Exception e) {
-            throw new GitHubRESTApiException(" GitHubRESTApiException request doesn't correct", e);
+            throw new GitHubRESTApiException(" Can't access GitHub REST ",e);
         }
     }
 }

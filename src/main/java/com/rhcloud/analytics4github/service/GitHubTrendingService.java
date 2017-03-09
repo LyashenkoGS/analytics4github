@@ -51,13 +51,13 @@ public class GitHubTrendingService {
                 trendingRepos.add(element.attr("href"));
             });
         } catch (Exception exception) {
-            throw new TrendingException("Can't parse top trending repositories !", exception);
+            throw new TrendingException(" Can not access GitHub Trending page <a href='https://github.com/trending'>https://github.com/trending<a/>" ,exception);
         }
     }
 
     public List<String> getTrendingRepos() throws TrendingException{
         if(!trendingRepos.isEmpty()){
             return trendingRepos;
-        }else   throw new TrendingException("Can't parse top trending repositories !");
+        }else   throw new TrendingException(" Can not access GitHub Trending page <a href='https://github.com/trending'>https://github.com/trending</a> " );
     }
 }
