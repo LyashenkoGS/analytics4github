@@ -37,7 +37,8 @@ public class GitHubTrendingService {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     /**
-     *  Method parseTrendingReposWebPage that added repo to the cash will be invoked every 2 minutes.
+     *  Parses http:github/trending that retrieve repo to the cash will be invoked every 2 minutes.
+     * @throws TrendingException
      */
     @Scheduled(fixedRate = 120000)
     public void parseTrendingReposWebPage() throws TrendingException {
