@@ -2,18 +2,13 @@ package com.rhcloud.analytics4github.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
-import com.rhcloud.analytics4github.exception.TrendingException;
-import com.rhcloud.analytics4github.service.GitHubTrendingService;
-import org.assertj.core.util.VisibleForTesting;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
@@ -35,6 +30,7 @@ public class UtilsTest {
 
 
     private static Logger LOG = LoggerFactory.getLogger(UtilsTest.class);
+
     @Test
     public void testIsWithinThisWeekRange() {
      /*   //Todo: generate timestamps dynamically, cause the test will broke in some time
@@ -132,14 +128,15 @@ public class UtilsTest {
         //format should be like: 2016-08-01T00:00:01Z
         LOG.debug(Utils.getThisMonthBeginInstant().toString());
     }
-    @Test(expected=GitHubRESTApiException.class)
+
+    @Test(expected = GitHubRESTApiException.class)
     public void noAccessToLastPageNumber() throws Exception {
         //break the service
-        String originalURL = Utils.CREATE_URL;
-        Utils.CREATE_URL = "";
-        System.out.println(Utils.getLastPageNumber("mewo2/terrain",null, GitHubApiEndpoints.STARGAZERS,null,null));
+        String originalURL = Utils.GITHUB_API_REPOS_URL;
+        Utils.GITHUB_API_REPOS_URL = "";
+        System.out.println(Utils.getLastPageNumber("mewo2/terrain", null, GitHubApiEndpoints.STARGAZERS, null, null));
         //fix the service
-        Utils.CREATE_URL = originalURL;
+        Utils.GITHUB_API_REPOS_URL = originalURL;
     }
 }
 

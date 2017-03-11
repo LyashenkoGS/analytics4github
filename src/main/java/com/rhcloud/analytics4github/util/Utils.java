@@ -37,7 +37,7 @@ public abstract  class Utils {
     private Utils() {
     }
 
-    static String CREATE_URL = "https://api.github.com/repos/";
+    static String GITHUB_API_REPOS_URL = "https://api.github.com/repos/";
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
 
     /**
@@ -151,19 +151,19 @@ public abstract  class Utils {
         String URL;
         try {
         if (since != null) {
-            URL = UriComponentsBuilder.fromHttpUrl(CREATE_URL)
+            URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .queryParam("since", since)
                     .build().encode()
                     .toUriString();
         } else if (author != null) {
-            URL = UriComponentsBuilder.fromHttpUrl(CREATE_URL)
+            URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .queryParam("author", author)
                     .build().encode()
                     .toUriString();
         } else {
-            URL = UriComponentsBuilder.fromHttpUrl(CREATE_URL)
+            URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
                     .build().encode()
                     .toUriString();
