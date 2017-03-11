@@ -1,7 +1,6 @@
 package com.rhcloud.analytics4github.repository;
 
 import com.rhcloud.analytics4github.domain.RequestToAPI;
-
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

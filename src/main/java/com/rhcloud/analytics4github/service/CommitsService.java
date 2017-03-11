@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.util.GithubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class CommitsService {
         }
     }
 
-    public List<LocalDate> getWeekCommitsList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException {
+    public List<LocalDate> getWeekCommitsList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException, GitHubRESTApiException {
         List<LocalDate> thisWeekCommitsDateList = new LinkedList<>();
         GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.COMMITS, Instant.now()
                 .minus(7, ChronoUnit.DAYS)
@@ -59,7 +59,7 @@ public class CommitsService {
         return thisWeekCommitsDateList;
     }
 
-    public List<LocalDate> getMonthCommitsList(RequestFromFrontendDto requestFromFrontendDto) throws URISyntaxException, IOException, ExecutionException, InterruptedException {
+    public List<LocalDate> getMonthCommitsList(RequestFromFrontendDto requestFromFrontendDto) throws URISyntaxException, IOException, ExecutionException, InterruptedException, GitHubRESTApiException {
         List<LocalDate> thisMonthCommitsDateList = new LinkedList<>();
         GithubApiIterator stargazersIterator = new GithubApiIterator(requestFromFrontendDto.getProjectName(), template,
                 GitHubApiEndpoints.COMMITS, Utils.getPeriodInstant(requestFromFrontendDto.getStartPeriod()),
@@ -74,7 +74,7 @@ public class CommitsService {
         return thisMonthCommitsDateList;
     }
 
-    public ResponceForFrontendDto getThisWeekCommitsFrequencyPerProject(String projectName) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException {
+    public ResponceForFrontendDto getThisWeekCommitsFrequencyPerProject(String projectName) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException, GitHubRESTApiException {
         TreeMap<LocalDate, Integer> weekStargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getWeekCommitsList(projectName));
         List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(weekStargazersFrequencyMap);
         ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
@@ -83,7 +83,7 @@ public class CommitsService {
 
     }
 
-    public ResponceForFrontendDto getThisMonthCommitsFrequencyPerProject(RequestFromFrontendDto requestFromFrontendDto) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException {
+    public ResponceForFrontendDto getThisMonthCommitsFrequencyPerProject(RequestFromFrontendDto requestFromFrontendDto) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException, GitHubRESTApiException {
         TreeMap<LocalDate, Integer> commitsFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthCommitsList(requestFromFrontendDto));
         List<Integer> frequencyList = Utils.parseMonthFrequencyMapCommitToFrequencyLIst(commitsFrequencyMap, requestFromFrontendDto);
         ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);

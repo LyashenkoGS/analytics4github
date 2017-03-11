@@ -23,7 +23,8 @@ public class GitHubTrendingServiceTest {
 
     @Test
     public void getThisMonthTrendingRepos() throws Exception {
-        assertTrue("We expect that there is more than zero trending repositories", trendingService.getCachedTrendingRepos().size() > 0);
+        trendingService.parseTrendingReposWebPage();
+        assertTrue("We expect that there is more than zero trending repositories", trendingService.getTrendingRepos().size() > 0);
     }
 
     @Test(expected = TrendingException.class)
@@ -31,7 +32,8 @@ public class GitHubTrendingServiceTest {
         //break the service
         String originalURL = GitHubTrendingService.GITHUB_TRENDING_URL;
         GitHubTrendingService.GITHUB_TRENDING_URL = "";
-        System.out.println(trendingService.parseTrendingReposWebPage());
+        trendingService.parseTrendingReposWebPage();
+        trendingService.getTrendingRepos();
         //fix the service
         GitHubTrendingService.GITHUB_TRENDING_URL = originalURL;
     }

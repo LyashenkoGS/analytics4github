@@ -2,7 +2,7 @@ package com.rhcloud.analytics4github.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
-
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +30,7 @@ public class GithubApiIteratorTest {
     private RestTemplate template;
 
     @Test
-    public void testCommitsBatchNext() throws URISyntaxException, ExecutionException, InterruptedException {
+    public void testCommitsBatchNext() throws URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
         GithubApiIterator githubApiIterator = new GithubApiIterator(PROJECT_NAME, template, GitHubApiEndpoints.COMMITS);
         List<JsonNode> pages = new ArrayList<>();
         while (githubApiIterator.hasNext()) {
@@ -42,7 +42,7 @@ public class GithubApiIteratorTest {
     }
 
     @Test
-    public void testStargazersBatchNext() throws URISyntaxException, ExecutionException, InterruptedException {
+    public void testStargazersBatchNext() throws URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
         GithubApiIterator githubApiIterator = new GithubApiIterator(PROJECT_NAME, template, GitHubApiEndpoints.STARGAZERS);
         List<JsonNode> pages = new ArrayList<>();
         while (githubApiIterator.hasNext()) {

@@ -1,6 +1,7 @@
 package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class StargazersServiceIntegrationalTest {
      * in /resources/RepositoriesForTest.txt
      */
     @Test
-    public void thisWeekStargazersFrequencyPerProjectTest() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException {
+    public void thisWeekStargazersFrequencyPerProjectTest() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
         InputStream repositoriesList = new ClassPathResource("RepositoriesForTest.txt")
                 .getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(repositoriesList));
@@ -49,7 +50,7 @@ public class StargazersServiceIntegrationalTest {
     }
 
     @Test
-    public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException {
+    public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, GitHubRESTApiException {
         RequestFromFrontendDto requestFromFrontendDto = new RequestFromFrontendDto();
         requestFromFrontendDto.setProjectName(PROJECT_NAME);
         requestFromFrontendDto.setStartPeriod(LocalDate.parse("2017-01-01"));
@@ -59,7 +60,7 @@ public class StargazersServiceIntegrationalTest {
     }
 
     @Test
-    public void getWeekStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
+    public void getWeekStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException, GitHubRESTApiException {
         List<LocalDate> monthStargazersList = stargazersService.getWeekStargazersList(PROJECT_NAME);
         LOG.debug(monthStargazersList.toString());
     }

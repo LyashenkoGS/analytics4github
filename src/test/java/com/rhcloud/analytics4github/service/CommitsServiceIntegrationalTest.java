@@ -1,6 +1,7 @@
 package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
@@ -37,7 +38,7 @@ public class CommitsServiceIntegrationalTest {
      * in /resources/RepositoriesForTest.txt
      */
     @Test
-    public void testGetThisWeekCommitsFrequencyPerProject() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException {
+    public void testGetThisWeekCommitsFrequencyPerProject() throws ClassNotFoundException, IOException, URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
         InputStream repositoriesList = new ClassPathResource("RepositoriesForTest.txt")
                 .getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(repositoriesList));
@@ -50,7 +51,7 @@ public class CommitsServiceIntegrationalTest {
     }
 
     @Test
-    public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
+    public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException, GitHubRESTApiException {
         RequestFromFrontendDto requestFromFrontendDto = new RequestFromFrontendDto();
         requestFromFrontendDto.setProjectName(PROJECT_NAME);
         requestFromFrontendDto.setStartPeriod(LocalDate.parse("2017-01-01"));
@@ -60,7 +61,7 @@ public class CommitsServiceIntegrationalTest {
     }
 
     @Test
-    public void getWeekCommitsListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
+    public void getWeekCommitsListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException, GitHubRESTApiException {
         List<LocalDate> weekCommitsList = commitsService.getWeekCommitsList(PROJECT_NAME);
         LOG.debug(weekCommitsList.toString());
     }

@@ -2,7 +2,6 @@ package com.rhcloud.analytics4github.controller;
 
 import com.rhcloud.analytics4github.domain.RequestToAPI;
 import com.rhcloud.analytics4github.service.StatisticsService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

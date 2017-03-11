@@ -2,7 +2,8 @@ package com.rhcloud.analytics4github.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -26,6 +27,8 @@ import static org.junit.Assert.assertEquals;
 @RunWith(JUnit4.class)
 //@TestPropertySource(locations = "classpath:application-test.properties")
 public class UtilsTest {
+
+
     private static Logger LOG = LoggerFactory.getLogger(UtilsTest.class);
 
     @Test
@@ -125,4 +128,15 @@ public class UtilsTest {
         //format should be like: 2016-08-01T00:00:01Z
         LOG.debug(Utils.getThisMonthBeginInstant().toString());
     }
+
+    @Test(expected = GitHubRESTApiException.class)
+    public void noAccessToLastPageNumber() throws Exception {
+        //break the service
+        String originalURL = Utils.HTTPS_API_GITHUB_COM_REPOS;
+        Utils.HTTPS_API_GITHUB_COM_REPOS = "";
+        System.out.println(Utils.getLastPageNumber("mewo2/terrain", null, GitHubApiEndpoints.STARGAZERS, null, null, null));
+        //fix the service
+        Utils.HTTPS_API_GITHUB_COM_REPOS = originalURL;
+    }
 }
+
