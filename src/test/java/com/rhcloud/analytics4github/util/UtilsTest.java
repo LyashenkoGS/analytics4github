@@ -132,11 +132,11 @@ public class UtilsTest {
     @Test(expected = GitHubRESTApiException.class)
     public void noAccessToLastPageNumber() throws Exception {
         //break the service
-        String originalURL = Utils.GITHUB_API_REPOS_URL;
-        Utils.GITHUB_API_REPOS_URL = "";
-        System.out.println(Utils.getLastPageNumber("mewo2/terrain", null, GitHubApiEndpoints.STARGAZERS, null, null));
+        String originalURL = Utils.HTTPS_API_GITHUB_COM_REPOS;
+        Utils.HTTPS_API_GITHUB_COM_REPOS = "";
+        System.out.println(Utils.getLastPageNumber("mewo2/terrain", null, GitHubApiEndpoints.STARGAZERS, null, null, null));
         //fix the service
-        Utils.GITHUB_API_REPOS_URL = originalURL;
+        Utils.HTTPS_API_GITHUB_COM_REPOS = originalURL;
     }
 }
 

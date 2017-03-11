@@ -56,7 +56,7 @@ public class UniqueContributorsServiceTest {
 
     @Test
     public void getCommits() throws Exception {
-        uniqueContributorsService.getCommits(PROJECT, Utils.getThisMonthBeginInstant());
+        uniqueContributorsService.getCommits(PROJECT, Utils.getThisMonthBeginInstant(), null);
     }
 
     @Test

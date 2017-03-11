@@ -28,10 +28,11 @@
                 $('#repository').attr("href", "https://github.com" + msg)
             })
             .fail(function (jqXHR, textStatus) {
-                console.log(textStatus);
+                console.log(textStatus)
+                console.log(jqXHR)
                 $('#month-frequency-plot')
-                    .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
-                        + textStatus
+                    .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
+                        + jqXHR.responseText
                         + "<div>Sorry for temporary inconvenience<div></div>");
             });
     });
@@ -209,8 +210,8 @@ $(function () {
                 })
                 .fail(function (jqXHR, textStatus) {
                     $('#week-frequency-plot')
-                        .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
-                            + textStatus
+                        .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
+                            + jqXHR.responseText
                             + "<div>Sorry for temporary inconvenience<div></div>");
                 });
 
@@ -268,8 +269,8 @@ $(function () {
                 })
                 .fail(function (jqXHR, textStatus) {
                     $('#month-frequency-plot')
-                        .html("<div class='alert alert-warning' role='alert'>Request failed with status:"
-                            + textStatus
+                        .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
+                            + jqXHR.responseText
                             + "<div>Sorry for temporary inconvenience<div></div>");
                 });
         })

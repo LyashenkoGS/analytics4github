@@ -45,7 +45,7 @@ public class CommitsServiceIntegrationalTest {
         String repositoryName;
         while ((repositoryName = br.readLine()) != null) {
             LOG.debug(repositoryName);
-            ArrayNode thisWeekCommitsFrequencyPerProject = commitsService.getThisWeekCommitsFrequencyPerProject(repositoryName);
+            ResponceForFrontendDto thisWeekCommitsFrequencyPerProject = commitsService.getThisWeekCommitsFrequencyPerProject(repositoryName);
             LOG.debug(thisWeekCommitsFrequencyPerProject.toString());
         }
     }

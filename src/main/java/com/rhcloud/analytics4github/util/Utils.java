@@ -34,7 +34,7 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
  * @author lyashenkogs.
  */
 public class Utils {
-    private static final String HTTPS_API_GITHUB_COM_REPOS = "https://api.github.com/repos/";
+    static  String HTTPS_API_GITHUB_COM_REPOS = "https://api.github.com/repos/";
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
     private Utils() {
     }
