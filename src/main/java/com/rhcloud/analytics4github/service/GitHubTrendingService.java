@@ -28,17 +28,12 @@ public class GitHubTrendingService {
     private static Logger LOG = LoggerFactory.getLogger(GitHubTrendingService.class);
     List<String> trendingRepos = new ArrayList<>();
 
-    /**
-     * Parses a GitHub trending web page and returns top 10 trending repositories
-     *
-     * @return top trending repositories list
-     * @throws TrendingException can't get or parse the web page
-     */
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     /**
-     *  Parses http:github/trending that retrieve repo to the cash will be invoked every 2 minutes.
-     * @throws TrendingException
+     * Parses <a href="http://github/trending">http://github/trending</a></> and retrieves 10 top repositories
+     * The  method cash will be invoked every 2 minutes.
+     * @throws TrendingException can't get or parse the web page
      */
     @Scheduled(fixedRate = 120000)
     public void parseTrendingReposWebPage() throws TrendingException {
