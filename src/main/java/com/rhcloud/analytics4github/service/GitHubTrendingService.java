@@ -9,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,7 +22,6 @@ import java.util.List;
 @Service
 public class GitHubTrendingService {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     static String GITHUB_TRENDING_URL = "https://github.com/trending?since=monthly";
     private static Logger LOG = LoggerFactory.getLogger(GitHubTrendingService.class);
     private List<String> trendingRepos = new ArrayList<>();
@@ -37,7 +34,6 @@ public class GitHubTrendingService {
      */
     @Scheduled(fixedRate = 120000)
     public void parseTrendingReposWebPage() throws TrendingException {
-        LOG.info("The time is now {}", dateFormat.format(new Date()));
         try {
             Document webPageDocument = Jsoup.connect(GITHUB_TRENDING_URL).get();
             Elements elements = webPageDocument.select("h3>a");
