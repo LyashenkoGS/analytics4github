@@ -24,15 +24,15 @@ import java.util.List;
 @Service
 public class GitHubTrendingService {
 
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     static String GITHUB_TRENDING_URL = "https://github.com/trending?since=monthly";
     private static Logger LOG = LoggerFactory.getLogger(GitHubTrendingService.class);
-    List<String> trendingRepos = new ArrayList<>();
-
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    private List<String> trendingRepos = new ArrayList<>();
 
     /**
      * Parses <a href="http://github/trending">http://github/trending</a></> and retrieves 10 top repositories
      * The  method cash will be invoked every 2 minutes.
+     *
      * @throws TrendingException can't get or parse the web page
      */
     @Scheduled(fixedRate = 120000)
@@ -47,13 +47,14 @@ public class GitHubTrendingService {
                 trendingRepos.add(element.attr("href"));
             });
         } catch (Exception exception) {
-            throw new TrendingException(" Can not access GitHub Trending page <a href='https://github.com/trending'>https://github.com/trending<a/>" ,exception);
+            throw new TrendingException(" Can not access GitHub Trending page <a href='https://github.com/trending'>https://github.com/trending<a/>", exception);
         }
     }
 
-    public List<String> getTrendingRepos() throws TrendingException{
-        if(!trendingRepos.isEmpty()){
+    public List<String> getTrendingRepos() throws TrendingException {
+        if (!trendingRepos.isEmpty()) {
             return trendingRepos;
-        }else   throw new TrendingException(" Can not access GitHub Trending page <a href='https://github.com/trending'>https://github.com/trending</a> " );
+        } else
+            throw new TrendingException(" Can not access GitHub Trending page <a href='https://github.com/trending'>https://github.com/trending</a> ");
     }
 }
