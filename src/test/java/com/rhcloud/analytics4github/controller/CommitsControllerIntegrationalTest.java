@@ -29,6 +29,6 @@ public class CommitsControllerIntegrationalTest {
 
     @Test
     public void testCommitsPerMonthEndpoint() {
-        assertEquals(this.testRestTemplate.getForEntity("/commitsPerMonth?projectName=" + PROJECT_NAME, String.class).getStatusCodeValue(), 200);
+        assertEquals(this.testRestTemplate.getForEntity("/stargazersPerMonth?projectName=mewo2/terrain&startPeriod=2017-01-01&endPeriod=2017-01-31", String.class).getStatusCodeValue(), 200);
     }
 }

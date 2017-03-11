@@ -1,8 +1,8 @@
 package com.rhcloud.analytics4github.util;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
+import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
+import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +33,8 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
  *
  * @author lyashenkogs.
  */
-public abstract class Utils {
-    static String GITHUB_API_REPOS_URL = "https://api.github.com/repos/";
+public class Utils {
+    private static final String HTTPS_API_GITHUB_COM_REPOS = "https://api.github.com/repos/";
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
     private Utils() {
     }
@@ -54,12 +54,19 @@ public abstract class Utils {
         return isWithinThisWeekRange;
     }
 
-    public static boolean isWithinThisMonthRange(LocalDate timestamp) {
+    /**
+     *
+     * @param timestamp String representing date and time in ISO 8601 YYYY-MM-DDTHH:MM:SSZ
+     * @param requestFromFrontendDto DTO came from frontend
+     * @return if commit is withing analitics period
+     */
+    public static boolean isWithinThisMonthRange(LocalDate timestamp, RequestFromFrontendDto requestFromFrontendDto) {
         LOG.debug("Check is the " + timestamp + " is within this month range");
-        LocalDate monthStart = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate monthEnd = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
-        boolean isWithinThisMonthRange = ((timestamp.isAfter(monthStart) || timestamp.isEqual(monthStart))
-                && (timestamp.isBefore(monthEnd) || timestamp.isEqual(monthEnd)));
+        LocalDate monthStart = requestFromFrontendDto.getStartPeriod();
+        LocalDate monthEnd = requestFromFrontendDto.getEndPeriod();
+
+        boolean isWithinThisMonthRange = (timestamp.isAfter(monthStart) || timestamp.isEqual(monthStart))
+                && (timestamp.isBefore(monthEnd) || timestamp.isEqual(monthEnd));
         LOG.debug(String.valueOf(isWithinThisMonthRange));
         return isWithinThisMonthRange;
     }
@@ -75,8 +82,12 @@ public abstract class Utils {
     public static Instant getThisMonthBeginInstant() {
         LocalDateTime localDate = LocalDateTime.now().withSecond(0).withHour(0).withMinute(0)
                 .with(TemporalAdjusters.firstDayOfMonth()).truncatedTo(ChronoUnit.SECONDS);
-        Instant instant = localDate.toInstant(ZoneOffset.UTC);
-        return instant;
+        return localDate.toInstant(ZoneOffset.UTC);
+    }
+
+    public static Instant getPeriodInstant(LocalDate localDate) {
+        LocalDateTime localDateTime = localDate.atStartOfDay();
+        return localDateTime.toInstant(ZoneOffset.UTC);
     }
 
     public static Instant getThisWeekBeginInstant() {
@@ -85,10 +96,11 @@ public abstract class Utils {
         return localDate.toInstant(ZoneOffset.UTC);
     }
 
-    public static ArrayNode buildJsonForHIghChart(List<Integer> stargazersFrequencyList) throws IOException, ClassNotFoundException {
-        ArrayNode outputJson = JsonNodeFactory.instance.arrayNode();
-        outputJson.addObject().put("name", "Stars").putPOJO("data", stargazersFrequencyList);
-        return outputJson;
+    public static ResponceForFrontendDto buildJsonForFrontend(List<Integer> stargazersFrequencyList) throws IOException, ClassNotFoundException {
+        ResponceForFrontendDto outputDto = new ResponceForFrontendDto();
+        outputDto.setName("Stars");
+        outputDto.setData(stargazersFrequencyList);
+        return outputDto;
     }
 
     public static List<Integer> parseWeekStargazersMapFrequencyToWeekFrequencyList(TreeMap<LocalDate, Integer> weekStargazersFrequenyMap) {
@@ -135,6 +147,29 @@ public abstract class Utils {
         return monthStargazersFrequency;
     }
 
+    public static List<Integer> parseMonthFrequencyMapCommitToFrequencyLIst(
+            TreeMap<LocalDate, Integer> mockWeekStargazersFrequencyMap, RequestFromFrontendDto requestFromFrontendDto) throws IOException {
+        int lastDayOfMonth = requestFromFrontendDto.getEndPeriod().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
+        LOG.debug(String.valueOf(lastDayOfMonth));
+        List<Integer> monthStargazersFrequency = new ArrayList<>(lastDayOfMonth);
+        for (int dayOfMonth = 1; dayOfMonth < lastDayOfMonth + 1; dayOfMonth++) {
+            LOG.debug("day of month: " + dayOfMonth);
+            Optional<Integer> frequency = Optional.empty();
+            for (LocalDate localDate : mockWeekStargazersFrequencyMap.keySet()) {
+                if (dayOfMonth == localDate.getDayOfMonth()) {
+                    frequency = Optional.of(mockWeekStargazersFrequencyMap.get(localDate));
+                }
+            }
+            if (frequency.isPresent()) {
+                monthStargazersFrequency.add(frequency.get());
+            } else {
+                monthStargazersFrequency.add(0);
+            }
+            LOG.debug(monthStargazersFrequency.toString());
+        }
+        return monthStargazersFrequency;
+    }
+
     public static TreeMap<LocalDate, Integer> buildStargazersFrequencyMap(List<LocalDate> stargazersList) throws IOException, URISyntaxException, ExecutionException, InterruptedException {
         //temporary set
         Set<LocalDate> stargazersDateSet = stargazersList.stream().collect(Collectors.toSet());
@@ -145,48 +180,50 @@ public abstract class Utils {
         return localDateIntegerNavigableMap;
     }
 
-
-    public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since) throws GitHubRESTApiException {
-        String URL;
+    public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since, Instant until) throws GitHubRESTApiException{
+        String url;
         try {
-            if (since != null) {
-                URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
-                        .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
-                        .queryParam("since", since)
-                        .build().encode()
-                        .toUriString();
-            } else if (author != null) {
-                URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
-                        .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
-                        .queryParam("author", author)
-                        .build().encode()
-                        .toUriString();
-            } else {
-                URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
-                        .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
-                        .build().encode()
-                        .toUriString();
-            }
-            LOG.debug("URL to get the last commits page number:" + URL);
-            HttpHeaders headers = restTemplate.headForHeaders(URL);
-            String link = headers.getFirst("Link");
-            LOG.debug("Link: " + link);
-            LOG.debug("parse link by regexp");
-            Pattern p = Pattern.compile("page=(\\d*)>; rel=\"last\"");
-            int lastPageNum = 0;
-            try {
-                Matcher m = p.matcher(link);
-                if (m.find()) {
-                    lastPageNum = Integer.valueOf(m.group(1));
-                    LOG.debug("parse result: " + lastPageNum);
-                }
-            } catch (NullPointerException npe) {
-                LOG.info("Probably " + repository + "commits consists from only one page");
-                return 1;
-            }
-            return lastPageNum;
-        } catch (Exception e) {
-            throw new GitHubRESTApiException(" Can't access GitHub REST ", e);
+        if (since != null) {
+            url = UriComponentsBuilder.fromHttpUrl(HTTPS_API_GITHUB_COM_REPOS)
+                    .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
+                    .queryParam("since", since)
+                    .queryParam("until", until)
+                    .build().encode()
+                    .toUriString();
+        } else if (author != null) {
+            url = UriComponentsBuilder.fromHttpUrl(HTTPS_API_GITHUB_COM_REPOS)
+                    .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
+                    .queryParam("author", author)
+                    .queryParam("until", until)
+                    .build().encode()
+                    .toUriString();
+        } else {
+            url = UriComponentsBuilder.fromHttpUrl(HTTPS_API_GITHUB_COM_REPOS)
+                    .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
+                    .build().encode()
+                    .toUriString();
         }
+        LOG.debug("URL to get the last commits page number:" + url);
+        HttpHeaders headers = restTemplate.headForHeaders(url);
+        String link = headers.getFirst("Link");
+        LOG.debug("Link: " + link);
+        LOG.debug("parse link by regexp");
+        Pattern p = Pattern.compile("page=(\\d*)>; rel=\"last\"");
+        int lastPageNum = 0;
+        try {
+            Matcher m = p.matcher(link);
+            if (m.find()) {
+                lastPageNum = Integer.valueOf(m.group(1));
+                LOG.debug("parse result: " + lastPageNum);
+            }
+        } catch (NullPointerException npe) {
+            //  npe.printStackTrace();
+            LOG.info("Propably " + repository + "commits consists from only one page");
+            return 1;
+        }
+        return lastPageNum;
+    } catch (Exception e) {
+        throw new GitHubRESTApiException(" Can't access GitHub REST ", e);
+    }
     }
 }

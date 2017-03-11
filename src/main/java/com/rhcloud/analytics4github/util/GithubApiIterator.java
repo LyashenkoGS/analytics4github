@@ -35,6 +35,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     private final RestTemplate restTemplate;
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
     private Instant since = null;
+    private Instant until = null;
     private String author;
     private volatile AtomicInteger counter = new AtomicInteger();
 
@@ -59,14 +60,14 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     }
 
     public GithubApiIterator(String projectName, RestTemplate restTemplate, GitHubApiEndpoints endpoint,
-                             Instant since) throws URISyntaxException, GitHubRESTApiException {
+                             Instant since, Instant until) throws URISyntaxException, GitHubRESTApiException {
         this.since = since;
+        this.until = until;
         this.restTemplate = restTemplate;
         this.projectName = projectName;
         this.githubEndpoint = endpoint;
         this.numberOfPages = getLastPageNumber(projectName);
         this.counter.set(numberOfPages);
-
     }
 
     public int getNumberOfPages() {
@@ -78,7 +79,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     }
 
     public int getLastPageNumber(String projectName) throws URISyntaxException, GitHubRESTApiException {
-        return Utils.getLastPageNumber(projectName, restTemplate, githubEndpoint, author, since);
+        return Utils.getLastPageNumber(projectName, restTemplate, githubEndpoint, author, since, until);
     }
 
     public synchronized boolean hasNext() {

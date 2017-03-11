@@ -2,6 +2,8 @@ package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
+import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
+import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 @SpringBootTest
 public class StargazersServiceIntegrationalTest {
     private static Logger LOG = LoggerFactory.getLogger(com.rhcloud.analytics4github.config.InterceptorsIntegrationalTest.class);
+    private static String PROJECT_NAME = "mewo2/terrain";
 
     @Autowired
     private StargazersService stargazersService;
@@ -41,20 +44,24 @@ public class StargazersServiceIntegrationalTest {
         String repositoryName;
         while ((repositoryName = br.readLine()) != null) {
             LOG.debug(repositoryName);
-            ArrayNode thisWeekStargazersFrequencyPerProject = stargazersService.getThisWeekStargazersFrequencyPerProject(repositoryName);
+            ResponceForFrontendDto thisWeekStargazersFrequencyPerProject = stargazersService.getThisWeekStargazersFrequencyPerProject(repositoryName);
             LOG.debug(thisWeekStargazersFrequencyPerProject.toString());
         }
     }
 
     @Test
     public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, GitHubRESTApiException {
-        List<LocalDate> monthStargazersList = stargazersService.getMonthStargazersList("mewo2/terrain");
+        RequestFromFrontendDto requestFromFrontendDto = new RequestFromFrontendDto();
+        requestFromFrontendDto.setProjectName(PROJECT_NAME);
+        requestFromFrontendDto.setStartPeriod(LocalDate.parse("2017-01-01"));
+        requestFromFrontendDto.setEndPeriod(LocalDate.parse("2017-01-31"));
+        List<LocalDate> monthStargazersList = stargazersService.getMonthStargazersList(requestFromFrontendDto);
         LOG.debug(monthStargazersList.toString());
     }
 
     @Test
     public void getWeekStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException, GitHubRESTApiException {
-        List<LocalDate> monthStargazersList = stargazersService.getWeekStargazersList("mewo2/terrain");
+        List<LocalDate> monthStargazersList = stargazersService.getWeekStargazersList(PROJECT_NAME);
         LOG.debug(monthStargazersList.toString());
     }
 }

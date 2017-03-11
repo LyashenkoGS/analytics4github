@@ -2,7 +2,10 @@ package com.rhcloud.analytics4github.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
+import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
+import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.service.UniqueContributorsService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -23,14 +28,14 @@ public class UniqueContributorsController {
     private UniqueContributorsService uniqueContributorsService;
 
     @RequestMapping(value = "/uniqueContributors", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public JsonNode getStargazersByProject(@RequestParam String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException, GitHubRESTApiException {
-        LOG.info("projectName parameter :" + projectName);
-        return uniqueContributorsService.getUniqueContributorsFrequencyByWeek(projectName);
+    public Collection<ResponceForFrontendDto> getStargazersByProject(RequestFromFrontendDto requestFromFrontendDto) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException, GitHubRESTApiException {
+        LOG.info("projectName parameter :" + requestFromFrontendDto.getProjectName());
+        return Collections.singletonList(uniqueContributorsService.getUniqueContributorsFrequencyByWeek(requestFromFrontendDto.getProjectName()));
     }
 
     @RequestMapping(value = "/uniqueContributorsPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public JsonNode getMonthStargazersByProject(@RequestParam String projectName) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
-        LOG.info("projectName parameter :" + projectName);
-        return uniqueContributorsService.getUniqueContributorsFrequencyByMonth(projectName);
+    public Collection<ResponceForFrontendDto> getMonthStargazersByProject(RequestFromFrontendDto requestFromFrontendDto) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
+        LOG.info("projectName parameter :" + requestFromFrontendDto.getProjectName());
+        return Collections.singletonList(uniqueContributorsService.getUniqueContributorsFrequencyByMonth(requestFromFrontendDto));
     }
 }
