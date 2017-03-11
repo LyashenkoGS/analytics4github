@@ -20,9 +20,9 @@ import static org.junit.Assert.assertEquals;
 public class GitHubTrendingControllerTest {
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
-    @Autowired
     GitHubTrendingService gitHubTrendingService;
+    @Autowired
+    private TestRestTemplate testRestTemplate;
 
     @Test
     public void getRandomTrendingRepo() throws TrendingException {

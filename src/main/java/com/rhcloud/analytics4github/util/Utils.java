@@ -33,12 +33,11 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
  *
  * @author lyashenkogs.
  */
-public abstract  class Utils {
-    private Utils() {
-    }
-
+public abstract class Utils {
     static String GITHUB_API_REPOS_URL = "https://api.github.com/repos/";
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
+    private Utils() {
+    }
 
     /**
      * Assert that given Date is in the range from current monday to sunday
@@ -150,26 +149,25 @@ public abstract  class Utils {
     public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since) throws GitHubRESTApiException {
         String URL;
         try {
-        if (since != null) {
-            URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
-                    .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
-                    .queryParam("since", since)
-                    .build().encode()
-                    .toUriString();
-        } else if (author != null) {
-            URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
-                    .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
-                    .queryParam("author", author)
-                    .build().encode()
-                    .toUriString();
-        } else {
-            URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
-                    .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
-                    .build().encode()
-                    .toUriString();
-        }
-        LOG.debug("URL to get the last commits page number:" + URL);
-
+            if (since != null) {
+                URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
+                        .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
+                        .queryParam("since", since)
+                        .build().encode()
+                        .toUriString();
+            } else if (author != null) {
+                URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
+                        .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
+                        .queryParam("author", author)
+                        .build().encode()
+                        .toUriString();
+            } else {
+                URL = UriComponentsBuilder.fromHttpUrl(GITHUB_API_REPOS_URL)
+                        .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
+                        .build().encode()
+                        .toUriString();
+            }
+            LOG.debug("URL to get the last commits page number:" + URL);
             HttpHeaders headers = restTemplate.headForHeaders(URL);
             String link = headers.getFirst("Link");
             LOG.debug("Link: " + link);
@@ -188,7 +186,7 @@ public abstract  class Utils {
             }
             return lastPageNum;
         } catch (Exception e) {
-            throw new GitHubRESTApiException(" Can't access GitHub REST ",e);
+            throw new GitHubRESTApiException(" Can't access GitHub REST ", e);
         }
     }
 }

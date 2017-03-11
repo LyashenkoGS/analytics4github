@@ -1,7 +1,6 @@
 package com.rhcloud.analytics4github.repository;
 
 import com.rhcloud.analytics4github.domain.RequestToAPI;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;

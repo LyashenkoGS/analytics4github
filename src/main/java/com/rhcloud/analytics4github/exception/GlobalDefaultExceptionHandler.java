@@ -22,7 +22,7 @@ public class GlobalDefaultExceptionHandler extends ResponseEntityExceptionHandle
     @ExceptionHandler(value = {GitHubRESTApiException.class})
     public ResponseEntity gitHubRESTAPIException(GitHubRESTApiException exception) {
         LOG.error(exception.getMessage(), exception);
-        return  ResponseEntity
+        return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
     }

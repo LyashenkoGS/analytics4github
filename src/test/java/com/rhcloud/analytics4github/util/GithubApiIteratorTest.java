@@ -2,7 +2,6 @@ package com.rhcloud.analytics4github.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
-
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.junit.Assert;
 import org.junit.Test;

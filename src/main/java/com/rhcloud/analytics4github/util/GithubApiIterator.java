@@ -2,7 +2,6 @@ package com.rhcloud.analytics4github.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
-
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,7 +149,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     /**
      * invoke explicitly after every class usage to close ThreadPool correctly
      */
-    public void close(){
+    public void close() {
         this.executor.shutdown();
     }
 }
