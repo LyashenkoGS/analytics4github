@@ -6,7 +6,136 @@
  * This file include all JavaScript methods which used on UI
  * and method wich send ajax for backend
  */
+/**
+ * Get stargazers per week json and display as a column chart
+ */
+function analyze() {
+    var inputValue = $('#projectName').val();
+    console.log(inputValue);
+    var active_tab = $("ul.nav-tabs .active").attr('id');
+    console.log("active tab: " + active_tab);
+    $.ajax({
+        //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
+        url: "/" + active_tab + "?projectName="
+        + inputValue,
+        beforeSend: function () {
+            $('#week-frequency-plot')
+                .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
+        }
+    })
+        .done(function (msg) {
+            var response = msg;
+            $('#week-frequency-plot').highcharts({
+                chart: {
+                    type: 'line',
+                    height: '200'
+                },
+                legend: {
+                    enabled: false
+                },
+                title: {
+                    style: {
+                        "display": "none"
+                    }
+                },
+                xAxis: {
+                    categories: [
+                        'Mon',
+                        'Tue',
+                        'Wed',
+                        'Thu',
+                        'Fri',
+                        'Sat',
+                        'Sun'
+                    ]
+                },
+                yAxis: {
+                    min: 0,
+                    tickInterval: 1
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
+                    +
+                    '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    series: {
+                        color: '#1db34f'
+                    }
+                },
+                series: response
+            });
+        })
+        .fail(function (jqXHR, textStatus) {
+            $('#week-frequency-plot')
+                .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
+                    + jqXHR.responseText
+                    + "<div>Sorry for temporary inconvenience<div></div>");
+        });
 
+    $.ajax({
+        //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
+        url: "/" + active_tab + "PerMonth" + "?projectName="
+        + inputValue + "&startPeriod=" + parseDateToISOString(date) + "&endPeriod=" + parseDateToISOString(endPeriod),
+        beforeSend: function () {
+            $('#month-frequency-plot')
+                .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
+        }
+    })
+        .done(function (msg) {
+            var response = msg;
+            $('#month-frequency-plot').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                legend: {
+                    enabled: false
+                },
+                title: {
+                    style: {
+                        "display": "none"
+                    }
+                },
+                xAxis: {
+                    tickInterval: 1,
+                    min: 1
+                },
+                yAxis: {
+                    min: 0
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
+                    +
+                    '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.1,
+                        borderWidth: 0,
+                        groupPadding: 0
+                    },
+                    series: {
+                        color: '#f17f49'
+                    }
+                },
+                series: response
+            });
+        })
+        .fail(function (jqXHR, textStatus) {
+            $('#month-frequency-plot')
+                .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
+                    + jqXHR.responseText
+                    + "<div>Sorry for temporary inconvenience<div></div>");
+        });
+}
 /**
  * This method display random trending repository to analyze
  */
@@ -17,6 +146,7 @@
             url: "/randomRequestTrendingRepoName"
         })
             .done(function (msg) {
+
                 var response = msg;
                 $('#projectName').text(msg);
                 $('#projectName').val(msg);
@@ -25,7 +155,8 @@
                     + msg)
                 console.log(msg)
                 $('#repository').text(msg);
-                $('#repository').attr("href", "https://github.com" + msg)
+                $('#repository').attr("href", "https://github.com" + msg);
+                analyze();
             })
             .fail(function (jqXHR, textStatus) {
                 console.log(textStatus)
@@ -43,18 +174,18 @@ var endPeriod = new Date();
 
 function parseDateToISOString(date) {
     var dateReturn = '';
-    dateReturn+=date.getFullYear()+'-';
-    if ((date.getMonth()+1).toString().length==1){
-        dateReturn+=0;
-        dateReturn+=(date.getMonth()+1)+'-';
-    }else {
-        dateReturn+=(date.getMonth()+1)+'-';
+    dateReturn += date.getFullYear() + '-';
+    if ((date.getMonth() + 1).toString().length == 1) {
+        dateReturn += 0;
+        dateReturn += (date.getMonth() + 1) + '-';
+    } else {
+        dateReturn += (date.getMonth() + 1) + '-';
     }
-    if (date.getDate().toString().length==1){
-        dateReturn+=0;
-        dateReturn+=date.getDate();
-    } else{
-        dateReturn+=date.getDate();
+    if (date.getDate().toString().length == 1) {
+        dateReturn += 0;
+        dateReturn += date.getDate();
+    } else {
+        dateReturn += date.getDate();
     }
     return dateReturn;
 }
@@ -64,9 +195,9 @@ function parseDateToISOString(date) {
  */
 function displayCurrentDate() {
     date.setMonth(date.getMonth(), 1);
-    date.setHours(00,00,00);
-    endPeriod.setHours(23,59,59);
-    endPeriod.setFullYear(date.getFullYear(), date.getMonth()+1,0);
+    date.setHours(00, 00, 00);
+    endPeriod.setHours(23, 59, 59);
+    endPeriod.setFullYear(date.getFullYear(), date.getMonth() + 1, 0);
     var year = date.getFullYear(), month = date.getMonth();
     var lastDay = new Date(year, month + 1, 0).getDate();
     var objDate = new Date(),
@@ -85,7 +216,7 @@ displayCurrentDate();
 $("#previousDate").click(
     function () {
         date.setMonth(date.getMonth() - 1, 1);
-        endPeriod.setFullYear(date.getFullYear(), date.getMonth()+1, 0);
+        endPeriod.setFullYear(date.getFullYear(), date.getMonth() + 1, 0);
         var year = date.getFullYear();
         var month = date.getMonth();
         var lastDay = new Date(year, month + 1, 0).getDate();
@@ -104,7 +235,7 @@ $("#previousDate").click(
 $("#nextDate").click(
     function () {
         date.setMonth(date.getMonth() + 1, 1);
-        endPeriod.setFullYear(date.getFullYear(), date.getMonth()+1, 0);
+        endPeriod.setFullYear(date.getFullYear(), date.getMonth() + 1, 0);
         var year = date.getFullYear();
         var month = date.getMonth();
         var lastDay = new Date(year, month + 1, 0).getDate();
@@ -147,132 +278,7 @@ $(function () {
      * Get stargazers per week json and display as a column chart
      */
     $(function () {
-        $('#analyze-btn').click(function () {
-            var inputValue = $('#projectName').val();
-            console.log(inputValue);
-            var active_tab = $("ul.nav-tabs .active").attr('id');
-            console.log("active tab: " + active_tab);
-            $.ajax({
-                //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-                url: "/" + active_tab + "?projectName="
-                + inputValue,
-                beforeSend: function () {
-                    $('#week-frequency-plot')
-                        .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
-                }
-            })
-                .done(function (msg) {
-                    var response = msg;
-                    $('#week-frequency-plot').highcharts({
-                        chart: {
-                            type: 'line',
-                            height: '200'
-                        },
-                        legend: {
-                            enabled: false
-                        },
-                        title: {
-                            style: {
-                                "display": "none"
-                            }
-                        },
-                        xAxis: {
-                            categories: [
-                                'Mon',
-                                'Tue',
-                                'Wed',
-                                'Thu',
-                                'Fri',
-                                'Sat',
-                                'Sun'
-                            ]
-                        },
-                        yAxis: {
-                            min: 0,
-                            tickInterval: 1
-                        },
-                        tooltip: {
-                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
-                            +
-                            '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                            footerFormat: '</table>',
-                            shared: true,
-                            useHTML: true
-                        },
-                        plotOptions: {
-                            series: {
-                                color: '#1db34f'
-                            }
-                        },
-                        series: response
-                    });
-                })
-                .fail(function (jqXHR, textStatus) {
-                    $('#week-frequency-plot')
-                        .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
-                            + jqXHR.responseText
-                            + "<div>Sorry for temporary inconvenience<div></div>");
-                });
-
-            $.ajax({
-                //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-                url: "/" + active_tab + "PerMonth" + "?projectName="
-                + inputValue + "&startPeriod=" + parseDateToISOString(date) + "&endPeriod=" + parseDateToISOString(endPeriod),
-                beforeSend: function () {
-                    $('#month-frequency-plot')
-                        .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
-                }
-            })
-                .done(function (msg) {
-                    var response = msg;
-                    $('#month-frequency-plot').highcharts({
-                        chart: {
-                            type: 'column'
-                        },
-                        legend: {
-                            enabled: false
-                        },
-                        title: {
-                            style: {
-                                "display": "none"
-                            }
-                        },
-                        xAxis: {
-                            tickInterval: 1,
-                            min: 1
-                        },
-                        yAxis: {
-                            min: 0
-                        },
-                        tooltip: {
-                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
-                            +
-                            '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                            footerFormat: '</table>',
-                            shared: true,
-                            useHTML: true
-                        },
-                        plotOptions: {
-                            column: {
-                                pointPadding: 0.1,
-                                borderWidth: 0,
-                                groupPadding: 0
-                            },
-                            series: {
-                                color: '#f17f49'
-                            }
-                        },
-                        series: response
-                    });
-                })
-                .fail(function (jqXHR, textStatus) {
-                    $('#month-frequency-plot')
-                        .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
-                            + jqXHR.responseText
-                            + "<div>Sorry for temporary inconvenience<div></div>");
-                });
-        })
+        $(document).ready(analyze())
+        $('#analyze-btn').click(analyze)
     })
 });
