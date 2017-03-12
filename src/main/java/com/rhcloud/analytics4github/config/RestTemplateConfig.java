@@ -18,6 +18,7 @@ public class RestTemplateConfig {
 
     @Autowired
     private AddOAuthTokenInterceptor oAuthTokenInterceptor;
+
     @Autowired
     private ChangeAcceptTypeForStargazersInterceptor changeAcceptTypeForStargazersInterceptor;
 

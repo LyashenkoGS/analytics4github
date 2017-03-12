@@ -1,7 +1,5 @@
 package com.rhcloud.analytics4github.service;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import org.junit.Test;

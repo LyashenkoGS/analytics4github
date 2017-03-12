@@ -1,9 +1,13 @@
 package com.rhcloud.analytics4github.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -37,7 +41,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     private Instant until = null;
     private String author;
     private volatile AtomicInteger counter = new AtomicInteger();
-
+    public static int requestsLeft;
 
     public GithubApiIterator(String projectName, RestTemplate restTemplate, GitHubApiEndpoints endpoint
     ) throws URISyntaxException {
@@ -110,7 +114,15 @@ public class GithubApiIterator implements Iterator<JsonNode> {
             String URL = page.encode().toUriString();
             LOG.debug(URL);
             //sent request
-            JsonNode node = restTemplate.getForObject(URL, JsonNode.class);
+            ObjectMapper mapper = new ObjectMapper();
+            HttpEntity entity = restTemplate.getForEntity(URL, JsonNode.class);
+            try {
+                HttpHeaders headers = entity.getHeaders();
+                requestsLeft = Integer.parseInt(headers.get("X-RateLimit-Remaining").get(0));
+            } catch (Exception e){
+                LOG.debug(e.getMessage());
+            }
+            JsonNode node = mapper.convertValue(entity.getBody(), JsonNode.class);
             LOG.debug(node.toString());
             return node;
         } else throw new IndexOutOfBoundsException("there is no next element");
