@@ -279,6 +279,10 @@ $(function () {
      */
     $(function () {
         $(document).ready(analyze())
-        $('#analyze-btn').click(analyze)
+        $('#analyze-btn').click(analyze);
+        $('#stargazers').click(analyze);
+        $('#commits').click(analyze);
+        $('#uniqueContributors').click(analyze);
+
     })
 });
