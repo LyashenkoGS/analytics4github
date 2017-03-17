@@ -1,19 +1,24 @@
 /**
- * Created by iron on 24.12.16.
+ *  This file include all JavaScript methods that renders UI
+ * and sends ajax requests to backend REST endpoints
  */
 
+//Global variables
+var date = new Date();
+var endPeriod = new Date();
+
 /**
- * This file include all JavaScript methods which used on UI
- * and method wich send ajax for backend
- */
-/**
- * Get stargazers per week json and display as a column chart
+ * Display a charts based on analytics result.
+ * 1. performs a REST call to analyze stargazers|commits|stars per week
+ * 2. performs a REST call to analyze stargazers|commits|stars per month
+ * depends on currently selected tab on UI and currently selected month on UI
  */
 function analyze() {
     var inputValue = $('#projectName').val();
     console.log(inputValue);
     var active_tab = $("ul.nav-tabs .active").attr('id');
     console.log("active tab: " + active_tab);
+    //render frequency chart per week
     $.ajax({
         //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
         url: "/" + active_tab + "?projectName="
@@ -70,13 +75,13 @@ function analyze() {
                 series: response
             });
         })
-        .fail(function (jqXHR, textStatus) {
+        .fail(function (jqXHR) {
             $('#week-frequency-plot')
                 .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
                     + jqXHR.responseText
                     + "<div>Sorry for temporary inconvenience<div></div>");
         });
-
+    //render frequency chart per month
     $.ajax({
         //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
         url: "/" + active_tab + "PerMonth" + "?projectName="
@@ -129,48 +134,49 @@ function analyze() {
                 series: response
             });
         })
-        .fail(function (jqXHR, textStatus) {
+        .fail(function (jqXHR) {
             $('#month-frequency-plot')
                 .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
                     + jqXHR.responseText
                     + "<div>Sorry for temporary inconvenience<div></div>");
         });
 }
+
 /**
- * This method display random trending repository to analyze
+ * Displays  a random trending repository to analyze on a click to the "random-repo-btn"
  */
-(function () {
-    $('#random-repo-btn').click(function () {
-        $.ajax({
-            //thoughout front-end development  use http://localhost:8080/randomRequestTrendingRepoName" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-            url: "/randomRequestTrendingRepoName"
+function renderRandomTrendingREpository() {
+    $.ajax({
+        //throughout front-end development  use http://localhost:8080/randomRequestTrendingRepoName" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
+        url: "/randomRequestTrendingRepoName"
+    })
+        .done(function (msg) {
+            $('#projectName').text(msg);
+            $('#projectName').val(msg);
+            $('#projectName').attr("href", "https://github.com/" + msg);
+            console.log(msg)
+            $('#repository').text(msg);
+            $('#repository').attr("href", "https://github.com" + msg);
+            analyze();
         })
-            .done(function (msg) {
+        .fail(function (jqXHR, textStatus) {
+            console.log(textStatus)
+            console.log(jqXHR)
+            $('#month-frequency-plot')
+                .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
+                    + jqXHR.responseText
+                    + "<div>Sorry for temporary inconvenience<div></div>");
+        });
+}
 
-                var response = msg;
-                $('#projectName').text(msg);
-                $('#projectName').val(msg);
-                $('#projectName').attr("href",
-                    "https://github.com/"
-                    + msg)
-                console.log(msg)
-                $('#repository').text(msg);
-                $('#repository').attr("href", "https://github.com" + msg);
-                analyze();
-            })
-            .fail(function (jqXHR, textStatus) {
-                console.log(textStatus)
-                console.log(jqXHR)
-                $('#month-frequency-plot')
-                    .html("<div class='alert alert-danger' role='alert'>Request failed with status:"
-                        + jqXHR.responseText
-                        + "<div>Sorry for temporary inconvenience<div></div>");
-            });
-    });
-})();
-
-var date = new Date();
-var endPeriod = new Date();
+/**
+ * On typing a repository to the input form copy it to #repository block on UI and forming it's valid URL
+ */
+$('#projectName').on('input', function () {
+    console.log($(this).val());
+    $('#repository').text($(this).val());
+    $('#repository').attr("href", "https://github.com/" + $(this).val())
+});
 
 function parseDateToISOString(date) {
     var dateReturn = '';
@@ -191,7 +197,7 @@ function parseDateToISOString(date) {
 }
 
 /**
- * Display interval from the current month begin to the current month end on UI
+ * Displays interval from the current month begin to the current month end on UI
  */
 function displayCurrentDate() {
     date.setMonth(date.getMonth(), 1);
@@ -208,7 +214,6 @@ function displayCurrentDate() {
     document.getElementById('current-month-interval').textContent
         = intervalStart + " - " + intervalEnd;
 }
-displayCurrentDate();
 
 /**
  * Display interval from the previous month on UI
@@ -251,7 +256,7 @@ $("#nextDate").click(
 /**
  * Display interval from the current week month  to the current saturday  on UI
  */
-(function () {
+function displayInterval() {
     var curr = new Date; // get current date
     var firstDay = new Date(curr.setDate(curr.getDate() - curr.getDay()));// First day is the day of the month - the day of the week
     var last = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));// last day is the first day + 6
@@ -263,26 +268,16 @@ $("#nextDate").click(
         startMonth + " " + firstDay.getDate() + ", " + firstDay.getFullYear()
         + " - " +
         endMonth + " " + last.getDate() + ", " + last.getFullYear();
-})();
+}
 
-$(function () {
-    $(function () {
-        $('#projectName').on('input', function (e) {
-            console.log($(this).val());
-            $('#repository').text($(this).val());
-            $('#repository').attr("href", "https://github.com/" + $(this).val())
-        });
-    });
+//Functions that should start on UI loading
+analyze();
+displayInterval();
+displayCurrentDate();
 
-    /**
-     * Get stargazers per week json and display as a column chart
-     */
-    $(function () {
-        $(document).ready(analyze())
-        $('#analyze-btn').click(analyze);
-        $('#stargazers').click(analyze);
-        $('#commits').click(analyze);
-        $('#uniqueContributors').click(analyze);
-
-    })
-});
+//Assigning functions to buttons
+$('#analyze-btn').click(analyze);
+$('#stargazers').click(analyze);
+$('#commits').click(analyze);
+$('#uniqueContributors').click(analyze);
+$('#random-repo-btn').click(renderRandomTrendingREpository);
