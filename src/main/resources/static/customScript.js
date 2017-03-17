@@ -22,7 +22,7 @@ function analyze(e) {
         console.log("active tab: " + analyticsArea);
     }
     else {
-        analyticsArea = $(this).attr('id')
+        analyticsArea = $(this).attr('id');
         console.log("clicked tab: " + analyticsArea);
     }
     //render frequency chart per week
