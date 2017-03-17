@@ -11,17 +11,24 @@ var endPeriod = new Date();
  * Display a charts based on analytics result.
  * 1. performs a REST call to analyze stargazers|commits|stars per week
  * 2. performs a REST call to analyze stargazers|commits|stars per month
- * depends on currently selected tab on UI and currently selected month on UI
+ * implicit parameters are: currently selected or clicked tab on UI and currently selected month on UI
  */
-function analyze() {
+function analyze(e) {
     var inputValue = $('#projectName').val();
-    console.log(inputValue);
-    var active_tab = $("ul.nav-tabs .active").attr('id');
-    console.log("active tab: " + active_tab);
+    console.log("repository to analyse: " + inputValue);
+    var analyticsArea;
+    if (e === undefined || $(this).attr('id') == 'analyze-btn') {
+        analyticsArea = $('ul.nav-tabs .active').attr('id');
+        console.log("active tab: " + analyticsArea);
+    }
+    else {
+        analyticsArea = $(this).attr('id')
+        console.log("clicked tab: " + analyticsArea);
+    }
     //render frequency chart per week
     $.ajax({
         //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-        url: "/" + active_tab + "?projectName="
+        url: "/" + analyticsArea + "?projectName="
         + inputValue,
         beforeSend: function () {
             $('#week-frequency-plot')
@@ -84,7 +91,7 @@ function analyze() {
     //render frequency chart per month
     $.ajax({
         //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-        url: "/" + active_tab + "PerMonth" + "?projectName="
+        url: "/" + analyticsArea + "PerMonth" + "?projectName="
         + inputValue + "&startPeriod=" + parseDateToISOString(date) + "&endPeriod=" + parseDateToISOString(endPeriod),
         beforeSend: function () {
             $('#month-frequency-plot')
@@ -145,7 +152,7 @@ function analyze() {
 /**
  * Displays  a random trending repository to analyze on a click to the "random-repo-btn"
  */
-function renderRandomTrendingREpository() {
+function renderRandomTrendingRepository() {
     $.ajax({
         //throughout front-end development  use http://localhost:8080/randomRequestTrendingRepoName" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
         url: "/randomRequestTrendingRepoName"
@@ -276,8 +283,9 @@ displayInterval();
 displayCurrentDate();
 
 //Assigning functions to buttons
-$('#analyze-btn').click(analyze);
-$('#stargazers').click(analyze);
-$('#commits').click(analyze);
-$('#uniqueContributors').click(analyze);
-$('#random-repo-btn').click(renderRandomTrendingREpository);
+$('#analyze-btn').on('click', analyze);
+$('#stargazers').on('click', analyze);
+$('#commits').on('click', analyze);
+$('#uniqueContributors').on('click', analyze);
+
+$('#random-repo-btn').click(renderRandomTrendingRepository);
