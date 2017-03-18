@@ -29,7 +29,7 @@ public class Application {
     }
 
     /**
-     * with start application show requests number left
+     * with start application shows requests number left and parses top trending repositories
      */
     @PostConstruct
     public void initIt() {

@@ -43,7 +43,7 @@ var endPeriod = new Date();
 
 function getNumberOfRequestsLeft() {
     $.ajax({
-        url : "getRequestsLeft",
+        url : "getRequestsNumberLeft",
         success: function(data) {
             document.getElementById('requestsLeft').innerHTML = "Requests Left: "+data;
         }
