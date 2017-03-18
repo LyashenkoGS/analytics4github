@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
@@ -116,16 +115,21 @@ public class GithubApiIterator implements Iterator<JsonNode> {
             //sent request
             ObjectMapper mapper = new ObjectMapper();
             HttpEntity entity = restTemplate.getForEntity(URL, JsonNode.class);
-            try {
-                HttpHeaders headers = entity.getHeaders();
-                requestsLeft = Integer.parseInt(headers.get("X-RateLimit-Remaining").get(0));
-            } catch (Exception e){
-                LOG.debug(e.getMessage());
-            }
+            initializeRequestsLeft(restTemplate);
             JsonNode node = mapper.convertValue(entity.getBody(), JsonNode.class);
             LOG.debug(node.toString());
             return node;
         } else throw new IndexOutOfBoundsException("there is no next element");
+    }
+
+    public static void initializeRequestsLeft(RestTemplate restTemplate){
+        try{
+            HttpEntity entity = restTemplate.getForEntity("https://api.github.com/users/whatever", JsonNode.class);
+            HttpHeaders headers = entity.getHeaders();
+            GithubApiIterator.requestsLeft = Integer.parseInt(headers.get("X-RateLimit-Remaining").get(0));
+        } catch (Exception e){
+            LOG.debug(e.getMessage());
+        }
     }
 
     /**
