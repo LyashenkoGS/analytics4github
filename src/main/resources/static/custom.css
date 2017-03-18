@@ -10,6 +10,11 @@
     font-weight: 600;
 }
 
+#requestsLeft{
+    color: black;
+    text-align: right;
+}
+
 footer {
     margin-top: 20px;
 }

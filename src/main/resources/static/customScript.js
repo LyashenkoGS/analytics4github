@@ -35,11 +35,20 @@
                         + "<div>Sorry for temporary inconvenience<div></div>");
             });
     });
-    getRequestsLeft();
+    getNumberOfRequestsLeft();
 })();
 
 var date = new Date();
 var endPeriod = new Date();
+
+function getNumberOfRequestsLeft() {
+    $.ajax({
+        url : "getRequestsLeft",
+        success: function(data) {
+            document.getElementById('requestsLeft').innerHTML = "Requests Left: "+data;
+        }
+    })
+}
 
 function parseDateToISOString(date) {
     var dateReturn = '';
@@ -161,7 +170,7 @@ $(function () {
                 }
             })
                 .done(function (msg, status, header) {
-                    getRequestsLeft();
+                    getNumberOfRequestsLeft();
                     var response = msg;
                     $('#week-frequency-plot').highcharts({
                         chart: {
@@ -225,7 +234,7 @@ $(function () {
                 }
             })
                 .done(function (msg) {
-                    getRequestsLeft();
+                    getNumberOfRequestsLeft();
                     var response = msg;
                     $('#month-frequency-plot').highcharts({
                         chart: {
@@ -277,11 +286,3 @@ $(function () {
         })
     })
 });
-function getRequestsLeft() {
-    $.ajax({
-        url : "getRequestsLeft",
-        success: function(data) {
-            document.getElementById('requestsLeft').innerHTML = "Requests Left: "+data;
-        }
-    })
-}
