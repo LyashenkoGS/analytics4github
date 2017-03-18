@@ -28,6 +28,9 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
+    /**
+     * with start application show requests number left
+     */
     @PostConstruct
     public void initIt() {
         try {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
@@ -89,7 +90,9 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     }
 
     /**
+     * Performs side efects (parsing a header and updating the static field
      * @return JsonNode that represents a stargazers list
+     *
      */
     public JsonNode next() {
         if (counter.get() > 0) {
@@ -113,10 +116,9 @@ public class GithubApiIterator implements Iterator<JsonNode> {
             String URL = page.encode().toUriString();
             LOG.debug(URL);
             //sent request
-            ObjectMapper mapper = new ObjectMapper();
             HttpEntity entity = restTemplate.getForEntity(URL, JsonNode.class);
             initializeRequestsLeft(restTemplate);
-            JsonNode node = mapper.convertValue(entity.getBody(), JsonNode.class);
+            JsonNode node = new ObjectMapper().convertValue(entity.getBody(), JsonNode.class);
             LOG.debug(node.toString());
             return node;
         } else throw new IndexOutOfBoundsException("there is no next element");
