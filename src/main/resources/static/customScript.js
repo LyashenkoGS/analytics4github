@@ -8,6 +8,18 @@ var date = new Date();
 var endPeriod = new Date();
 
 /**
+ * Performs a call to the backend  GET "/getRequestsLeft" and displays a number of requests that left on UI
+ */
+function renderNumberOfRequestsLeft() {
+    $.ajax({
+        url: "getRequestsNumberLeft",
+        success: function (data) {
+            document.getElementById('requestsLeft').innerHTML = "Requests Left: " + data;
+        }
+    })
+}
+
+/**
  * Display a charts based on analytics result.
  * 1. performs a REST call to analyze stargazers|commits|stars per week
  * 2. performs a REST call to analyze stargazers|commits|stars per month
@@ -147,6 +159,7 @@ function analyze(e) {
                     + jqXHR.responseText
                     + "<div>Sorry for temporary inconvenience<div></div>");
         });
+    renderNumberOfRequestsLeft();
 }
 
 /**
@@ -281,6 +294,7 @@ function displayInterval() {
 analyze();
 displayInterval();
 displayCurrentDate();
+renderNumberOfRequestsLeft();
 
 //Assigning functions to buttons
 $('#analyze-btn').on('click', analyze);

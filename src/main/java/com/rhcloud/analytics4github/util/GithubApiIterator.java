@@ -1,10 +1,14 @@
 package com.rhcloud.analytics4github.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -38,7 +42,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     private Instant until = null;
     private String author;
     private volatile AtomicInteger counter = new AtomicInteger();
-
+    public static int requestsLeft;
 
     public GithubApiIterator(String projectName, RestTemplate restTemplate, GitHubApiEndpoints endpoint
     ) throws URISyntaxException, GitHubRESTApiException {
@@ -87,7 +91,9 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     }
 
     /**
+     * Performs side efects (parsing a header and updating the static field
      * @return JsonNode that represents a stargazers list
+     *
      */
     public JsonNode next() {
         if (counter.get() > 0) {
@@ -108,14 +114,25 @@ public class GithubApiIterator implements Iterator<JsonNode> {
                         .queryParam("page", counter.getAndDecrement())
                         .build();
             }
-
             String URL = page.encode().toUriString();
             LOG.debug(URL);
             //sent request
-            JsonNode node = restTemplate.getForObject(URL, JsonNode.class);
+            HttpEntity entity = restTemplate.getForEntity(URL, JsonNode.class);
+            initializeRequestsLeft(restTemplate);
+            JsonNode node = new ObjectMapper().convertValue(entity.getBody(), JsonNode.class);
             LOG.debug(node.toString());
             return node;
         } else throw new IndexOutOfBoundsException("there is no next element");
+    }
+
+    public static void initializeRequestsLeft(RestTemplate restTemplate){
+        try{
+            HttpEntity entity = restTemplate.getForEntity("https://api.github.com/users/whatever", JsonNode.class);
+            HttpHeaders headers = entity.getHeaders();
+            GithubApiIterator.requestsLeft = Integer.parseInt(headers.get("X-RateLimit-Remaining").get(0));
+        } catch (Exception e){
+            LOG.debug(e.getMessage());
+        }
     }
 
     /**

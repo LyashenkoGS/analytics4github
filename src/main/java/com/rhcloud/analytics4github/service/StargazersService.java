@@ -104,6 +104,4 @@ public class StargazersService {
         LOG.debug("finish parsing stargazers" + thisMonthAllStargazersDateList.toString());
         return thisMonthAllStargazersDateList;
     }
-
-
 }

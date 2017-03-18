@@ -2,12 +2,10 @@ package com.rhcloud.analytics4github.dto;
 
 import java.util.List;
 
-/**
- * Created by Iron on 27.12.2016.
- */
 public class ResponceForFrontendDto {
 
     private String name;
+    private int requestsLeft;
     private List<Integer> data;
 
     public ResponceForFrontendDto() {
@@ -16,6 +14,12 @@ public class ResponceForFrontendDto {
     public ResponceForFrontendDto(String name, List<Integer> data) {
         this.name = name;
         this.data = data;
+    }
+
+    public ResponceForFrontendDto(String name, List<Integer> data, int requestsLeft) {
+        this.name = name;
+        this.data = data;
+        this.requestsLeft = requestsLeft;
     }
 
     public String getName() {
@@ -32,5 +36,13 @@ public class ResponceForFrontendDto {
 
     public void setData(List<Integer> data) {
         this.data = data;
+    }
+
+    public Integer getRequestsLeft() {
+        return requestsLeft;
+    }
+
+    public void setRequestsLeft(Integer requestsLeft) {
+        this.requestsLeft = requestsLeft;
     }
 }
