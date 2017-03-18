@@ -3,6 +3,7 @@ package com.rhcloud.analytics4github.util;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -33,8 +34,10 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
  * @author lyashenkogs.
  */
 public class Utils {
-    private static final String HTTPS_API_GITHUB_COM_REPOS = "https://api.github.com/repos/";
+    static  String HTTPS_API_GITHUB_COM_REPOS = "https://api.github.com/repos/";
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
+    private Utils() {
+    }
 
     /**
      * Assert that given Date is in the range from current monday to sunday
@@ -170,15 +173,16 @@ public class Utils {
     public static TreeMap<LocalDate, Integer> buildStargazersFrequencyMap(List<LocalDate> stargazersList) throws IOException, URISyntaxException, ExecutionException, InterruptedException {
         //temporary set
         Set<LocalDate> stargazersDateSet = stargazersList.stream().collect(Collectors.toSet());
-        Map<LocalDate, Integer> stargazersFrequencyMap = stargazersDateSet.stream()
-                .collect(Collectors.toMap(Function.identity(), e -> Collections.frequency(stargazersList, e)));
+        Map<LocalDate, Integer> stargazersFrequencyMap = stargazersDateSet.stream().collect(Collectors
+                .toMap(Function.identity(), e -> Collections.frequency(stargazersList, e)));
         TreeMap<LocalDate, Integer> localDateIntegerNavigableMap = new TreeMap<>(stargazersFrequencyMap);
         LOG.debug("stargazers week/month frequency map:" + localDateIntegerNavigableMap.toString());
         return localDateIntegerNavigableMap;
     }
 
-    public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since, Instant until) {
+    public static int getLastPageNumber(String repository, RestTemplate restTemplate, GitHubApiEndpoints githubEndpoint, String author, Instant since, Instant until) throws GitHubRESTApiException{
         String url;
+        try {
         if (since != null) {
             url = UriComponentsBuilder.fromHttpUrl(HTTPS_API_GITHUB_COM_REPOS)
                     .path(repository).path("/" + githubEndpoint.toString().toLowerCase())
@@ -218,5 +222,8 @@ public class Utils {
             return 1;
         }
         return lastPageNum;
+    } catch (Exception e) {
+        throw new GitHubRESTApiException(" Can't access GitHub REST ", e);
+    }
     }
 }

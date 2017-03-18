@@ -1,26 +1,30 @@
 package com.rhcloud.analytics4github.exception;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.servlet.http.HttpServletRequest;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Created by Nazar on 28.12.2016.
+ * exception handling  apply across the whole application, not just to an individual controller.
  */
 @ControllerAdvice
-public class GlobalDefaultExceptionHandler  {
-    private static final Logger logger = Logger.getLogger(GlobalDefaultExceptionHandler.class);
+public class GlobalDefaultExceptionHandler extends ResponseEntityExceptionHandler {
+    private static Logger LOG = getLogger(GlobalDefaultExceptionHandler.class);
 
 
-    @ExceptionHandler(value = {TrendingException.class,IllegalArgumentException.class})
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "trending doesn't work")  // 400
-    public String trendingException(HttpServletRequest req, TrendingException e) throws TrendingException,IllegalArgumentException {
-        logger.error("Trending Exception", e);
-
-        // Nothing to do
-        return e.getMessage();
+    @ExceptionHandler(value = {GitHubRESTApiException.class})
+    public ResponseEntity gitHubRESTAPIException(GitHubRESTApiException exception) {
+        LOG.error(exception.getMessage(), exception);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(exception.getMessage());
     }
+
 }

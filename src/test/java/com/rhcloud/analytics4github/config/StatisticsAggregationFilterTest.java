@@ -2,7 +2,6 @@ package com.rhcloud.analytics4github.config;
 
 import com.rhcloud.analytics4github.domain.RequestToAPI;
 import com.rhcloud.analytics4github.repository.RequestToApiRepository;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,13 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.IOException;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
