@@ -4,7 +4,7 @@ buildscript {
     }
     repositories {
         mavenCentral()
-        maven{url "https://plugins.gradle.org/m2/"}
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -15,6 +15,7 @@ buildscript {
         compile.exclude module: "spring-boot-starter-tomcat"
     }
 }
+
 apply plugin: "org.sonarqube"
 apply plugin: 'java'
 apply plugin: 'spring-boot'
@@ -22,11 +23,16 @@ apply plugin: 'idea'
 apply plugin: 'jacoco'
 
 idea {
+
     module {
         inheritOutputDirs = false
         outputDir = file("$buildDir/classes/main/")
+        downloadJavadoc = true
+        downloadSources = true
     }
+
 }
+
 jar {
     baseName = 'analytics4github'
     version = '0.0.1-SNAPSHOT'
@@ -57,6 +63,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-devtools")
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile("io.springfox:springfox-swagger2:2.4.0")
+    compile('io.springfox:springfox-swagger-ui:2.4.0')
     //compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.jsoup:jsoup:1.8.3")
     compile("org.springframework.boot:spring-boot-starter-data-mongodb")

@@ -9,8 +9,12 @@
 [http://analytics4github.org](http://analytics4github.org)
 Java web application to enhance github.com search mechanism.
 Provided options facilitate search of new perspective projects with good commits/stars/contributors grown.
-Internally, the existed GitHub API is using.  
+Internally, the existed GitHub API is using.
+To access a REST API documentation - run the application and access
+ [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+ 
 ![Demo](https://github.com/LyashenkoGS/analytics4github/blob/master/demo.gif) 
+
 
 ## Prerequisites
 
