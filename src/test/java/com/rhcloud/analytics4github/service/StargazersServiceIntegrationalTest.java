@@ -1,9 +1,8 @@
 package com.rhcloud.analytics4github.service;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;

@@ -1,5 +1,6 @@
 package com.rhcloud.analytics4github.dto;
 
+import io.swagger.annotations.ApiModel;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 /**
  * Created by Iron on 27.12.2016.
  */
+@ApiModel
 public class RequestFromFrontendDto {
 
     private String projectName;

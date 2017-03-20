@@ -2,7 +2,9 @@ package com.rhcloud.analytics4github.controller;
 
 import com.rhcloud.analytics4github.domain.RequestToAPI;
 import com.rhcloud.analytics4github.service.StatisticsService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +21,8 @@ public class StatisticsController {
     @Autowired
     private StatisticsService statisticsService;
 
-    @RequestMapping(value = "/requests")
+    @ApiOperation(value = "get the application visitors requests list", notes = "get requests statistic")
+    @GetMapping(value = "/requests")
     private List<RequestToAPI> getRequests() {
         return statisticsService.getRequestsStatistic();
     }
