@@ -26,12 +26,12 @@ public class ResponceForFrontendDto {
         return name;
     }
 
-    public List<Integer> getData() {
-        return data;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Integer> getData() {
+        return data;
     }
 
     public void setData(List<Integer> data) {

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class NumberRequestsLeftController {
 
     @RequestMapping(value = "/getRequestsNumberLeft")
-    public Integer getRequestsLeft(){
+    public Integer getRequestsLeft() {
         return GithubApiIterator.requestsLeft;
     }
 }
