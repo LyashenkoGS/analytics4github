@@ -26,14 +26,14 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 //@TestPropertySource(locations = "classpath:application-test.properties")
 @SpringBootTest
-public class StatisticsAggregationFilterTest {
+public class FiltersConfigurationTest {
 
     HttpServletRequest httpServletRequest;
     @Autowired
-    private StatisticsAggregationFilter statisticsAggregationFilter;
+    private FiltersConfiguration statisticsAggregationFilter;
     @Autowired
     private RequestToApiRepository repository;
-    private String projectName = "StatisticsAggregationFilterTest";
+    private String projectName = "FiltersConfigurationTest";
     private HttpServletResponse httpServletResponse;
     private FilterChain filterChain;
 
