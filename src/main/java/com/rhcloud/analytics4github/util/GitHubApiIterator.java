@@ -6,7 +6,6 @@ import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
@@ -30,8 +29,8 @@ import java.util.stream.IntStream;
  *
  * @author lyashenkogs.
  */
-public class GithubApiIterator implements Iterator<JsonNode> {
-    private static Logger LOG = LoggerFactory.getLogger(GithubApiIterator.class);
+public class GitHubApiIterator implements Iterator<JsonNode> {
+    private static Logger LOG = LoggerFactory.getLogger(GitHubApiIterator.class);
 
     private final int numberOfPages;
     private final String projectName;
@@ -44,7 +43,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
     private volatile AtomicInteger counter = new AtomicInteger();
     public static int requestsLeft;
 
-    public GithubApiIterator(String projectName, RestTemplate restTemplate, GitHubApiEndpoints endpoint
+    public GitHubApiIterator(String projectName, RestTemplate restTemplate, GitHubApiEndpoints endpoint
     ) throws URISyntaxException, GitHubRESTApiException {
         this.restTemplate = restTemplate;
         this.projectName = projectName;
@@ -53,7 +52,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
         this.counter.set(numberOfPages);
     }
 
-    public GithubApiIterator(String projectName, String author, RestTemplate restTemplate, GitHubApiEndpoints endpoint
+    public GitHubApiIterator(String projectName, String author, RestTemplate restTemplate, GitHubApiEndpoints endpoint
     ) throws URISyntaxException, GitHubRESTApiException {
         this.author = author;
         this.restTemplate = restTemplate;
@@ -63,7 +62,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
         this.counter.set(numberOfPages);
     }
 
-    public GithubApiIterator(String projectName, RestTemplate restTemplate, GitHubApiEndpoints endpoint,
+    public GitHubApiIterator(String projectName, RestTemplate restTemplate, GitHubApiEndpoints endpoint,
                              Instant since, Instant until) throws URISyntaxException, GitHubRESTApiException {
         this.since = since;
         this.until = until;
@@ -99,7 +98,14 @@ public class GithubApiIterator implements Iterator<JsonNode> {
         if (counter.get() > 0) {
             String basicURL = "https://api.github.com/repos/" + projectName + "/" + githubEndpoint.toString().toLowerCase();
             UriComponents page;
-            if (since != null) {
+
+            if (since != null && until!=null) {
+                page = UriComponentsBuilder.fromHttpUrl(basicURL)
+                        .queryParam("page", counter.getAndDecrement())
+                        .queryParam("since", since)
+                        .queryParam("until",until)
+                        .build();
+            } else if (since != null){
                 page = UriComponentsBuilder.fromHttpUrl(basicURL)
                         .queryParam("page", counter.getAndDecrement())
                         .queryParam("since", since)
@@ -129,7 +135,7 @@ public class GithubApiIterator implements Iterator<JsonNode> {
         try{
             HttpEntity entity = restTemplate.getForEntity("https://api.github.com/users/whatever", JsonNode.class);
             HttpHeaders headers = entity.getHeaders();
-            GithubApiIterator.requestsLeft = Integer.parseInt(headers.get("X-RateLimit-Remaining").get(0));
+            GitHubApiIterator.requestsLeft = Integer.parseInt(headers.get("X-RateLimit-Remaining").get(0));
         } catch (Exception e){
             LOG.debug(e.getMessage());
         }

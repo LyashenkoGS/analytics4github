@@ -1,6 +1,6 @@
 package com.rhcloud.analytics4github.controller;
 
-import com.rhcloud.analytics4github.util.GithubApiIterator;
+import com.rhcloud.analytics4github.util.GitHubApiIterator;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -10,6 +10,6 @@ public class NumberRequestsLeftController {
 
     @RequestMapping(value = "/getRequestsNumberLeft")
     public Integer getRequestsLeft() {
-        return GithubApiIterator.requestsLeft;
+        return GitHubApiIterator.requestsLeft;
     }
 }

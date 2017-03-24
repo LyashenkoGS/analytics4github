@@ -5,7 +5,7 @@ import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
-import com.rhcloud.analytics4github.util.GithubApiIterator;
+import com.rhcloud.analytics4github.util.GitHubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class StargazersService {
 
     public List<LocalDate> getWeekStargazersList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException, GitHubRESTApiException {
         List<LocalDate> thisWeekAllStargazersDateList = new LinkedList<>();
-        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.STARGAZERS);
+        GitHubApiIterator stargazersIterator = new GitHubApiIterator(projectName, template, GitHubApiEndpoints.STARGAZERS);
         while (stargazersIterator.hasNext()) {
             List<JsonNode> stargazerPagesBatch = stargazersIterator.next(5);
 
@@ -77,7 +77,7 @@ public class StargazersService {
 
     public List<LocalDate> getMonthStargazersList(RequestFromFrontendDto requestFromFrontendDto) throws URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
         List<LocalDate> thisMonthAllStargazersDateList = new LinkedList<>();
-        GithubApiIterator stargazersIterator = new GithubApiIterator(requestFromFrontendDto.getProjectName(), template, GitHubApiEndpoints.STARGAZERS);
+        GitHubApiIterator stargazersIterator = new GitHubApiIterator(requestFromFrontendDto.getProjectName(), template, GitHubApiEndpoints.STARGAZERS);
         while (stargazersIterator.hasNext()) {
             List<JsonNode> stargazerPagesBatch = stargazersIterator.next(5);
             //parse pages where localDate withing month period

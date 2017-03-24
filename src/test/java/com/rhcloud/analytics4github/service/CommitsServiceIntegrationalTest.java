@@ -1,10 +1,8 @@
 package com.rhcloud.analytics4github.service;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
-
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -20,8 +18,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import static org.junit.Assert.assertEquals;
 
 
 @RunWith(SpringRunner.class)
@@ -51,13 +52,24 @@ public class CommitsServiceIntegrationalTest {
     }
 
     @Test
-    public void getMonthStargazersListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException, GitHubRESTApiException {
+    public void getMonthCommitsListTest() throws InterruptedException, ExecutionException, URISyntaxException, IOException, GitHubRESTApiException {
         RequestFromFrontendDto requestFromFrontendDto = new RequestFromFrontendDto();
         requestFromFrontendDto.setProjectName(PROJECT_NAME);
         requestFromFrontendDto.setStartPeriod(LocalDate.parse("2017-01-01"));
         requestFromFrontendDto.setEndPeriod(LocalDate.parse("2017-01-31"));
         List<LocalDate> monthStargazersList = commitsService.getMonthCommitsList(requestFromFrontendDto);
         LOG.debug(monthStargazersList.toString());
+    }
+
+    @Test
+    public void getMonthCommitsEmptyList() throws InterruptedException, IOException, GitHubRESTApiException, ExecutionException, URISyntaxException {
+        RequestFromFrontendDto requestFromFrontendDto = new RequestFromFrontendDto();
+        requestFromFrontendDto.setProjectName("/terryum/awesome-deep-learning-papers");
+        requestFromFrontendDto.setStartPeriod(LocalDate.parse("2017-01-01"));
+        requestFromFrontendDto.setEndPeriod(LocalDate.parse("2017-01-31"));
+        List<LocalDate> monthStargazersList = commitsService.getMonthCommitsList(requestFromFrontendDto);
+        LOG.info(monthStargazersList.toString());
+        assertEquals("We expect an empty list", new ArrayList<LocalDate>(), monthStargazersList);
     }
 
     @Test
