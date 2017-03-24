@@ -27,7 +27,7 @@ To access a REST API documentation - run the application and access
 ## Deployment
 To run locally execute
 
-      gradle build -x test
+      ./gradlew build -x test
       java -jar build/libs/*.jar 
 
 ## Development
@@ -39,6 +39,7 @@ It'll execute "Make" and trigger hot-redeploy via spring-boot-devtools.
 
 
 ##Deployment 
+
 ###Docker
 
 * Generate a GitHub token and save to the file token.txt in the project directory
