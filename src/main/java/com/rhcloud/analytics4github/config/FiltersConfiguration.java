@@ -90,27 +90,28 @@ public class FiltersConfiguration {
             public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
                 if (request instanceof HttpServletRequest) {
                     Cookie[] cookies = ((HttpServletRequest) request).getCookies();
-                    System.out.println(((HttpServletRequest) request));
                     if (cookies != null) {
                         boolean isCookiesExist = false;
                         for (Cookie cookie : cookies) {
-                            if ("freeTokens".equals(cookie.getName())) {
+                            if ("freeRequests".equals(cookie.getName())) {
                                 int c = Integer.parseInt(cookie.getValue());
-                                cookie.setValue(String.valueOf(c - 20));
-                                System.out.println(c);
+                                LOG.info("free requests: " + String.valueOf(c-1));
+                                cookie.setValue(String.valueOf(c - 1));
                                 cookie.setMaxAge(24 * 60 * 60);
                                 cookie.setPath("/");
+                                cookie.setHttpOnly(true);
                                 ((HttpServletResponse) response).addCookie(cookie);
                                 isCookiesExist = true;
-                                System.out.println("This cookies exists");
                                 break;
                             }
                         }
                         if (!isCookiesExist) {
-                            Cookie newCookie = new Cookie("freeTokens", "400");
+                            Cookie newCookie = new Cookie("freeRequests", "20");
                             newCookie.setMaxAge(24 * 60 * 60);
                             newCookie.setPath("/");
+                            newCookie.setHttpOnly(true);
                             ((HttpServletResponse) response).addCookie(newCookie);
+                            LOG.info("free requests: " + newCookie.getValue());
                         }
                     }
 

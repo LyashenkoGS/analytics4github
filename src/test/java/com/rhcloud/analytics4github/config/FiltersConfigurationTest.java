@@ -4,6 +4,7 @@ import com.rhcloud.analytics4github.domain.RequestToAPI;
 import com.rhcloud.analytics4github.repository.RequestToApiRepository;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class FiltersConfigurationTest {
 
     HttpServletRequest httpServletRequest;
     @Autowired
-    private FiltersConfiguration statisticsAggregationFilter;
+    private FiltersConfiguration filtersConfiguration;
     @Autowired
     private RequestToApiRepository repository;
     private String projectName = "FiltersConfigurationTest";
@@ -53,7 +54,7 @@ public class FiltersConfigurationTest {
     @Test
     public void testCommitsPersisting() throws IOException, ServletException {
         when(httpServletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/commits"));
-        Filter filter = statisticsAggregationFilter.requestsStatisticAggregatorFilter();
+        Filter filter = filtersConfiguration.requestsStatisticAggregatorFilter();
         filter.doFilter(httpServletRequest, httpServletResponse, filterChain);
         //   verify(httpServletRequest, atLeastOnce());
         RequestToAPI requestToAPI = this.repository.findByRepository(projectName).get(0);
@@ -65,7 +66,7 @@ public class FiltersConfigurationTest {
     @Test
     public void testStargazersPersisting() throws IOException, ServletException {
         when(httpServletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/stargazersPerMonth"));
-        Filter filter = statisticsAggregationFilter.requestsStatisticAggregatorFilter();
+        Filter filter = filtersConfiguration.requestsStatisticAggregatorFilter();
         filter.doFilter(httpServletRequest, httpServletResponse, filterChain);
         //    verify(httpServletRequest, atLeastOnce());
         RequestToAPI requestToAPI = this.repository.findByRepository(projectName).get(0);
@@ -77,13 +78,27 @@ public class FiltersConfigurationTest {
     @Test
     public void testUniqueContributorsPersisting() throws IOException, ServletException {
         when(httpServletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/uniqueContributors"));
-        Filter filter = statisticsAggregationFilter.requestsStatisticAggregatorFilter();
+        Filter filter = filtersConfiguration.requestsStatisticAggregatorFilter();
         filter.doFilter(httpServletRequest, httpServletResponse, filterChain);
         //  verify(httpServletRequest, atLeastOnce());
         RequestToAPI requestToAPI = this.repository.findByRepository(projectName).get(0);
         Assert.assertEquals(requestToAPI.getRepository(), projectName);
         //handcraft rollback
         this.repository.delete(requestToAPI);
+    }
+
+    @Ignore
+    @Test
+    public void testCreateNewCoockies() throws IOException, ServletException {
+        when(httpServletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/stargazers"));
+        Filter filter = filtersConfiguration.userRequestsLimitationFilter();
+        filter.doFilter(httpServletRequest,httpServletResponse, filterChain);
+        Assert.assertEquals("freeRequests", "");
+    }
+
+    @Test
+    public void testDicreseCoockiesValue() throws IOException, ServletException{
+
     }
 
 
