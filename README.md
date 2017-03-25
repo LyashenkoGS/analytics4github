@@ -40,6 +40,7 @@ It'll execute "Make" and trigger hot-redeploy via spring-boot-devtools.
 
 ##Deployment 
 ###Docker
+* We can run our application Dockerfile by invoke .startAppInDocker.sh script.
 
 * Generate a GitHub token and save to the file token.txt in the project directory
 * execute
