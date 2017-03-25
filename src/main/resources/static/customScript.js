@@ -236,7 +236,7 @@ function displayCurrentDate() {
 }
 
 /**
- * Display interval from the previous month on UI
+ * Displays interval from the previous month on UI and runs {@link analyze} function
  */
 $("#previousDate").click(
     function () {
@@ -256,7 +256,7 @@ $("#previousDate").click(
     });
 
 /**
- * Display interval from the next month on UI
+ * Displays interval from the next month on UI and runs {@link analyze} function
  */
 $("#nextDate").click(
     function () {
