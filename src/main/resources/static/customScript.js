@@ -236,7 +236,7 @@ function displayCurrentDate() {
 }
 
 /**
- * Display interval from the previous month on UI
+ * Displays interval from the previous month on UI and runs {@link analyze} function
  */
 $("#previousDate").click(
     function () {
@@ -252,10 +252,11 @@ $("#previousDate").click(
         var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
         document.getElementById('current-month-interval').textContent
             = intervalStart + " - " + intervalEnd;
+        analyze();
     });
 
 /**
- * Display interval from the next month on UI
+ * Displays interval from the next month on UI and runs {@link analyze} function
  */
 $("#nextDate").click(
     function () {
@@ -271,6 +272,7 @@ $("#nextDate").click(
         var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
         document.getElementById('current-month-interval').textContent
             = intervalStart + " - " + intervalEnd;
+        analyze();
     });
 
 /**
