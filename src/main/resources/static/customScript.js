@@ -252,6 +252,7 @@ $("#previousDate").click(
         var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
         document.getElementById('current-month-interval').textContent
             = intervalStart + " - " + intervalEnd;
+        analyze();
     });
 
 /**
@@ -271,6 +272,7 @@ $("#nextDate").click(
         var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
         document.getElementById('current-month-interval').textContent
             = intervalStart + " - " + intervalEnd;
+        analyze();
     });
 
 /**

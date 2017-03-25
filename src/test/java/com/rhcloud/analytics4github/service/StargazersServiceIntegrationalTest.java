@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class StargazersServiceIntegrationalTest {
+public class    StargazersServiceIntegrationalTest {
     private static Logger LOG = LoggerFactory.getLogger(com.rhcloud.analytics4github.config.InterceptorsIntegrationalTest.class);
     private static String PROJECT_NAME = "mewo2/terrain";
 
