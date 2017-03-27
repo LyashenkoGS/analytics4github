@@ -20,6 +20,7 @@ import java.io.IOException;
  */
 @Configuration
 public class FiltersConfiguration {
+    static final String FREE_REQUESTS_NUMBER_PER_NEW_USER = "20";
     private static Logger LOG = LoggerFactory.getLogger(FiltersConfiguration.class);
 
     @Autowired
@@ -89,42 +90,42 @@ public class FiltersConfiguration {
             @Override
             public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
                 if (request instanceof HttpServletRequest) {
+                    LOG.info("intercepted " + ((HttpServletRequest) request) + "\n"
+                            + "in the userRequestsLimitationFilter");
                     Cookie[] cookies = ((HttpServletRequest) request).getCookies();
                     if (cookies != null) {
-                        boolean isCookiesExist = false;
                         for (Cookie cookie : cookies) {
                             if ("freeRequests".equals(cookie.getName())) {
                                 int c = Integer.parseInt(cookie.getValue());
-                                LOG.info("free requests: " + String.valueOf(c-1));
+                                LOG.info("free requests: " + String.valueOf(c - 1));
                                 cookie.setValue(String.valueOf(c - 1));
                                 cookie.setMaxAge(24 * 60 * 60);
                                 cookie.setPath("/");
                                 cookie.setHttpOnly(true);
                                 ((HttpServletResponse) response).addCookie(cookie);
-                                isCookiesExist = true;
+                                System.out.println("This cookies exists");
                                 break;
                             }
                         }
-                        if (!isCookiesExist) {
-                            Cookie newCookie = new Cookie("freeRequests", "20");
-                            newCookie.setMaxAge(24 * 60 * 60);
-                            newCookie.setPath("/");
-                            newCookie.setHttpOnly(true);
-                            ((HttpServletResponse) response).addCookie(newCookie);
-                            LOG.info("free requests: " + newCookie.getValue());
-                        }
+                    } else {
+                        Cookie newCookie = new Cookie("freeTokens", FREE_REQUESTS_NUMBER_PER_NEW_USER);
+                        newCookie.setMaxAge(24 * 60 * 60);
+                        newCookie.setPath("/");
+                        ((HttpServletResponse) response).addCookie(newCookie);
                     }
-
                 }
-                chain.doFilter(request, response);
 
+                chain.doFilter(request, response);
             }
+
 
             @Override
             public void destroy() {
 
             }
-        };
+        }
+
+                ;
     }
 
 }

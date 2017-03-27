@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.servlet.Filter;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +61,7 @@ public class FiltersConfigurationTest {
         filter.doFilter(httpServletRequest, httpServletResponse, filterChain);
         //   verify(httpServletRequest, atLeastOnce());
         RequestToAPI requestToAPI = this.repository.findByRepository(projectName).get(0);
-        Assert.assertEquals(requestToAPI.getRepository(), projectName);
+        assertEquals(requestToAPI.getRepository(), projectName);
         //handcraft rollback
         this.repository.delete(requestToAPI);
     }
@@ -70,7 +73,7 @@ public class FiltersConfigurationTest {
         filter.doFilter(httpServletRequest, httpServletResponse, filterChain);
         //    verify(httpServletRequest, atLeastOnce());
         RequestToAPI requestToAPI = this.repository.findByRepository(projectName).get(0);
-        Assert.assertEquals(requestToAPI.getRepository(), projectName);
+        assertEquals(requestToAPI.getRepository(), projectName);
         //handcraft rollback
         this.repository.delete(requestToAPI);
     }
@@ -82,24 +85,27 @@ public class FiltersConfigurationTest {
         filter.doFilter(httpServletRequest, httpServletResponse, filterChain);
         //  verify(httpServletRequest, atLeastOnce());
         RequestToAPI requestToAPI = this.repository.findByRepository(projectName).get(0);
-        Assert.assertEquals(requestToAPI.getRepository(), projectName);
+        assertEquals(requestToAPI.getRepository(), projectName);
         //handcraft rollback
         this.repository.delete(requestToAPI);
     }
 
-    @Ignore
     @Test
     public void testCreateNewCoockies() throws IOException, ServletException {
-        when(httpServletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/stargazers"));
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
+        mockHttpServletRequest.setRequestURI("http://localhost:8080/uniqueContributors");
+        assertNull("We expect no cookies", mockHttpServletResponse.getCookie("freeTokens"));
         Filter filter = filtersConfiguration.userRequestsLimitationFilter();
-        filter.doFilter(httpServletRequest,httpServletResponse, filterChain);
-        Assert.assertEquals("freeRequests", "");
+        filter.doFilter(mockHttpServletRequest, mockHttpServletResponse, filterChain);
+        System.out.println(mockHttpServletRequest);
+        assertEquals("We expect a cookie with 20 requests", mockHttpServletResponse.getCookie("freeTokens").getValue(),
+                FiltersConfiguration.FREE_REQUESTS_NUMBER_PER_NEW_USER);
     }
 
     @Test
-    public void testDicreseCoockiesValue() throws IOException, ServletException{
+    public void testDicreseCoockiesValue() throws IOException, ServletException {
 
     }
-
 
 }
