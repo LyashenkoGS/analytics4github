@@ -122,18 +122,13 @@ public class FiltersConfiguration {
                         ((HttpServletResponse) response).addCookie(newCookie);
                     }
                 }
-
                 chain.doFilter(request, response);
             }
-
 
             @Override
             public void destroy() {
 
             }
-        }
-
-                ;
+        };
     }
-
 }

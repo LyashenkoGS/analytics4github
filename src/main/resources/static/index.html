@@ -16,8 +16,16 @@ who need to critically analyze activity of a repository on github.com">
     <script src="https://code.jquery.com/jquery-3.1.0.js"
             integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="
             crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="customScript.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="googleAnalitics.js"></script>
     <link rel="stylesheet" href="custom.css">
     <link rel="stylesheet" href="bootstrap.min.css">
 </head>
@@ -46,7 +54,7 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
                     </div>
                 </div>
                 <!-- trigger modal -->
-                <p id="about" class="navbar-text" data-toggle="modal" data-target="#myModal">
+                <p id="about" class="navbar-text" data-toggle="modal" data-target="#about-modal">
                     About</p>
             </div>
         </div>
@@ -79,14 +87,15 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
     </div>
 </div>
 <div id="container" class="col-md-10 col-md-offset-1" style="">
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <!-- Modals -->
+    <!-- About -->
+    <div class="modal fade" id="about-modal" tabindex="-1" role="dialog" aria-labelledby="about-modal-label">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">About</h4>
+                    <h4 class="modal-title" id="about-modal-label">About</h4>
                 </div>
                 <div class="modal-body">
                     <h4>What the project do ?</h4>
@@ -142,6 +151,25 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
             </div>
         </div>
     </div>
+    <!-- No requests left -->
+    <div class="modal fade" id="no-requests-left" tabindex="-1" role="dialog" aria-labelledby="no-requests-left-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="no-requests-left-label">NO REQUEST LEFT</h4>
+                </div>
+                <div class="modal-body">
+                    Wait an hour.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Analytic period -->
     <div id="analitic-period" class="text-center">
         <span id="previousDate" class="prevDate"><img src="images/arrow-left.svg"></span>
         <p id="current-month-interval">
@@ -170,6 +198,7 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
         </div>
     </div>
 </div>
+
 <footer class="container col-md-10 col-md-offset-1">
     <div class="row text-muted text-center">
         <p id="requestsLeft"></p>
@@ -191,9 +220,4 @@ https://github.com/trending?since=monthly"><span class="glyphicon-refresh">rando
     </div>
 </footer>
 </body>
-<script src="customScript.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-<script src="googleAnalitics.js"></script>
 </html>

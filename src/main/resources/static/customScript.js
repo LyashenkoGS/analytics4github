@@ -290,11 +290,17 @@ function displayInterval() {
         endMonth + " " + last.getDate() + ", " + last.getFullYear();
 }
 
+function displayNoRequestLeftModal() {
+    $("#about-modal").modal('show');
+}
+
 //Functions that should start on UI loading
+
 analyze();
 displayInterval();
 displayCurrentDate();
 renderNumberOfRequestsLeft();
+displayNoRequestLeftModal();
 
 //Assigning functions to buttons
 $('#analyze-btn').on('click', analyze);

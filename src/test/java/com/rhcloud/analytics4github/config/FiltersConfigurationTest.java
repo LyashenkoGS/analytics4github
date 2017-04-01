@@ -2,9 +2,7 @@ package com.rhcloud.analytics4github.config;
 
 import com.rhcloud.analytics4github.domain.RequestToAPI;
 import com.rhcloud.analytics4github.repository.RequestToApiRepository;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,7 +112,5 @@ public class FiltersConfigurationTest {
         filter.doFilter(mockHttpServletRequest, mockHttpServletResponse, filterChain);
         assertEquals("We expect a cookie with 19 requests", mockHttpServletResponse.getCookie("freeRequests").getValue(),
                 "19");
-
     }
-
 }
