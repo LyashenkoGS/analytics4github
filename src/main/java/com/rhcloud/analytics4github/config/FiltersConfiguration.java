@@ -94,8 +94,10 @@ public class FiltersConfiguration {
                             + "in the userRequestsLimitationFilter");
                     Cookie[] cookies = ((HttpServletRequest) request).getCookies();
                     if (cookies != null) {
+                        boolean isCoockieExists = false;
                         for (Cookie cookie : cookies) {
                             if ("freeRequests".equals(cookie.getName())) {
+                                isCoockieExists = true;
                                 int c = Integer.parseInt(cookie.getValue());
                                 LOG.info("free requests: " + String.valueOf(c - 1));
                                 cookie.setValue(String.valueOf(c - 1));
@@ -107,8 +109,14 @@ public class FiltersConfiguration {
                                 break;
                             }
                         }
+                        if (!isCoockieExists){
+                            Cookie newCookie = new Cookie("freeRequests", FREE_REQUESTS_NUMBER_PER_NEW_USER);
+                            newCookie.setMaxAge(24 * 60 * 60);
+                            newCookie.setPath("/");
+                            ((HttpServletResponse) response).addCookie(newCookie);
+                        }
                     } else {
-                        Cookie newCookie = new Cookie("freeTokens", FREE_REQUESTS_NUMBER_PER_NEW_USER);
+                        Cookie newCookie = new Cookie("freeRequests", FREE_REQUESTS_NUMBER_PER_NEW_USER);
                         newCookie.setMaxAge(24 * 60 * 60);
                         newCookie.setPath("/");
                         ((HttpServletResponse) response).addCookie(newCookie);

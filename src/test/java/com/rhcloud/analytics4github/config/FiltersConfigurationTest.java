@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -95,16 +96,24 @@ public class FiltersConfigurationTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
         mockHttpServletRequest.setRequestURI("http://localhost:8080/uniqueContributors");
-        assertNull("We expect no cookies", mockHttpServletResponse.getCookie("freeTokens"));
+        assertNull("We expect no cookies", mockHttpServletResponse.getCookie("freeRequests"));
         Filter filter = filtersConfiguration.userRequestsLimitationFilter();
         filter.doFilter(mockHttpServletRequest, mockHttpServletResponse, filterChain);
         System.out.println(mockHttpServletRequest);
-        assertEquals("We expect a cookie with 20 requests", mockHttpServletResponse.getCookie("freeTokens").getValue(),
+        assertEquals("We expect a cookie with 20 requests", mockHttpServletResponse.getCookie("freeRequests").getValue(),
                 FiltersConfiguration.FREE_REQUESTS_NUMBER_PER_NEW_USER);
     }
 
     @Test
-    public void testDicreseCoockiesValue() throws IOException, ServletException {
+    public void testDecreaseCookiesValue() throws IOException, ServletException {
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setCookies(new Cookie("freeRequests", FiltersConfiguration.FREE_REQUESTS_NUMBER_PER_NEW_USER));
+        MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
+        mockHttpServletRequest.setRequestURI("http://localhost:8080/uniqueContributors");
+        Filter filter = filtersConfiguration.userRequestsLimitationFilter();
+        filter.doFilter(mockHttpServletRequest, mockHttpServletResponse, filterChain);
+        assertEquals("We expect a cookie with 19 requests", mockHttpServletResponse.getCookie("freeRequests").getValue(),
+                "19");
 
     }
 
