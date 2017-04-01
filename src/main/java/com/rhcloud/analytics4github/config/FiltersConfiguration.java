@@ -80,6 +80,10 @@ public class FiltersConfiguration {
         return azaza;
     }
 
+    /**
+     * save freeRequests in Cookies
+     * @return
+     */
     public Filter userRequestsLimitationFilter() {
         return new Filter() {
             @Override

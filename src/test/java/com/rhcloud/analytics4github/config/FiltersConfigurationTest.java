@@ -2,9 +2,7 @@ package com.rhcloud.analytics4github.config;
 
 import com.rhcloud.analytics4github.domain.RequestToAPI;
 import com.rhcloud.analytics4github.repository.RequestToApiRepository;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +31,13 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class FiltersConfigurationTest {
 
-    HttpServletRequest httpServletRequest;
+    private HttpServletRequest httpServletRequest;
     @Autowired
     private FiltersConfiguration filtersConfiguration;
     @Autowired
     private RequestToApiRepository repository;
-    private String projectName = "FiltersConfigurationTest";
+    private static final String PROJECT_NAME = "FiltersConfigurationTest";
+    private static final String COOKIE_NAME = "freeRequests";
     private HttpServletResponse httpServletResponse;
     private FilterChain filterChain;
 
@@ -51,8 +50,8 @@ public class FiltersConfigurationTest {
         filterChain = mock(FilterChain.class);
         // mock the getRequestURI() response
 
-        when(httpServletRequest.getQueryString()).thenReturn("projectName=" + projectName);
-        when(httpServletRequest.getParameter("projectName")).thenReturn(projectName);
+        when(httpServletRequest.getQueryString()).thenReturn("PROJECT_NAME=" + PROJECT_NAME);
+        when(httpServletRequest.getParameter("PROJECT_NAME")).thenReturn(PROJECT_NAME);
     }
 
     @Test
@@ -61,8 +60,8 @@ public class FiltersConfigurationTest {
         Filter filter = filtersConfiguration.requestsStatisticAggregatorFilter();
         filter.doFilter(httpServletRequest, httpServletResponse, filterChain);
         //   verify(httpServletRequest, atLeastOnce());
-        RequestToAPI requestToAPI = this.repository.findByRepository(projectName).get(0);
-        assertEquals(requestToAPI.getRepository(), projectName);
+        RequestToAPI requestToAPI = this.repository.findByRepository(PROJECT_NAME).get(0);
+        assertEquals(requestToAPI.getRepository(), PROJECT_NAME);
         //handcraft rollback
         this.repository.delete(requestToAPI);
     }
@@ -73,8 +72,8 @@ public class FiltersConfigurationTest {
         Filter filter = filtersConfiguration.requestsStatisticAggregatorFilter();
         filter.doFilter(httpServletRequest, httpServletResponse, filterChain);
         //    verify(httpServletRequest, atLeastOnce());
-        RequestToAPI requestToAPI = this.repository.findByRepository(projectName).get(0);
-        assertEquals(requestToAPI.getRepository(), projectName);
+        RequestToAPI requestToAPI = this.repository.findByRepository(PROJECT_NAME).get(0);
+        assertEquals(requestToAPI.getRepository(), PROJECT_NAME);
         //handcraft rollback
         this.repository.delete(requestToAPI);
     }
@@ -85,8 +84,8 @@ public class FiltersConfigurationTest {
         Filter filter = filtersConfiguration.requestsStatisticAggregatorFilter();
         filter.doFilter(httpServletRequest, httpServletResponse, filterChain);
         //  verify(httpServletRequest, atLeastOnce());
-        RequestToAPI requestToAPI = this.repository.findByRepository(projectName).get(0);
-        assertEquals(requestToAPI.getRepository(), projectName);
+        RequestToAPI requestToAPI = this.repository.findByRepository(PROJECT_NAME).get(0);
+        assertEquals(requestToAPI.getRepository(), PROJECT_NAME);
         //handcraft rollback
         this.repository.delete(requestToAPI);
     }
@@ -96,23 +95,23 @@ public class FiltersConfigurationTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
         mockHttpServletRequest.setRequestURI("http://localhost:8080/uniqueContributors");
-        assertNull("We expect no cookies", mockHttpServletResponse.getCookie("freeRequests"));
+        assertNull("We expect no cookies", mockHttpServletResponse.getCookie(COOKIE_NAME));
         Filter filter = filtersConfiguration.userRequestsLimitationFilter();
         filter.doFilter(mockHttpServletRequest, mockHttpServletResponse, filterChain);
         System.out.println(mockHttpServletRequest);
-        assertEquals("We expect a cookie with 20 requests", mockHttpServletResponse.getCookie("freeRequests").getValue(),
+        assertEquals("We expect a cookie with 20 requests", mockHttpServletResponse.getCookie(COOKIE_NAME).getValue(),
                 FiltersConfiguration.FREE_REQUESTS_NUMBER_PER_NEW_USER);
     }
 
     @Test
     public void testDecreaseCookiesValue() throws IOException, ServletException {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
-        mockHttpServletRequest.setCookies(new Cookie("freeRequests", FiltersConfiguration.FREE_REQUESTS_NUMBER_PER_NEW_USER));
+        mockHttpServletRequest.setCookies(new Cookie(COOKIE_NAME, FiltersConfiguration.FREE_REQUESTS_NUMBER_PER_NEW_USER));
         MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
         mockHttpServletRequest.setRequestURI("http://localhost:8080/uniqueContributors");
         Filter filter = filtersConfiguration.userRequestsLimitationFilter();
         filter.doFilter(mockHttpServletRequest, mockHttpServletResponse, filterChain);
-        assertEquals("We expect a cookie with 19 requests", mockHttpServletResponse.getCookie("freeRequests").getValue(),
+        assertEquals("We expect a cookie with 19 requests", mockHttpServletResponse.getCookie(COOKIE_NAME).getValue(),
                 "19");
 
     }
