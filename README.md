@@ -29,7 +29,20 @@ To run locally execute
 
       gradle build -x test
       java -jar build/libs/*.jar 
-
+      
+### Docker
+ 
+* Generate a GitHub token and save to the file token.txt in the project directory    
+* To build and run the application with a MongoDB container (access it via [localhost:8081](localhost:8081)): 
+ 
+        ./start_all_In_Docker.sh
+ 
+* To build and run the application container only(access it via [localhost:8080](localhost:8080)):
+      
+        docker build -t lyashenkogs/analytics4github:0.0.2 .
+        docker run -p 8080:8080 lyashenkogs/analytics4github:0.0.2
+      
+              
 ## Development
 ![architecture](./documentation/Arhitecture.png)
 
@@ -38,16 +51,3 @@ To reload controllers after editing - press ctl + f9 and wait till application r
 It'll execute "Make" and trigger hot-redeploy via spring-boot-devtools.
 
 
-##Deployment 
-###Docker
-* We can run our application Dockerfile by invoke .startAppInDocker.sh script.
-
-* Generate a GitHub token and save to the file token.txt in the project directory
-* execute
-
-      docker build -t lyashenkogs/analytics4github:0.0.2 .
-      docker run -p 8080:8080 lyashenkogs/analytics4github:0.0.2
-        
-Alternatively. Add a line to  Dockerfile 
-
-    ENTRYPOINT [ "sh", "-c", "export GITHUB_TOKEN=your token value" ]

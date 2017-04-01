@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "token.file",
+      "type": "java.lang.String",
+      "description": "the absolute path to a file with a GitHub OAuth token. Example '/var/token.txt'."
+    }
+  ]
+}
