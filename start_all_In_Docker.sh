@@ -10,8 +10,9 @@ docker build -t lyashenkogs/analytics4github:0.0.2 .
     ! docker rm mongodb
 #2. Start the official MongoDB 3.4.2 container https://hub.docker.com/_/mongo/
 # * no access restrictions (no login and password required)
+# * map all data files from the container's /data/mongodb to the host /tmp/mongodb directory
 # * map 21017 container's port to 27017 host port
-docker run -it --name mongodb -p 27017:27017  -d  mongo:3.4.2
+docker run -it --name mongodb -p 27017:27017  -d -v /tmp/mongodb:/data/db mongo:3.4.2
 # 2. Run the application docker container with application-docker.properties
 # * map 8080 container's port to 8081 host port
 # * link  the MongoDB container as "mongo" to the application container

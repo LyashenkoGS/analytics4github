@@ -22,7 +22,8 @@ To access a REST API documentation - run the application and access
 * Gradle >= 2.3 
 * access to [GitHub REST API ](https://developer.github.com/v3/)
 * access to [GitHub trending page](https://github.com/trending)
-* Generate OAuth token for Github [https://github.com/settings/tokens](https://github.com/settings/tokens) and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN. 
+* Generate OAuth token for GitHub [https://github.com/settings/tokens](https://github.com/settings/tokens) and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN. 
+* Ensure that /tmp/mongodb directory exists and can be accessed by a docker daemon
 
 ## Deployment
 To run locally execute
