@@ -22,6 +22,7 @@ import java.io.IOException;
 public class FiltersConfiguration {
     static final String FREE_REQUESTS_NUMBER_PER_NEW_USER = "20";
     private static Logger LOG = LoggerFactory.getLogger(FiltersConfiguration.class);
+    static final String COOKIE_NAME = "freeRequests";
 
     @Autowired
     private RequestToApiRepository requestToApiRepository;
@@ -71,19 +72,15 @@ public class FiltersConfiguration {
 
     @Bean
     public FilterRegistrationBean userRequestsLimitationRegistrationBean() {
-        FilterRegistrationBean azaza = new FilterRegistrationBean();
-        azaza.setFilter(userRequestsLimitationFilter());
-        azaza.setName("userRequestsLimitationRegistrationBean");//need to set name to avoid conflicts with other FilterRegistrationBeans'
-        azaza.addUrlPatterns("/commits");
-        azaza.addUrlPatterns("/stargazers");
-        azaza.addUrlPatterns("/uniqueContributors");
-        return azaza;
+        FilterRegistrationBean filterRequestsLimitationBean = new FilterRegistrationBean();
+        filterRequestsLimitationBean.setFilter(userRequestsLimitationFilter());
+        filterRequestsLimitationBean.setName("userRequestsLimitationRegistrationBean");//need to set name to avoid conflicts with other FilterRegistrationBeans'
+        filterRequestsLimitationBean.addUrlPatterns("/commits");
+        filterRequestsLimitationBean.addUrlPatterns("/stargazers");
+        filterRequestsLimitationBean.addUrlPatterns("/uniqueContributors");
+        return filterRequestsLimitationBean;
     }
 
-    /**
-     * save freeRequests in Cookies
-     * @return
-     */
     public Filter userRequestsLimitationFilter() {
         return new Filter() {
             @Override
@@ -91,6 +88,15 @@ public class FiltersConfiguration {
 
             }
 
+            /**
+             * for new user add in cookies freeRequests value 20
+             * for exists user in cookies freeRequests decrease value by 1
+             * @param request
+             * @param response
+             * @param chain
+             * @throws IOException
+             * @throws ServletException
+             */
             @Override
             public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
                 if (request instanceof HttpServletRequest) {
@@ -98,13 +104,13 @@ public class FiltersConfiguration {
                             + "in the userRequestsLimitationFilter");
                     Cookie[] cookies = ((HttpServletRequest) request).getCookies();
                     if (cookies != null) {
-                        boolean isCoockieExists = false;
+                        boolean isCookieExists = false;
                         for (Cookie cookie : cookies) {
-                            if ("freeRequests".equals(cookie.getName())) {
-                                isCoockieExists = true;
+                            if (COOKIE_NAME.equals(cookie.getName())) {
+                                isCookieExists = true;
                                 int c = Integer.parseInt(cookie.getValue());
-                                LOG.info("free requests: " + String.valueOf(c - 1));
                                 cookie.setValue(String.valueOf(c - 1));
+                                LOG.info("free requests: " + cookie.getValue());
                                 cookie.setMaxAge(24 * 60 * 60);
                                 cookie.setPath("/");
                                 cookie.setHttpOnly(true);
@@ -113,14 +119,14 @@ public class FiltersConfiguration {
                                 break;
                             }
                         }
-                        if (!isCoockieExists){
-                            Cookie newCookie = new Cookie("freeRequests", FREE_REQUESTS_NUMBER_PER_NEW_USER);
+                        if (!isCookieExists){
+                            Cookie newCookie = new Cookie(COOKIE_NAME, FREE_REQUESTS_NUMBER_PER_NEW_USER);
                             newCookie.setMaxAge(24 * 60 * 60);
                             newCookie.setPath("/");
                             ((HttpServletResponse) response).addCookie(newCookie);
                         }
                     } else {
-                        Cookie newCookie = new Cookie("freeRequests", FREE_REQUESTS_NUMBER_PER_NEW_USER);
+                        Cookie newCookie = new Cookie(COOKIE_NAME, FREE_REQUESTS_NUMBER_PER_NEW_USER);
                         newCookie.setMaxAge(24 * 60 * 60);
                         newCookie.setPath("/");
                         ((HttpServletResponse) response).addCookie(newCookie);
