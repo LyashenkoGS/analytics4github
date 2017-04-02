@@ -49,8 +49,8 @@ public class FiltersConfigurationTest {
         filterChain = mock(FilterChain.class);
         // mock the getRequestURI() response
 
-        when(httpServletRequest.getQueryString()).thenReturn("PROJECT_NAME=" + PROJECT_NAME);
-        when(httpServletRequest.getParameter("PROJECT_NAME")).thenReturn(PROJECT_NAME);
+        when(httpServletRequest.getQueryString()).thenReturn("projectName=" + PROJECT_NAME);
+        when(httpServletRequest.getParameter("projectName")).thenReturn(PROJECT_NAME);
     }
 
     @Test
