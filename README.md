@@ -22,14 +22,28 @@ To access a REST API documentation - run the application and access
 * Gradle >= 2.3 
 * access to [GitHub REST API ](https://developer.github.com/v3/)
 * access to [GitHub trending page](https://github.com/trending)
-* Generate OAuth token for Github [https://github.com/settings/tokens](https://github.com/settings/tokens) and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN. 
+* Generate OAuth token for GitHub [https://github.com/settings/tokens](https://github.com/settings/tokens) and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN. 
+* Ensure that /tmp/mongodb directory exists and can be accessed by a docker daemon
 
 ## Deployment
 To run locally execute
 
       ./gradlew build -x test
       java -jar build/libs/*.jar 
-
+      
+### Docker
+ 
+* Generate a GitHub token and save to the file token.txt in the project directory    
+* To build and run the application with a MongoDB container (access it via [localhost:8081](localhost:8081)): 
+ 
+        ./start_all_In_Docker.sh
+ 
+* To build and run the application container only(access it via [localhost:8080](localhost:8080)):
+      
+        docker build -t lyashenkogs/analytics4github:0.0.2 .
+        docker run -p 8080:8080 lyashenkogs/analytics4github:0.0.2
+      
+              
 ## Development
 ![architecture](./documentation/Arhitecture.png)
 
@@ -37,17 +51,3 @@ To run locally execute
 To reload controllers after editing - press ctl + f9 and wait till application restart.
 It'll execute "Make" and trigger hot-redeploy via spring-boot-devtools.
 
-
-##Deployment 
-
-###Docker
-
-* Generate a GitHub token and save to the file token.txt in the project directory
-* execute
-
-      docker build -t lyashenkogs/analytics4github:0.0.2 .
-      docker run -p 8080:8080 lyashenkogs/analytics4github:0.0.2
-        
-Alternatively. Add a line to  Dockerfile 
-
-    ENTRYPOINT [ "sh", "-c", "export GITHUB_TOKEN=your token value" ]
