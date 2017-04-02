@@ -94,23 +94,23 @@ public class FiltersConfigurationTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
         mockHttpServletRequest.setRequestURI("http://localhost:8080/uniqueContributors");
-        assertNull("We expect no cookies", mockHttpServletResponse.getCookie(FiltersConfiguration.COOKIE_NAME));
+        assertNull("We expect no cookies", mockHttpServletResponse.getCookie(FiltersConfiguration.FREE_REQUESTS_COOKIE_NAME));
         Filter filter = filtersConfiguration.userRequestsLimitationFilter();
         filter.doFilter(mockHttpServletRequest, mockHttpServletResponse, filterChain);
         System.out.println(mockHttpServletRequest);
-        assertEquals("We expect a cookie with 20 requests", mockHttpServletResponse.getCookie(FiltersConfiguration.COOKIE_NAME).getValue(),
+        assertEquals("We expect a cookie with 20 requests", mockHttpServletResponse.getCookie(FiltersConfiguration.FREE_REQUESTS_COOKIE_NAME).getValue(),
                 FiltersConfiguration.FREE_REQUESTS_NUMBER_PER_NEW_USER);
     }
 
     @Test
     public void testDecreaseCookiesValue() throws IOException, ServletException {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
-        mockHttpServletRequest.setCookies(new Cookie(FiltersConfiguration.COOKIE_NAME, FiltersConfiguration.FREE_REQUESTS_NUMBER_PER_NEW_USER));
+        mockHttpServletRequest.setCookies(new Cookie(FiltersConfiguration.FREE_REQUESTS_COOKIE_NAME, FiltersConfiguration.FREE_REQUESTS_NUMBER_PER_NEW_USER));
         MockHttpServletResponse mockHttpServletResponse = new MockHttpServletResponse();
         mockHttpServletRequest.setRequestURI("http://localhost:8080/uniqueContributors");
         Filter filter = filtersConfiguration.userRequestsLimitationFilter();
         filter.doFilter(mockHttpServletRequest, mockHttpServletResponse, filterChain);
-        assertEquals("We expect a cookie with 19 requests", mockHttpServletResponse.getCookie(FiltersConfiguration.COOKIE_NAME).getValue(),
+        assertEquals("We expect a cookie with 19 requests", mockHttpServletResponse.getCookie(FiltersConfiguration.FREE_REQUESTS_COOKIE_NAME).getValue(),
                 "19");
 
     }
