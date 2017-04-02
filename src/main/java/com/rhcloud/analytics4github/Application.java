@@ -2,7 +2,7 @@ package com.rhcloud.analytics4github;
 
 import com.rhcloud.analytics4github.exception.TrendingException;
 import com.rhcloud.analytics4github.service.GitHubTrendingService;
-import com.rhcloud.analytics4github.util.GithubApiIterator;
+import com.rhcloud.analytics4github.util.GitHubApiIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class Application {
     @PostConstruct
     public void initIt() {
         try {
-            GithubApiIterator.initializeRequestsLeft(restTemplate);
+            GitHubApiIterator.initializeRequestsLeft(restTemplate);
             gitHubTrendingService.parseTrendingReposWebPage();
         } catch (TrendingException exception) {
             LOG.error(String.valueOf(exception));

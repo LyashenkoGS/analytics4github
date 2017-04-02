@@ -28,7 +28,7 @@ To access a REST API documentation - run the application and access
 ## Deployment
 To run locally execute
 
-      gradle build -x test
+      ./gradlew build -x test
       java -jar build/libs/*.jar 
       
 ### Docker
@@ -50,5 +50,4 @@ To run locally execute
 ##### IntellijIdea
 To reload controllers after editing - press ctl + f9 and wait till application restart.
 It'll execute "Make" and trigger hot-redeploy via spring-boot-devtools.
-
 

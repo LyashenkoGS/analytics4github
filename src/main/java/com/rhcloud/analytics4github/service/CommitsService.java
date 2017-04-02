@@ -5,7 +5,7 @@ import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
-import com.rhcloud.analytics4github.util.GithubApiIterator;
+import com.rhcloud.analytics4github.util.GitHubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class CommitsService {
 
     public List<LocalDate> getWeekCommitsList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException, GitHubRESTApiException {
         List<LocalDate> thisWeekCommitsDateList = new LinkedList<>();
-        GithubApiIterator stargazersIterator = new GithubApiIterator(projectName, template, GitHubApiEndpoints.COMMITS, Instant.now()
+        GitHubApiIterator stargazersIterator = new GitHubApiIterator(projectName, template, GitHubApiEndpoints.COMMITS, Instant.now()
                 .minus(7, ChronoUnit.DAYS)
                 .truncatedTo(ChronoUnit.SECONDS),null);
         while (stargazersIterator.hasNext()) {
@@ -61,7 +61,7 @@ public class CommitsService {
 
     public List<LocalDate> getMonthCommitsList(RequestFromFrontendDto requestFromFrontendDto) throws URISyntaxException, IOException, ExecutionException, InterruptedException, GitHubRESTApiException {
         List<LocalDate> thisMonthCommitsDateList = new LinkedList<>();
-        GithubApiIterator stargazersIterator = new GithubApiIterator(requestFromFrontendDto.getProjectName(), template,
+        GitHubApiIterator stargazersIterator = new GitHubApiIterator(requestFromFrontendDto.getProjectName(), template,
                 GitHubApiEndpoints.COMMITS, Utils.getPeriodInstant(requestFromFrontendDto.getStartPeriod()),
                 Utils.getPeriodInstant(requestFromFrontendDto.getEndPeriod()));
         while (stargazersIterator.hasNext()) {

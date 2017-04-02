@@ -1,13 +1,12 @@
 package com.rhcloud.analytics4github.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.domain.Author;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
-import com.rhcloud.analytics4github.util.GithubApiIterator;
+import com.rhcloud.analytics4github.util.GitHubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,14 +64,14 @@ public class UniqueContributorsService {
     }
 
     List<JsonNode> getCommits(String repository, Instant since, Instant until) throws URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
-        GithubApiIterator githubApiIterator = new GithubApiIterator(repository, restTemplate, GitHubApiEndpoints.COMMITS, since, until);
+        GitHubApiIterator gitHubApiIterator = new GitHubApiIterator(repository, restTemplate, GitHubApiEndpoints.COMMITS, since, until);
         List<JsonNode> commitPages = new ArrayList<>();
         List<JsonNode> commits = new ArrayList<>();
-        while (githubApiIterator.hasNext()) {
-            List<JsonNode> commitPagesBatch = githubApiIterator.next(5);
+        while (gitHubApiIterator.hasNext()) {
+            List<JsonNode> commitPagesBatch = gitHubApiIterator.next(5);
             commitPages.addAll(commitPagesBatch);
         }
-        githubApiIterator.close();
+        gitHubApiIterator.close();
         LOG.debug(commitPages.toString());
         for (JsonNode page : commitPages) {
             for (JsonNode commit : page) {
