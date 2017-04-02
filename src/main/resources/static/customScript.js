@@ -252,6 +252,7 @@ $("#previousDate").click(
         var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
         document.getElementById('current-month-interval').textContent
             = intervalStart + " - " + intervalEnd;
+        analyze();
     });
 
 /**
@@ -271,6 +272,7 @@ $("#nextDate").click(
         var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
         document.getElementById('current-month-interval').textContent
             = intervalStart + " - " + intervalEnd;
+        analyze();
     });
 
 /**
@@ -290,17 +292,34 @@ function displayInterval() {
         endMonth + " " + last.getDate() + ", " + last.getFullYear();
 }
 
-function displayNoRequestLeftModal() {
-    $("#about-modal").modal('show');
+function displayRequestLeftModel() {
+    var date = new Date;
+    $('#no-requests-left-time').html('Wait '+(60-date.getMinutes())+' minutes');
+    $('#no-requests-left-modal').modal('show');
+}
+
+function checkRequestsLeft() {
+    var name = "_ga=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            alert(c.substring(name.length, c.length));
+        }
+    }
 }
 
 //Functions that should start on UI loading
-
+checkRequestsLeft();
+displayRequestLeftModel();
 analyze();
 displayInterval();
 displayCurrentDate();
 renderNumberOfRequestsLeft();
-displayNoRequestLeftModal();
 
 //Assigning functions to buttons
 $('#analyze-btn').on('click', analyze);
