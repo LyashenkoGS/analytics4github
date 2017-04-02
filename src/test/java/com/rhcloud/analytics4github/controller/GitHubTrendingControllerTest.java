@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 public class GitHubTrendingControllerTest {
 
     @Autowired
-    GitHubTrendingService gitHubTrendingService;
+    private GitHubTrendingService gitHubTrendingService;
     @Autowired
     private TestRestTemplate testRestTemplate;
 
