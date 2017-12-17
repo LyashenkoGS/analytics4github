@@ -1,0 +1,26 @@
+---
+# contains tasks to install: Oracle JDK 1.8, maven, Nginx
+ - hosts: default
+   become: yes
+   roles:
+    - role: geerlingguy.nginx
+   tasks:
+    # download JDK https://stackoverflow.com/questions/10268583/downloading-java-jdk-on-linux-via-wget-is-shown-license-page-instead
+    # This  takes about a minute, doesn't have a progress indicator and may become broken anytime thanks to Oracle
+     - name: install wget
+       yum:
+        name: wget
+        state: present
+#     - name: download JDK
+#       shell: 'wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"'
+#     - name: install JDK
+#       shell: 'sudo yum localinstall -y  jdk-8u151-linux-x64.rpm'
+     - name: install maven
+       yum:
+        name: maven
+        state: present
+     - name: install vim
+       yum:
+        name: vim
+        state: present
+

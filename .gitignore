@@ -5,3 +5,4 @@ classes
 token.txt
 *.iml
 target
+.vagrant
