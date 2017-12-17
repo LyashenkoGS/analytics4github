@@ -1,22 +1,25 @@
 package com.rhcloud.analytics4github.controller;
 
+import com.rhcloud.analytics4github.TestApplicationContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
 
-/**
+/**z
  * Integration test. Thought test fully functional Application is running
  * on free random port and the emulating real http requests to endpoints.
  *
  * @author lyashenkogs
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+@SpringBootTest(classes = TestApplicationContext.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UniqueContributorsControllerTest {
     private static String PROJECT = "mewo2/terrain";
     @Autowired

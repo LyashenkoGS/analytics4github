@@ -1,5 +1,6 @@
 package com.rhcloud.analytics4github.service;
 
+import com.rhcloud.analytics4github.TestApplicationContext;
 import com.rhcloud.analytics4github.domain.RequestToAPI;
 import com.rhcloud.analytics4github.repository.RequestToApiRepository;
 import org.junit.Test;
@@ -8,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -21,7 +23,8 @@ import static org.mockito.Mockito.*;
  * @since 8/31/16
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@ActiveProfiles("test")
+@SpringBootTest(classes = TestApplicationContext.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StatisticsServiceTest {
 
     @Mock

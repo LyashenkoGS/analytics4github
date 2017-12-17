@@ -1,10 +1,12 @@
 package com.rhcloud.analytics4github.service;
 
+import com.rhcloud.analytics4github.TestApplicationContext;
 import com.rhcloud.analytics4github.exception.TrendingException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertTrue;
@@ -15,7 +17,8 @@ import static org.junit.Assert.assertTrue;
  * @since 9/3/16
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@ActiveProfiles("test")
+@SpringBootTest(classes = TestApplicationContext.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GitHubTrendingServiceTest {
 
     @Autowired

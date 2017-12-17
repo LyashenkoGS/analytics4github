@@ -1,5 +1,6 @@
 package com.rhcloud.analytics4github.service;
 
+import com.rhcloud.analytics4github.TestApplicationContext;
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.BufferedReader;
@@ -23,7 +25,8 @@ import java.util.concurrent.ExecutionException;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@ActiveProfiles("test")
+@SpringBootTest(classes = TestApplicationContext.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StargazersServiceIntegrationalTest {
     private static Logger LOG = LoggerFactory.getLogger(com.rhcloud.analytics4github.config.InterceptorsIntegrationalTest.class);
     private static String PROJECT_NAME = "mewo2/terrain";

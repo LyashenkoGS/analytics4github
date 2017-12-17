@@ -1,5 +1,6 @@
 package com.rhcloud.analytics4github.config;
 
+import com.rhcloud.analytics4github.TestApplicationContext;
 import com.rhcloud.analytics4github.domain.RequestToAPI;
 import com.rhcloud.analytics4github.repository.RequestToApiRepository;
 import org.junit.Before;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.servlet.Filter;
@@ -19,7 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,8 +30,8 @@ import static org.mockito.Mockito.when;
  * @author lyashenkogs.
  */
 @RunWith(SpringRunner.class)
-//@TestPropertySource(locations = "classpath:application-test.properties")
-@SpringBootTest
+@ActiveProfiles("test")
+@SpringBootTest(classes = TestApplicationContext.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class FiltersConfigurationTest {
 
     private HttpServletRequest httpServletRequest;
