@@ -23,4 +23,25 @@
        yum:
         name: vim
         state: present
+     - name: Add mongodb repo
+       yum_repository:
+        name: mongodb-org-3.6
+        description: MongoDB 3.6 Repository
+        baseurl: https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.6/x86_64/
+        gpgkey: https://www.mongodb.org/static/pgp/server-3.6.asc
+     - name: install mongoDB
+       yum:
+        name: mongodb-org
+        state: present
+     - name: Creates a folder for mongodb
+       file:
+         path: /data/db
+         state: directory
+         owner: mongod
+         group: mongod
+         mode: 0775
+     - service:
+         name: mongod
+         state: started
+         enabled: yes
 

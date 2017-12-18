@@ -6,3 +6,4 @@ token.txt
 *.iml
 target
 .vagrant
+*.retry
