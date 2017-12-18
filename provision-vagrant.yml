@@ -1,0 +1,54 @@
+---
+# contains tasks to install: Nginx, MongoDB
+ - hosts: all
+   become: yes
+# install and setup Nginx as a reverse proxy
+   roles:
+    - role: geerlingguy.nginx
+   tasks:
+     - name: Allow http acces to applications
+       shell: "sudo setsebool httpd_can_network_connect 1 -P"
+     - service:
+         name: nginx
+         state: stopped
+     - copy:
+        src: default.conf
+        dest: /etc/nginx/conf.d/default.conf
+        owner: nginx
+        group: nginx
+        mode: 0644
+     - service:
+        name: nginx
+        state: started
+# download JDK https://stackoverflow.com/questions/10268583/downloading-java-jdk-on-linux-via-wget-is-shown-license-page-instead
+# This  takes about a minute, doesn't have a progress indicator and may become broken anytime thanks to Oracle
+#     - name: install wget
+#       yum:
+#        name: wget
+#        state: present
+#     - name: download JDK
+#       shell: 'wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"'
+#     - name: install JDK
+#       shell: 'sudo yum localinstall -y  jdk-8u151-linux-x64.rpm'
+# Install and setup MongoDB
+     - name: Add mongodb repo
+       yum_repository:
+        name: mongodb-org-3.6
+        description: MongoDB 3.6 Repository
+        baseurl: https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.6/x86_64/
+        gpgkey: https://www.mongodb.org/static/pgp/server-3.6.asc
+     - name: install mongoDB
+       yum:
+        name: mongodb-org
+        state: present
+     - name: Creates a folder for mongodb
+       file:
+         path: /data/db
+         state: directory
+         owner: mongod
+         group: mongod
+         mode: 0775
+     - service:
+         name: mongod
+         state: started
+         enabled: yes
