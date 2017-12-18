@@ -17,7 +17,7 @@ To access a REST API documentation - run the application and access
 
 ## Prerequisites
 
-* Java 1.8
+* JDK 1.8
 * access to [GitHub REST API ](https://developer.github.com/v3/)
 * access to [GitHub trending page](https://github.com/trending)
 * Generate OAuth token for GitHub [https://github.com/settings/tokens](https://github.com/settings/tokens) and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN. 
