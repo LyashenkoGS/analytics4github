@@ -1,28 +1,36 @@
 ---
-# contains tasks to install: Oracle JDK 1.8, maven, Nginx
- - hosts: default
+# contains tasks to install: Nginx, MongoDB
+ - hosts: all
    become: yes
+# install and setup Nginx as a reverse proxy
    roles:
     - role: geerlingguy.nginx
    tasks:
-    # download JDK https://stackoverflow.com/questions/10268583/downloading-java-jdk-on-linux-via-wget-is-shown-license-page-instead
-    # This  takes about a minute, doesn't have a progress indicator and may become broken anytime thanks to Oracle
-     - name: install wget
-       yum:
-        name: wget
-        state: present
+     - name: Allow http acces to applications
+       shell: "sudo setsebool httpd_can_network_connect 1 -P"
+     - service:
+         name: nginx
+         state: stopped
+     - copy:
+        src: default.conf
+        dest: /etc/nginx/conf.d/default.conf
+        owner: nginx
+        group: nginx
+        mode: 0644
+     - service:
+        name: nginx
+        state: started
+# download JDK https://stackoverflow.com/questions/10268583/downloading-java-jdk-on-linux-via-wget-is-shown-license-page-instead
+# This  takes about a minute, doesn't have a progress indicator and may become broken anytime thanks to Oracle
+#     - name: install wget
+#       yum:
+#        name: wget
+#        state: present
 #     - name: download JDK
 #       shell: 'wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm"'
 #     - name: install JDK
 #       shell: 'sudo yum localinstall -y  jdk-8u151-linux-x64.rpm'
-     - name: install maven
-       yum:
-        name: maven
-        state: present
-     - name: install vim
-       yum:
-        name: vim
-        state: present
+# Install and setup MongoDB
      - name: Add mongodb repo
        yum_repository:
         name: mongodb-org-3.6
@@ -44,4 +52,3 @@
          name: mongod
          state: started
          enabled: yes
-
