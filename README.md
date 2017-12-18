@@ -1,5 +1,5 @@
 # analytics4github
-[![Build Status](http://195.211.154.179:8080/view/analytics5github/job/master-branch-poling%20and%20redeploy/badge/icon)](http://195.211.154.179:8080/view/analytics5github/job/master-branch-poling%20and%20redeploy/)
+[![Build Status](http://195.211.154.179:8081/view/analytics5github/job/master-branch-poling%20and%20redeploy/badge/icon)](http://195.211.154.179:8081/view/analytics5github/job/master-branch-poling%20and%20redeploy/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d3a472531c4b46749c7eda1439d746db)](https://www.codacy.com/app/lyashenkogs/analytics4github?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LyashenkoGS/analytics4github&amp;utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/LyashenkoGS/analytics4github/branch/master/graph/badge.svg)](https://codecov.io/gh/LyashenkoGS/analytics4github)
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/LyashenkoGS/analytics4github/blob/master/LICENCE)  
@@ -7,7 +7,8 @@
 
 [http://195.211.154.179](http://195.211.154.179)
 Java web application to enhance github.com search mechanism.
-Provided options facilitate search of new perspective projects with good commits/stars/contributors grown.
+Provided options facilitate search of new perspective projects    Preview changes
+with good commits/stars/contributors grown.
 Internally, the existed GitHub API is using.
 To access a REST API documentation - run the application and access
  [http://195.211.154.179/swagger-ui.html](http://195.211.154.179/swagger-ui.html)
