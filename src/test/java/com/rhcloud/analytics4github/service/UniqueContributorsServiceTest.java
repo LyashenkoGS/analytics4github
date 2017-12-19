@@ -51,6 +51,7 @@ public class UniqueContributorsServiceTest {
     }
 
     @Test
+    @Ignore //31s
     public void getUniqueContributors() throws InterruptedException, ExecutionException, URISyntaxException, GitHubRESTApiException {
         uniqueContributorsService.getUniqueContributors(PROJECT, Instant.parse(UNIQUE_SINCE),
                 Instant.parse(UNIQUE_UNTIL));
@@ -74,11 +75,13 @@ public class UniqueContributorsServiceTest {
     }
 
     @Test
+    @Ignore //38s
     public void getFirstAuthorCommitFrequencyList() throws InterruptedException, ExecutionException, URISyntaxException, GitHubRESTApiException {
         uniqueContributorsService.getFirstAuthorCommitFrequencyList(PROJECT, Instant.parse(UNIQUE_SINCE), Instant.parse(UNIQUE_UNTIL));
     }
 
     @Test
+    @Ignore //40s
     public void uniqueContributorsFrequencyByMonth() throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
         RequestFromFrontendDto requestFromFrontendDto = new RequestFromFrontendDto();
         requestFromFrontendDto.setProjectName(PROJECT);

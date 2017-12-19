@@ -34,6 +34,7 @@ To run locally execute
 ## Development
 ![architecture](./documentation/Arhitecture.png)
 
+Tests stopped to work properly via maven but you can run them via Intellij
 ##### IntellijIdea
 To reload controllers after editing - press ctl + f9 and wait till application restart.
 It'll execute "Make" and trigger hot-redeploy via spring-boot-devtools.
