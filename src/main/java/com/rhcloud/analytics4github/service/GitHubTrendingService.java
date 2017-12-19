@@ -36,7 +36,6 @@ public class GitHubTrendingService {
     public void parseTrendingReposWebPage() throws TrendingException {
         try {
             Document webPageDocument = Jsoup.connect(GITHUB_TRENDING_URL)
-                    //TODO seems like here is a security to blocks parsing
                     .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.122 Safari/534.30")
                     .get();
             Elements elements = webPageDocument.select("h3>a");
