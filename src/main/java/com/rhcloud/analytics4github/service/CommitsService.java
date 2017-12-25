@@ -15,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
@@ -32,62 +31,47 @@ public class CommitsService {
     @Autowired
     private RestTemplate template;
 
-    private void parseCommitPagesBatch(List<LocalDate> thisWeekCommitsDateList, List<JsonNode> commitPagesBatch) {
-        for (JsonNode commitPage : commitPagesBatch) {
-            for (JsonNode commit : commitPage) {
-                LOG.debug("commit: " + commit);
-                LOG.debug("commitDate: " + commit.get("commit").get("author").get("date").textValue());
-                LocalDate localDate = Utils.parseTimestamp(commit.get("commit").get("author").get("date").textValue());
-                LOG.debug("parsed commit date: "+ localDate.toString());
-                thisWeekCommitsDateList.add(localDate);
-            }
-        }
-    }
-
-    public List<LocalDate> getWeekCommitsList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException, GitHubRESTApiException {
-        List<LocalDate> thisWeekCommitsDateList = new LinkedList<>();
-        GitHubApiIterator stargazersIterator = new GitHubApiIterator(projectName, template, GitHubApiEndpoints.COMMITS, Instant.now()
-                .minus(7, ChronoUnit.DAYS)
-                .truncatedTo(ChronoUnit.SECONDS),null);
-        while (stargazersIterator.hasNext()) {
-            List<JsonNode> commitPagesBatch = stargazersIterator.next(5);
-            //Get localDatesList
-            parseCommitPagesBatch(thisWeekCommitsDateList, commitPagesBatch);
-        }
-        stargazersIterator.close();
-        LOG.debug("finish parsing commits" + thisWeekCommitsDateList.toString());
-        return thisWeekCommitsDateList;
-    }
-
-    public List<LocalDate> getMonthCommitsList(RequestFromFrontendDto requestFromFrontendDto) throws URISyntaxException, IOException, ExecutionException, InterruptedException, GitHubRESTApiException {
+    public List<LocalDate> getCommitsList(RequestFromFrontendDto requestFromFrontendDto) throws URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
         List<LocalDate> thisMonthCommitsDateList = new LinkedList<>();
-        GitHubApiIterator stargazersIterator = new GitHubApiIterator(requestFromFrontendDto.getProjectName(), template,
+        GitHubApiIterator iterator = new GitHubApiIterator(requestFromFrontendDto.getAuthor() + "/" + requestFromFrontendDto.getRepository(), template,
                 GitHubApiEndpoints.COMMITS, Utils.getPeriodInstant(requestFromFrontendDto.getStartPeriod()),
                 Utils.getPeriodInstant(requestFromFrontendDto.getEndPeriod()));
-        while (stargazersIterator.hasNext()) {
-            List<JsonNode> commitPagesBatch = stargazersIterator.next(5);
+        while (iterator.hasNext()) {
+            List<JsonNode> commitPagesBatch = iterator.next(5);
             //Get localDatesList
-            parseCommitPagesBatch(thisMonthCommitsDateList, commitPagesBatch);
+            for (JsonNode commitPage : commitPagesBatch) {
+                for (JsonNode commit : commitPage) {
+                    LOG.debug("commit: " + commit);
+                    LOG.debug("commitDate: " + commit.get("commit").get("author").get("date").textValue());
+                    LocalDate localDate = Utils.parseTimestamp(commit.get("commit").get("author").get("date").textValue());
+                    LOG.debug("parsed commit sinceMonth: " + localDate.toString());
+                    thisMonthCommitsDateList.add(localDate);
+                }
+            }
         }
-        stargazersIterator.close();
+        iterator.close();
         LOG.debug("finish parsing commits" + thisMonthCommitsDateList.toString());
         return thisMonthCommitsDateList;
     }
 
-    public ResponceForFrontendDto getThisWeekCommitsFrequencyPerProject(String projectName) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException, GitHubRESTApiException {
-        TreeMap<LocalDate, Integer> weekStargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getWeekCommitsList(projectName));
-        List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(weekStargazersFrequencyMap);
-        ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
-        LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
-        return responceForFrontendDto;
 
+    public ResponceForFrontendDto getCommitsFrequency(RequestFromFrontendDto requestFromFrontendDto) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException, GitHubRESTApiException {
+        TreeMap<LocalDate, Integer> frequencyMap = Utils.buildStargazersFrequencyMap(getCommitsList(requestFromFrontendDto));
+        long period = ChronoUnit.DAYS.between(requestFromFrontendDto.getStartPeriod(), requestFromFrontendDto.getEndPeriod());
+        //if week
+        if (period <= 7) {
+            List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(frequencyMap);
+            ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
+            LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
+            return responceForFrontendDto;
+            //if month
+        } else {
+            List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(frequencyMap);
+            ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
+            LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
+            return responceForFrontendDto;
+        }
     }
 
-    public ResponceForFrontendDto getThisMonthCommitsFrequencyPerProject(RequestFromFrontendDto requestFromFrontendDto) throws IOException, InterruptedException, ExecutionException, URISyntaxException, ClassNotFoundException, GitHubRESTApiException {
-        TreeMap<LocalDate, Integer> commitsFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthCommitsList(requestFromFrontendDto));
-        List<Integer> frequencyList = Utils.parseMonthFrequencyMapCommitToFrequencyLIst(commitsFrequencyMap, requestFromFrontendDto);
-        ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
-        LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
-        return responceForFrontendDto;
-    }
 }
+

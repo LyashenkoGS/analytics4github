@@ -4,12 +4,9 @@ import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
 import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.service.CommitsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -23,20 +20,13 @@ import java.util.concurrent.ExecutionException;
  */
 @RestController
 public class CommitsController {
-    private static Logger LOG = LoggerFactory.getLogger(CommitsController.class);
 
     @Autowired
     private CommitsService commitsService;
 
-    @RequestMapping(value = "/commits", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public List<ResponceForFrontendDto> getStargazersByProject(@ModelAttribute RequestFromFrontendDto requestFromFrontendDto) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException, GitHubRESTApiException {
-        LOG.info("projectName parameter :" + requestFromFrontendDto.getProjectName());
-        return Collections.singletonList(commitsService.getThisWeekCommitsFrequencyPerProject(requestFromFrontendDto.getProjectName()));
+    @GetMapping("/{author}/{repository}/commits")
+    List<ResponceForFrontendDto> getCommits(@ModelAttribute RequestFromFrontendDto requestFromFrontendDto) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException, GitHubRESTApiException {
+        return Collections.singletonList(commitsService.getCommitsFrequency(requestFromFrontendDto));
     }
 
-    @RequestMapping(value = "/commitsPerMonth", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-    public List<ResponceForFrontendDto> getMonthStargazersByProject(@ModelAttribute RequestFromFrontendDto requestFromFrontendDto) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
-        LOG.info("projectName parameter :" + requestFromFrontendDto.getProjectName());
-        return Collections.singletonList(commitsService.getThisMonthCommitsFrequencyPerProject(requestFromFrontendDto));
-    }
 }

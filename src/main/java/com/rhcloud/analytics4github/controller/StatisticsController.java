@@ -23,7 +23,7 @@ public class StatisticsController {
 
     @ApiOperation(value = "get the application visitors requests list", notes = "get requests statistic")
     @GetMapping(value = "/requests")
-    private List<RequestToAPI> getRequests() {
+    List<RequestToAPI> getRequests() {
         return statisticsService.getRequestsStatistic();
     }
 

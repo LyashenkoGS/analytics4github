@@ -24,6 +24,6 @@ public class StatisticsControllerTest {
 
     @Test
     public void testStatisticsEndpoint() {
-        assertEquals(this.testRestTemplate.getForEntity("/statistics/requests", String.class).getStatusCodeValue(), 200);
+        assertEquals(200, testRestTemplate.getForEntity("/statistics/requests", String.class).getStatusCodeValue());
     }
 }

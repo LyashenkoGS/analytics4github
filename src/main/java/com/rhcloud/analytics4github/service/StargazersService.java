@@ -16,12 +16,12 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * @author lyashenkogs
@@ -32,41 +32,46 @@ public class StargazersService {
     @Autowired
     private RestTemplate template;
 
-    public ResponceForFrontendDto getThisWeekStargazersFrequencyPerProject(String projectName) throws IOException, URISyntaxException, ClassNotFoundException, ExecutionException, InterruptedException, GitHubRESTApiException {
-        TreeMap<LocalDate, Integer> weekStargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getWeekStargazersList(projectName));
-        List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(weekStargazersFrequencyMap);
-        ResponceForFrontendDto buildedDtoForFrontend = Utils.buildJsonForFrontend(frequencyList);
-        LOG.debug("builded json for highchart.js :" + buildedDtoForFrontend);
-        return buildedDtoForFrontend;
+
+    public ResponceForFrontendDto stargazersFrequency(RequestFromFrontendDto requestFromFrontendDto) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
+        //if week
+        long period = ChronoUnit.DAYS.between(requestFromFrontendDto.getStartPeriod(), requestFromFrontendDto.getEndPeriod());
+        if (period <= 7) {
+            TreeMap<LocalDate, Integer> stargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getWeekStargazersList(requestFromFrontendDto));
+            List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(stargazersFrequencyMap);
+            ResponceForFrontendDto buildedDtoForFrontend = Utils.buildJsonForFrontend(frequencyList);
+            LOG.debug("builded json for highchart.js :" + buildedDtoForFrontend);
+            return buildedDtoForFrontend;
+        }
+        //if month
+        else {
+            TreeMap<LocalDate, Integer> stargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthStargazersList(requestFromFrontendDto));
+            List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(stargazersFrequencyMap);
+            ResponceForFrontendDto buildedDtoForFrontend = Utils.buildJsonForFrontend(frequencyList);
+            LOG.debug("builded json for highchart.js :" + buildedDtoForFrontend);
+            return buildedDtoForFrontend;
+        }
     }
 
-    public ResponceForFrontendDto getThisMonthStargazersFrequencyPerProject(RequestFromFrontendDto requestFromFrontendDto) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
-        TreeMap<LocalDate, Integer> stargazersFrequencyMap = Utils.buildStargazersFrequencyMap(getMonthStargazersList(requestFromFrontendDto));
-        List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(stargazersFrequencyMap);
-        ResponceForFrontendDto buildedDtoForFrontend = Utils.buildJsonForFrontend(frequencyList);
-        LOG.debug("builded json for highchart.js :" + buildedDtoForFrontend);
-        return buildedDtoForFrontend;
-    }
-
-    public List<LocalDate> getWeekStargazersList(String projectName) throws URISyntaxException, IOException, ExecutionException, InterruptedException, GitHubRESTApiException {
+    public List<LocalDate> getWeekStargazersList(RequestFromFrontendDto requestFromFrontendDto) throws URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
         List<LocalDate> thisWeekAllStargazersDateList = new LinkedList<>();
-        GitHubApiIterator stargazersIterator = new GitHubApiIterator(projectName, template, GitHubApiEndpoints.STARGAZERS);
+        GitHubApiIterator stargazersIterator = new GitHubApiIterator(requestFromFrontendDto.getAuthor() + "/" + requestFromFrontendDto.getRepository(), template, GitHubApiEndpoints.STARGAZERS);
         while (stargazersIterator.hasNext()) {
             List<JsonNode> stargazerPagesBatch = stargazersIterator.next(5);
 
-            List<LocalDate> stargazersFrequency = StreamSupport.stream(stargazerPagesBatch.spliterator(), false)
-                    .map(e -> e.get(0).get("starred_at"))//get element "starred_at from each JSON inside the node
-                    .map(e -> Utils.parseTimestamp(e.textValue()))
+            List<LocalDate> stargazersFrequency = stargazerPagesBatch.stream()
+                    .map(jsonNode -> jsonNode.get(0).get("starred_at"))//get element "starred_at from each JSON inside the node
+                    .map(starredAt -> Utils.parseTimestamp(starredAt.textValue()))
                     .filter(Utils::isWithinThisWeekRange)
                     .collect(Collectors.toList());
             LOG.debug(stargazersFrequency.toString());
 
             thisWeekAllStargazersDateList.addAll(stargazersFrequency);
 
-            boolean batchContainStargazersOutOfRange = StreamSupport.stream(stargazerPagesBatch.spliterator(), false)
-                    .map(e -> e.get(0).get("starred_at"))//get element "starred_at from each JSON inside the node
-                    .map(e -> Utils.parseTimestamp(e.textValue()))
-                    .anyMatch((e) -> !Utils.isWithinThisWeekRange(e));
+            boolean batchContainStargazersOutOfRange = stargazerPagesBatch.stream()
+                    .map(jsonNode -> jsonNode.get(0).get("starred_at"))//get element "starred_at from each JSON inside the node
+                    .map(starredAt -> Utils.parseTimestamp(starredAt.textValue()))
+                    .anyMatch((starredAtData) -> !Utils.isWithinThisWeekRange(starredAtData));
             if (batchContainStargazersOutOfRange) break;
         }
         stargazersIterator.close();
@@ -77,11 +82,11 @@ public class StargazersService {
 
     public List<LocalDate> getMonthStargazersList(RequestFromFrontendDto requestFromFrontendDto) throws URISyntaxException, ExecutionException, InterruptedException, GitHubRESTApiException {
         List<LocalDate> thisMonthAllStargazersDateList = new LinkedList<>();
-        GitHubApiIterator stargazersIterator = new GitHubApiIterator(requestFromFrontendDto.getProjectName(), template, GitHubApiEndpoints.STARGAZERS);
+        GitHubApiIterator stargazersIterator = new GitHubApiIterator(requestFromFrontendDto.getAuthor() + "/" + requestFromFrontendDto.getRepository(), template, GitHubApiEndpoints.STARGAZERS);
         while (stargazersIterator.hasNext()) {
             List<JsonNode> stargazerPagesBatch = stargazersIterator.next(5);
             //parse pages where localDate withing month period
-            List<LocalDate> stargazersFrequency = StreamSupport.stream(stargazerPagesBatch.spliterator(), false)
+            List<LocalDate> stargazersFrequency = stargazerPagesBatch.stream()
                     .map(jsonNode -> jsonNode.get(0).get("starred_at"))//get element "starred_at from each JSON inside the node
                     .map(jsonNode -> Utils.parseTimestamp(jsonNode.textValue()))
                     .filter(localDate -> Utils.isWithinThisMonthRange(localDate, requestFromFrontendDto))
@@ -90,7 +95,7 @@ public class StargazersService {
 
             thisMonthAllStargazersDateList.addAll(stargazersFrequency);
 
-            boolean batchContainStargazersOutOfRange = StreamSupport.stream(stargazerPagesBatch.spliterator(), false)
+            boolean batchContainStargazersOutOfRange = stargazerPagesBatch.stream()
                     .map(jsonNode -> jsonNode.get(0).get("starred_at"))//get element "starred_at from each JSON inside the node
                     .map(jsonNode -> Utils.parseTimestamp(jsonNode.textValue()))
                     .anyMatch((localDate) -> !Utils.isWithinThisMonthRange(localDate, requestFromFrontendDto));
@@ -101,4 +106,5 @@ public class StargazersService {
         LOG.debug("finish parsing stargazers" + thisMonthAllStargazersDateList.toString());
         return thisMonthAllStargazersDateList;
     }
+
 }

@@ -4,8 +4,11 @@
  */
 
 //Global variables
-var date = new Date();
-var endPeriod = new Date();
+var sinceMonth = new Date();
+var untilMonth = new Date();
+
+var sinceWeek = new Date();
+var untilWeek = new Date();
 
 /**
  * Performs a call to the backend  GET "/getRequestsLeft" and displays a number of requests that left on UI
@@ -40,11 +43,10 @@ function analyze(e) {
     //render frequency chart per week
     $.ajax({
         //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-        url: "/" + analyticsArea + "?projectName="
-        + inputValue,
+        url: inputValue + "/" + analyticsArea + "?startPeriod=" + parseDateToISOString(sinceWeek) + "&endPeriod=" + parseDateToISOString(untilWeek),
         beforeSend: function () {
             $('#week-frequency-plot')
-                .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
+                .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest sinceMonth, just for you. </div>");
         }
     })
         .done(function (msg) {
@@ -103,11 +105,10 @@ function analyze(e) {
     //render frequency chart per month
     $.ajax({
         //thoughout front-end development  use http://localhost:8080/stargazers" + "?projectName=" + inputValue/stargazers" + "?projectName=" + inputValue
-        url: "/" + analyticsArea + "PerMonth" + "?projectName="
-        + inputValue + "&startPeriod=" + parseDateToISOString(date) + "&endPeriod=" + parseDateToISOString(endPeriod),
+        url: inputValue + "/" + analyticsArea + "?startPeriod=" + parseDateToISOString(sinceMonth) + "&endPeriod=" + parseDateToISOString(untilMonth),
         beforeSend: function () {
             $('#month-frequency-plot')
-                .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest date, just for you. </div>");
+                .html("<img src='https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif' /> <div>Crunching the latest sinceMonth, just for you. </div>");
         }
     })
         .done(function (msg) {
@@ -220,11 +221,11 @@ function parseDateToISOString(date) {
  * Displays interval from the current month begin to the current month end on UI
  */
 function displayCurrentDate() {
-    date.setMonth(date.getMonth(), 1);
-    date.setHours(00, 00, 00);
-    endPeriod.setHours(23, 59, 59);
-    endPeriod.setFullYear(date.getFullYear(), date.getMonth() + 1, 0);
-    var year = date.getFullYear(), month = date.getMonth();
+    sinceMonth.setMonth(sinceMonth.getMonth(), 1);
+    sinceMonth.setHours(00, 00, 00);
+    untilMonth.setHours(23, 59, 59);
+    untilMonth.setFullYear(sinceMonth.getFullYear(), sinceMonth.getMonth() + 1, 0);
+    var year = sinceMonth.getFullYear(), month = sinceMonth.getMonth();
     var lastDay = new Date(year, month + 1, 0).getDate();
     var objDate = new Date(),
         locale = "en-us",
@@ -240,16 +241,16 @@ function displayCurrentDate() {
  */
 $("#previousDate").click(
     function () {
-        date.setMonth(date.getMonth() - 1, 1);
-        endPeriod.setFullYear(date.getFullYear(), date.getMonth() + 1, 0);
-        var year = date.getFullYear();
-        var month = date.getMonth();
+        sinceMonth.setMonth(sinceMonth.getMonth() - 1, 1);
+        untilMonth.setFullYear(sinceMonth.getFullYear(), sinceMonth.getMonth() + 1, 0);
+        var year = sinceMonth.getFullYear();
+        var month = sinceMonth.getMonth();
         var lastDay = new Date(year, month + 1, 0).getDate();
-        var objDate = date,
+        var objDate = sinceMonth,
             locale = "en-us",
             month = objDate.toLocaleString(locale, {month: "short"});
-        var intervalStart = month + " " + "01" + ", " + date.getFullYear();
-        var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
+        var intervalStart = month + " " + "01" + ", " + sinceMonth.getFullYear();
+        var intervalEnd = month + " " + lastDay + ", " + sinceMonth.getFullYear();
         document.getElementById('current-month-interval').textContent
             = intervalStart + " - " + intervalEnd;
         analyze();
@@ -260,16 +261,16 @@ $("#previousDate").click(
  */
 $("#nextDate").click(
     function () {
-        date.setMonth(date.getMonth() + 1, 1);
-        endPeriod.setFullYear(date.getFullYear(), date.getMonth() + 1, 0);
-        var year = date.getFullYear();
-        var month = date.getMonth();
+        sinceMonth.setMonth(sinceMonth.getMonth() + 1, 1);
+        untilMonth.setFullYear(sinceMonth.getFullYear(), sinceMonth.getMonth() + 1, 0);
+        var year = sinceMonth.getFullYear();
+        var month = sinceMonth.getMonth();
         var lastDay = new Date(year, month + 1, 0).getDate();
-        var objDate = date,
+        var objDate = sinceMonth,
             locale = "en-us",
             month = objDate.toLocaleString(locale, {month: "short"});
-        var intervalStart = month + " " + "01" + ", " + date.getFullYear();
-        var intervalEnd = month + " " + lastDay + ", " + date.getFullYear();
+        var intervalStart = month + " " + "01" + ", " + sinceMonth.getFullYear();
+        var intervalEnd = month + " " + lastDay + ", " + sinceMonth.getFullYear();
         document.getElementById('current-month-interval').textContent
             = intervalStart + " - " + intervalEnd;
         analyze();
@@ -279,17 +280,14 @@ $("#nextDate").click(
  * Display interval from the current week month  to the current saturday  on UI
  */
 function displayInterval() {
-    var curr = new Date; // get current date
-    var firstDay = new Date(curr.setDate(curr.getDate() - curr.getDay()));// First day is the day of the month - the day of the week
-    var last = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));// last day is the first day + 6
+    var curr = new Date; // get current sinceMonth
+    sinceWeek = new Date(curr.setDate(curr.getDate() - curr.getDay()));// First day is the day of the month - the day of the week
+    untilWeek = new Date(curr.setDate(curr.getDate() - curr.getDay() + 6));// last day is the first day + 6
     var locale = "en-us";
-    var startMonth = firstDay.toLocaleString(locale, {month: "short"});
-    var endMonth = last.toLocaleString(locale, {month: "short"});
-    document.getElementById('current-week-interval').textContent
-        =
-        startMonth + " " + firstDay.getDate() + ", " + firstDay.getFullYear()
-        + " - " +
-        endMonth + " " + last.getDate() + ", " + last.getFullYear();
+    var startMonth = sinceWeek.toLocaleString(locale, {month: "short"});
+    var endMonth = untilWeek.toLocaleString(locale, {month: "short"});
+    document.getElementById('current-week-interval').textContent = startMonth + " " + sinceWeek.getDate() + ", "
+        + sinceWeek.getFullYear() + " - " + endMonth + " " + untilWeek.getDate() + ", " + untilWeek.getFullYear();
 }
 
 //Functions that should start on UI loading

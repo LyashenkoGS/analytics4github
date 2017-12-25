@@ -64,10 +64,12 @@ public class GitHubApiIteratorTest {
     @Test
     public void testHasNext() throws URISyntaxException, GitHubRESTApiException {
         RequestFromFrontendDto requestFromFrontendDto = new RequestFromFrontendDto();
-        requestFromFrontendDto.setProjectName("/terryum/awesome-deep-learning-papers");
+        requestFromFrontendDto.setAuthor("terryum");
+        requestFromFrontendDto.setRepository("awesome-deep-learning-papers");
         requestFromFrontendDto.setStartPeriod(LocalDate.parse("2017-01-01"));
         requestFromFrontendDto.setEndPeriod(LocalDate.parse("2017-01-31"));
-        GitHubApiIterator stargazersIterator = new GitHubApiIterator(requestFromFrontendDto.getProjectName(), template,
+        GitHubApiIterator stargazersIterator = new GitHubApiIterator(requestFromFrontendDto.getAuthor() + "/"
+                + requestFromFrontendDto.getRepository(), template,
                 GitHubApiEndpoints.COMMITS, Utils.getPeriodInstant(requestFromFrontendDto.getStartPeriod()),
                 Utils.getPeriodInstant(requestFromFrontendDto.getEndPeriod()));
         assertTrue("We expect hasNext equals false", stargazersIterator.hasNext());

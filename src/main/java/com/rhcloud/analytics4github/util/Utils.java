@@ -147,32 +147,10 @@ public class Utils {
         return monthStargazersFrequency;
     }
 
-    public static List<Integer> parseMonthFrequencyMapCommitToFrequencyLIst(
-            TreeMap<LocalDate, Integer> mockWeekStargazersFrequencyMap, RequestFromFrontendDto requestFromFrontendDto) throws IOException {
-        int lastDayOfMonth = requestFromFrontendDto.getEndPeriod().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
-        LOG.debug(String.valueOf(lastDayOfMonth));
-        List<Integer> monthStargazersFrequency = new ArrayList<>(lastDayOfMonth);
-        for (int dayOfMonth = 1; dayOfMonth < lastDayOfMonth + 1; dayOfMonth++) {
-            LOG.debug("day of month: " + dayOfMonth);
-            Optional<Integer> frequency = Optional.empty();
-            for (LocalDate localDate : mockWeekStargazersFrequencyMap.keySet()) {
-                if (dayOfMonth == localDate.getDayOfMonth()) {
-                    frequency = Optional.of(mockWeekStargazersFrequencyMap.get(localDate));
-                }
-            }
-            if (frequency.isPresent()) {
-                monthStargazersFrequency.add(frequency.get());
-            } else {
-                monthStargazersFrequency.add(0);
-            }
-            LOG.debug(monthStargazersFrequency.toString());
-        }
-        return monthStargazersFrequency;
-    }
 
     public static TreeMap<LocalDate, Integer> buildStargazersFrequencyMap(List<LocalDate> stargazersList) throws IOException, URISyntaxException, ExecutionException, InterruptedException {
         //temporary set
-        Set<LocalDate> stargazersDateSet = stargazersList.stream().collect(Collectors.toSet());
+        Set<LocalDate> stargazersDateSet = new HashSet<>(stargazersList);
         Map<LocalDate, Integer> stargazersFrequencyMap = stargazersDateSet.stream().collect(Collectors
                 .toMap(Function.identity(), e -> Collections.frequency(stargazersList, e)));
         TreeMap<LocalDate, Integer> localDateIntegerNavigableMap = new TreeMap<>(stargazersFrequencyMap);
