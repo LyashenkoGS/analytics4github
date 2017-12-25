@@ -27,7 +27,7 @@ public class StargazersControllerTest {
 
     @Test
     public void stargazersPerWeek() {
-        ResponseEntity<String> response = testRestTemplate.getForEntity("/stargazers?projectName=mewo2/terrain&startPeriod=2017-01-01&endPeriod=2017-01-07",
+        ResponseEntity<String> response = testRestTemplate.getForEntity("/mewo2/terrain/stargazers?startPeriod=2017-01-01&endPeriod=2017-01-07",
                 String.class);
         //language=JSON
         assertEquals("[{\"name\":\"Stars\",\"requestsLeft\":0,\"data\":[0,0,0,0,0,0,0]}]", response.getBody());
@@ -35,7 +35,7 @@ public class StargazersControllerTest {
 
     @Test
     public void stargazersPerMonth() {
-        ResponseEntity<String> response = testRestTemplate.getForEntity("/stargazers?projectName=mewo2/terrain&startPeriod=2017-01-01&endPeriod=2017-01-31",
+        ResponseEntity<String> response = testRestTemplate.getForEntity("/mewo2/terrain/stargazers?startPeriod=2017-01-01&endPeriod=2017-01-31",
                 String.class);
         //language=JSON
         assertEquals("[{\"name\":\"Stars\",\"requestsLeft\":0,\"data\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0," +

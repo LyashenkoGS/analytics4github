@@ -141,7 +141,7 @@ public class UniqueContributorsService {
         try {
             commit = commits.get(commits.size() - 1);
             LOG.info("First commit by " + author + " : " + commit.toString());
-            String date = commit.get("commit").get("author").get("sinceMonth").textValue();
+            String date = commit.get("commit").get("author").get("date").textValue();
             LOG.debug(date);
             LocalDate firstContributionDate = Utils.parseTimestamp(date);
             LOG.info(firstContributionDate.toString());

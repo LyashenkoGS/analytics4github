@@ -6,11 +6,9 @@ import java.util.List;
 
 @ApiModel
 public class ResponceForFrontendDto {
-
     private String name;
     private int requestsLeft;
     private List<Integer> data;
-
     public ResponceForFrontendDto() {
     }
 
@@ -23,6 +21,15 @@ public class ResponceForFrontendDto {
         this.name = name;
         this.data = data;
         this.requestsLeft = requestsLeft;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponceForFrontendDto{" +
+                "name='" + name + '\'' +
+                ", requestsLeft=" + requestsLeft +
+                ", data=" + data +
+                '}';
     }
 
     public String getName() {
