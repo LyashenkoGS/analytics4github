@@ -3,9 +3,9 @@ package com.rhcloud.analytics4github.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rhcloud.analytics4github.config.GitHubApiEndpoints;
 import com.rhcloud.analytics4github.domain.Author;
-import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.dto.RequestFromFrontendDto;
 import com.rhcloud.analytics4github.dto.ResponceForFrontendDto;
+import com.rhcloud.analytics4github.exception.GitHubRESTApiException;
 import com.rhcloud.analytics4github.util.GitHubApiIterator;
 import com.rhcloud.analytics4github.util.Utils;
 import org.slf4j.Logger;
@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -120,7 +121,7 @@ public class UniqueContributorsService {
                     .build().encode()
                     .toUriString();
         } else {
-            reliableLastPageNumber = Utils.getLastPageNumber(repository, restTemplate, GitHubApiEndpoints.COMMITS, author.getName(), null,null);
+            reliableLastPageNumber = Utils.getLastPageNumber(repository, restTemplate, GitHubApiEndpoints.COMMITS, author.getName(), null, null);
             URL = UriComponentsBuilder
                     .fromHttpUrl("https://api.github.com/repos/")
                     .path(repository).path("/" + GitHubApiEndpoints.COMMITS.toString().toLowerCase())
@@ -140,7 +141,7 @@ public class UniqueContributorsService {
         try {
             commit = commits.get(commits.size() - 1);
             LOG.info("First commit by " + author + " : " + commit.toString());
-            String date = commit.get("commit").get("author").get("date").textValue();
+            String date = commit.get("commit").get("author").get("sinceMonth").textValue();
             LOG.debug(date);
             LocalDate firstContributionDate = Utils.parseTimestamp(date);
             LOG.info(firstContributionDate.toString());
@@ -167,22 +168,28 @@ public class UniqueContributorsService {
         return firstAuthorCommitFrequencyList;
     }
 
-    public ResponceForFrontendDto getUniqueContributorsFrequencyByMonth(RequestFromFrontendDto requestFromFrontendDto) throws IOException, ClassNotFoundException, InterruptedException, ExecutionException, URISyntaxException, GitHubRESTApiException {
-        TreeMap<LocalDate, Integer> commitsFrequencyMap = Utils.buildStargazersFrequencyMap(getFirstAuthorCommitFrequencyList
-                (requestFromFrontendDto.getProjectName(), Utils.getPeriodInstant(requestFromFrontendDto.getStartPeriod()),
-                        Utils.getPeriodInstant(requestFromFrontendDto.getEndPeriod())));
-        List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(commitsFrequencyMap);
-        ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
-        LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
-        return responceForFrontendDto;
+    public ResponceForFrontendDto getUniqueContributorsFrequency(RequestFromFrontendDto requestFromFrontendDto) throws IOException, ClassNotFoundException, InterruptedException, ExecutionException, URISyntaxException, GitHubRESTApiException {
+        //if week
+        long period = ChronoUnit.DAYS.between(requestFromFrontendDto.getStartPeriod(), requestFromFrontendDto.getEndPeriod());
+        if (period <= 7) {
+            List<LocalDate> firstAuthorCommitFrequencyList = getFirstAuthorCommitFrequencyList(requestFromFrontendDto.getAuthor() + "/" + requestFromFrontendDto.getRepository(), Utils.getThisWeekBeginInstant(), null);
+            TreeMap<LocalDate, Integer> weekContributorsFrequencyMap = Utils.buildStargazersFrequencyMap(firstAuthorCommitFrequencyList);
+            List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(weekContributorsFrequencyMap);
+            ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
+            LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
+            return responceForFrontendDto;
+        }
+        //if month
+        else {
+            TreeMap<LocalDate, Integer> commitsFrequencyMap = Utils.buildStargazersFrequencyMap(getFirstAuthorCommitFrequencyList
+                    (requestFromFrontendDto.getAuthor() + "/" + requestFromFrontendDto.getRepository(), Utils.getPeriodInstant(requestFromFrontendDto.getStartPeriod()),
+                            Utils.getPeriodInstant(requestFromFrontendDto.getEndPeriod())));
+            List<Integer> frequencyList = Utils.parseMonthFrequencyMapToFrequencyLIst(commitsFrequencyMap);
+            ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
+            LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
+            return responceForFrontendDto;
+        }
     }
 
-    public ResponceForFrontendDto getUniqueContributorsFrequencyByWeek(String repository) throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
-        List<LocalDate> firstAuthorCommitFrequencyList = getFirstAuthorCommitFrequencyList(repository, Utils.getThisWeekBeginInstant(), null);
-        TreeMap<LocalDate, Integer> weekContributorsFrequencyMap = Utils.buildStargazersFrequencyMap(firstAuthorCommitFrequencyList);
-        List<Integer> frequencyList = Utils.parseWeekStargazersMapFrequencyToWeekFrequencyList(weekContributorsFrequencyMap);
-        ResponceForFrontendDto responceForFrontendDto = Utils.buildJsonForFrontend(frequencyList);
-        LOG.debug("builded json for highchart.js :" + responceForFrontendDto);
-        return responceForFrontendDto;
-    }
+
 }

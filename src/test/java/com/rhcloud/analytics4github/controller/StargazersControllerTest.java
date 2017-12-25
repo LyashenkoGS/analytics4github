@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -20,18 +21,24 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @SpringBootTest(classes = TestApplicationContext.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CommitsControllerIntegrationalTest {
-    private static String PROJECT_NAME = "mewo2/terrain";
+public class StargazersControllerTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @Test
-    public void testCommitsPerWeekEndpoint() {
-        assertEquals(this.testRestTemplate.getForEntity("/commits?projectName=" + PROJECT_NAME, String.class).getStatusCodeValue(), 200);
+    public void stargazersPerWeek() {
+        ResponseEntity<String> response = testRestTemplate.getForEntity("/stargazers?projectName=mewo2/terrain&startPeriod=2017-01-01&endPeriod=2017-01-07",
+                String.class);
+        //language=JSON
+        assertEquals("[{\"name\":\"Stars\",\"requestsLeft\":0,\"data\":[0,0,0,0,0,0,0]}]", response.getBody());
     }
 
     @Test
-    public void testCommitsPerMonthEndpoint() {
-        assertEquals(this.testRestTemplate.getForEntity("/stargazersPerMonth?projectName=mewo2/terrain&startPeriod=2017-01-01&endPeriod=2017-01-31", String.class).getStatusCodeValue(), 200);
+    public void stargazersPerMonth() {
+        ResponseEntity<String> response = testRestTemplate.getForEntity("/stargazers?projectName=mewo2/terrain&startPeriod=2017-01-01&endPeriod=2017-01-31",
+                String.class);
+        //language=JSON
+        assertEquals("[{\"name\":\"Stars\",\"requestsLeft\":0,\"data\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0," +
+                "0,0,0,0,0,0,0,0,0,0,0,0]}]", response.getBody());
     }
 }

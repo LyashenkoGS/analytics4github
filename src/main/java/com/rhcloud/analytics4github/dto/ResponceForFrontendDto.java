@@ -1,7 +1,10 @@
 package com.rhcloud.analytics4github.dto;
 
+import io.swagger.annotations.ApiModel;
+
 import java.util.List;
 
+@ApiModel
 public class ResponceForFrontendDto {
 
     private String name;

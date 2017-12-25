@@ -2,4 +2,3 @@ FallibleInc/security-guide-for-developers
 mewo2/terrain
 noidontdig/gitdown
 DevLight-Mobile-Agency/InfiniteCycleViewPager
-e-government-ua/i

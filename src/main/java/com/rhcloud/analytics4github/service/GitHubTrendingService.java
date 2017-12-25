@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Parses https://github.com/trending and gets  this month most popular repositories
@@ -54,5 +55,13 @@ public class GitHubTrendingService {
             return trendingRepos;
         } else
             throw new TrendingException(" Can not access GitHub Trending page <a href='https://github.com/trending'>https://github.com/trending</a> ");
+    }
+
+    public String getRandomTrendingRepo() throws TrendingException {
+        List<String> trendingRepos = getTrendingRepos();
+        int index = new Random().nextInt(trendingRepos.size());
+        String randomRepoName = trendingRepos.get(index);
+        LOG.info("Random trending repo: " + randomRepoName);
+        return randomRepoName;
     }
 }

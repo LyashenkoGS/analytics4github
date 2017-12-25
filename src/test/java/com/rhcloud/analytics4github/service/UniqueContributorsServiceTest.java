@@ -84,15 +84,21 @@ public class UniqueContributorsServiceTest {
     @Ignore //40s
     public void uniqueContributorsFrequencyByMonth() throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
         RequestFromFrontendDto requestFromFrontendDto = new RequestFromFrontendDto();
-        requestFromFrontendDto.setProjectName(PROJECT);
+        requestFromFrontendDto.setAuthor(PROJECT.split("/")[0]);
+        requestFromFrontendDto.setRepository(PROJECT.split("/")[1]);
         requestFromFrontendDto.setStartPeriod(LocalDate.parse("2016-08-01"));
         requestFromFrontendDto.setEndPeriod(LocalDate.parse("2016-08-31"));
-        uniqueContributorsService.getUniqueContributorsFrequencyByMonth(requestFromFrontendDto);
+        uniqueContributorsService.getUniqueContributorsFrequency(requestFromFrontendDto);
     }
 
     @Ignore// FIXME: 17.12.17 depends on a broken URL
     @Test
     public void uniqueContributorsFrequencyByWeek() throws InterruptedException, ExecutionException, URISyntaxException, IOException, ClassNotFoundException, GitHubRESTApiException {
-        uniqueContributorsService.getUniqueContributorsFrequencyByWeek(PROJECT);
+        RequestFromFrontendDto requestFromFrontendDto = new RequestFromFrontendDto();
+        requestFromFrontendDto.setAuthor(PROJECT.split("/")[0]);
+        requestFromFrontendDto.setRepository(PROJECT.split("/")[1]);
+        requestFromFrontendDto.setStartPeriod(LocalDate.parse("2016-08-01"));
+        requestFromFrontendDto.setEndPeriod(LocalDate.parse("2016-08-07"));
+        uniqueContributorsService.getUniqueContributorsFrequency(requestFromFrontendDto);
     }
 }

@@ -37,9 +37,9 @@ public class SwaggerConfig {
 
     private Predicate<String> analyticsPaths() {
         return or(
-                regex("/commits.*"),
-                regex("/stargazers.*"),
-                regex("/uniqueContributors.*"),
+                regex(".*/commits.*"),
+                regex(".*/stargazers.*"),
+                regex(".*/uniqueContributors.*"),
                 regex("/statistics.*")
         );
     }

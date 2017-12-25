@@ -30,7 +30,7 @@ public class GitHubTrendingControllerTest {
     @Test
     public void getRandomTrendingRepo() throws TrendingException {
         gitHubTrendingService.parseTrendingReposWebPage();
-        assertEquals(this.testRestTemplate.getForEntity("/randomRequestTrendingRepoName", String.class).getStatusCodeValue(), 200);
+        assertEquals(200, testRestTemplate.getForEntity("/randomRequestTrendingRepoName", String.class).getStatusCodeValue());
     }
 
 }

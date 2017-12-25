@@ -22,7 +22,7 @@ To access a REST API documentation - run the application and access
 * access to [GitHub REST API ](https://developer.github.com/v3/)
 * access to [GitHub trending page](https://github.com/trending)
 * Generate OAuth token for GitHub [https://github.com/settings/tokens](https://github.com/settings/tokens) and copy it to /var/token.txt or export to an environment variable GITHUB_TOKEN. 
-* MongoDB 3.6
+* MongoDB 3.6 (docker run --name someMongo -p 27017:27017 mongo:3.6.0-jessie)
 
 ## Deployment
 To run locally execute
@@ -36,6 +36,12 @@ To run locally execute
 
 Tests stopped to work properly via maven but you can run them via Intellij
 ##### IntellijIdea
+
+###### reload backend
 To reload controllers after editing - press ctl + f9 and wait till application restart.
 It'll execute "Make" and trigger hot-redeploy via spring-boot-devtools.
+
+### working with frontend
+adjust application.properties to use static resources from a file system, not a jar file. It will simplify frontend 
+development
 
