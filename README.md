@@ -30,6 +30,8 @@ To run locally execute
      ./mvnw install -Dmaven.test.skip=true
       java -jar target/analytics4github*.jar 
 
+accessible by default at http://127.0.0.1:8080
+
      
 ## Development
 ![architecture](./documentation/Arhitecture.png)
